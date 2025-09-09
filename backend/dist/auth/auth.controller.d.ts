@@ -14,6 +14,7 @@ export declare class AuthController {
         userName: string;
         email: string;
         avatarUrl: string;
+        isOnboarded: boolean;
     }>;
     logout(req: Request, res: Response): Response<any, Record<string, any>>;
     csrf(res: Response): Response<any, Record<string, any>>;

@@ -27,7 +27,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
-    private readonly cfg: ConfigService,
+    private readonly cfg: ConfigService
   ) {}
 
   @Get(ENDPOINTS.AUTH.GOOGLE)
@@ -41,12 +41,14 @@ export class AuthController {
     const queryState = req.query?.["state"];
     if (!cookieState || !queryState || cookieState !== queryState) {
       return res.redirect(
-        `${process.env.FRONTEND_URL}/app/auth/callback?success=false&error=${encodeURIComponent("bad state")}`,
+        `${process.env.FRONTEND_URL}/app/auth/callback?success=false&error=${encodeURIComponent("bad state")}`
       );
     }
     res.clearCookie("oauth_state", { path: "/" });
     try {
-      const { access_token } = await this.authService.googleAuth(req.user);
+      const { access_token, user } = await this.authService.googleAuth(
+        req.user
+      );
       const COOKIE_NAME = this.cfg.get<string>("COOKIE_NAME") ?? "finfix_token";
       const csrf = randomBytes(32).toString("hex");
       const base = cookieBaseFromEnv(this.cfg);
@@ -54,11 +56,13 @@ export class AuthController {
       res.cookie(COOKIE_NAME, access_token, base);
       res.cookie("csrf", csrf, { ...base, httpOnly: false });
 
-      return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+      console.log("USER", user);
+      const route = user.isOnboarded ? "dashboard" : "onboarding";
+      return res.redirect(`${process.env.FRONTEND_URL}/${route}`);
     } catch (error) {
       const msg = error?.message ?? "Authentication failed";
       return res.redirect(
-        `${process.env.FRONTEND_URL}/app/auth/callback?success=false&error=${encodeURIComponent(msg)}`,
+        `${process.env.FRONTEND_URL}/app/auth/callback?success=false&error=${encodeURIComponent(msg)}`
       );
     }
   }
@@ -80,6 +84,7 @@ export class AuthController {
       userName: user.userName,
       email: user.email,
       avatarUrl: user.avatarUrl,
+      isOnboarded: user.isOnboarded,
     };
   }
 

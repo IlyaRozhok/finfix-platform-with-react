@@ -34,6 +34,7 @@ let AuthService = class AuthService {
                 email: user.email,
                 userName: user.userName,
                 avatarUrl: user.avatarUrl,
+                isOnboarded: user.isOnboarded,
             },
         };
     }

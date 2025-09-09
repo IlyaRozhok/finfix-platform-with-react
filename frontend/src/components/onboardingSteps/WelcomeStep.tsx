@@ -1,8 +1,8 @@
-"use client";
 
 // import { useOnboardingStore } from "@/stores/onboarding";
 // import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
+import { useOnboardingStore } from "../../store/onboarding";
 
 export function WelcomeStep() {
   const { nextStep, data, currentStep } = useOnboardingStore();
@@ -43,14 +43,13 @@ export function WelcomeStep() {
 
       {/* CTA Button */}
       <div className="pt-4">
-        <Button
+        <button
           onClick={handleGetStarted}
-          size="lg"
           className="w-full font-medium"
           type="button"
         >
           Get started
-        </Button>
+        </button>
       </div>
     </div>
   );

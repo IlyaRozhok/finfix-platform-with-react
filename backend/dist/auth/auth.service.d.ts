@@ -14,6 +14,7 @@ export declare class AuthService {
             email: string;
             userName: string;
             avatarUrl: string;
+            isOnboarded: boolean;
         };
     }>;
 }

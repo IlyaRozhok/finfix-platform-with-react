@@ -1,21 +1,20 @@
-"use client";
 
-import { useOnboardingStore } from "@/stores/onboarding";
-// import { Card } from "@/components/ui/card";
-// import { Progress } from "@/components/ui/progress";
-// import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
-import { WelcomeStep } from "./steps/welcome-step";
-import { CurrencyStep } from "./steps/currency-step";
-import { IncomeStep } from "./steps/income-step";
-import { ExpensesStep } from "./steps/expenses-step";
-import { DebtsStep } from "./steps/debts-step";
-import { OnboardingSummary } from "./onboarding-summary";
+import { CurrencyStep } from "../../components/onboardingSteps/CurrencyStep";
+import { DebtsStep } from "../../components/onboardingSteps/DebtsStep";
+import { ExpensesStep } from "../../components/onboardingSteps/ExpensesStep";
+import { IncomesStep } from "../../components/onboardingSteps/IncomesStep";
+import { WelcomeStep } from "../../components/onboardingSteps/WelcomeStep";
+import { OnboardingSummary } from "../../components/onboardingSteps/OnboardingSummary";
+import { useOnboardingStore } from "../../store/onboarding";
+
+import { Card } from "../../components/ui/card";
+import { Progress } from "../../components/ui/progress";
+import { Button } from "../../components/ui/button";
 
 const STEP_COMPONENTS = {
   0: WelcomeStep,
   1: CurrencyStep,
-  2: IncomeStep,
+  2: IncomesStep,
   3: ExpensesStep,
   4: DebtsStep,
 };
@@ -28,7 +27,7 @@ export function OnboardingWizard() {
     "OnboardingWizard render - currentStep:",
     currentStep,
     "totalSteps:",
-    totalSteps,
+    totalSteps
   );
 
   const StepComponent =

@@ -39,13 +39,15 @@ let AuthController = class AuthController {
         }
         res.clearCookie("oauth_state", { path: "/" });
         try {
-            const { access_token } = await this.authService.googleAuth(req.user);
+            const { access_token, user } = await this.authService.googleAuth(req.user);
             const COOKIE_NAME = this.cfg.get("COOKIE_NAME") ?? "finfix_token";
             const csrf = (0, crypto_1.randomBytes)(32).toString("hex");
             const base = (0, cookieBaseFromEnv_1.cookieBaseFromEnv)(this.cfg);
             res.cookie(COOKIE_NAME, access_token, base);
             res.cookie("csrf", csrf, { ...base, httpOnly: false });
-            return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+            console.log("USER", user);
+            const route = user.isOnboarded ? "dashboard" : "onboarding";
+            return res.redirect(`${process.env.FRONTEND_URL}/${route}`);
         }
         catch (error) {
             const msg = error?.message ?? "Authentication failed";
@@ -65,6 +67,7 @@ let AuthController = class AuthController {
             userName: user.userName,
             email: user.email,
             avatarUrl: user.avatarUrl,
+            isOnboarded: user.isOnboarded,
         };
     }
     logout(req, res) {

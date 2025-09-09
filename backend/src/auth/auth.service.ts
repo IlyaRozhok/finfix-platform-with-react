@@ -21,6 +21,7 @@ export class AuthService {
     await this.categoriesService.seedDefaults(user.id);
     const token = this.jwtService.sign({ sub: user.id, email: user.email });
 
+    // console.log("userok", user);
     return {
       access_token: token,
       user: {
@@ -28,6 +29,7 @@ export class AuthService {
         email: user.email,
         userName: user.userName,
         avatarUrl: user.avatarUrl,
+        isOnboarded: user.isOnboarded,
       },
     };
   }

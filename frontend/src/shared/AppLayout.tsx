@@ -4,7 +4,7 @@ export default function AppLayout() {
   return (
     <div className="min-h-full">
       <header className="border-b bg-blue-950">
-        <div className="mx-auto max-w-4xl px-4 h-14 flex items-center justify-between">
+        <div className="mx-auto max-w-4xl px-4 h-14 flex items-center justify-between text-white">
           <Link to="/" className="font-semibold">
             FinFix
           </Link>
