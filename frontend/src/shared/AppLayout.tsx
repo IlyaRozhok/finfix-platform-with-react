@@ -2,26 +2,18 @@ import { Link, Outlet } from "react-router-dom";
 
 export default function AppLayout() {
   return (
-    <div className="min-h-full">
-      <header className="border-b bg-blue-950">
-        <div className="mx-auto max-w-4xl px-4 h-14 flex items-center justify-between text-white">
-          <Link to="/" className="font-semibold">
-            FinFix
+    <div className="min-h-full bg-sky-900">
+      <header className="border-b border-slate-200 bg-white/90 backdrop-blur-sm shadow-sm">
+        <div className="mx-auto max-w-4xl px-4 h-16 flex items-center ">
+          <Link to="/" className="flex items-center space-x-3 group">
+            <span className="text-xl font-bold text-slate-900 group-hover:text-slate-700 transition-colors">
+              FinFix
+            </span>
           </Link>
-          <nav className="flex gap-3 text-sm">
-            <Link to="/" className="hover:underline">
-              Expenses
-            </Link>
-            <Link
-              to="/expenses/new"
-              className="px-2 py-1 rounded bg-black text-white"
-            >
-              Add
-            </Link>
-          </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-4xl px-4 py-6">
+
+      <main className="min-h-[calc(100vh-4rem)]">
         <Outlet />
       </main>
     </div>

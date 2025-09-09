@@ -1,75 +1,86 @@
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import loginBg from "@/assets/login-bg.jpg";
 
 const API_BASE = import.meta.env.VITE_API_URL || "";
 
-export default function LoginPage() {
-  // маленький локальный стейт — показать индикатор «Redirecting…»
+export default function Main() {
   const [redirecting, setRedirecting] = useState(false);
 
   const startGoogle = () => {
     setRedirecting(true);
-    // самый простой вариант: отдать управление бэку
-    // у тебя в Nest обычно есть GET /api/auth/google (redirect -> Google)
-    // сюда лучше сходить абсолютным URL, а не через прокси
     const url = `${API_BASE}/api/auth/google`;
     window.location.href = url;
   };
 
   return (
-    <div className="min-h-screen grid place-items-center bg-gray-50">
-      {/* Карточка */}
-      <div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white shadow">
-        <div className="p-6 space-y-6">
-          {/* Лого + заголовок */}
-          <div className="space-y-2">
-            <div className="h-10 w-10 rounded-lg bg-black text-white grid place-items-center">
-              <span className="text-sm font-semibold">FF</span>
-            </div>
-            <h1 className="text-xl font-semibold leading-tight">
-              Sign in to FinFix
-            </h1>
-            <p className="text-sm text-gray-600">
-              Track expenses, incomes and debts in one place.
-            </p>
+    <div className="h-[calc(100vh-4rem)] bg-slate-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-5xl bg-white rounded-4xl shadow-2xl overflow-hidden">
+        <div className="flex flex-col lg:flex-row h-full">
+          {/* Left Panel - Background Image with Overlay */}
+          <div className="flex-1 relative overflow-hidden h-full min-h-[300px] lg:min-h-[650px] px-25">
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${loginBg})` }}
+            />
           </div>
 
-          {/* Кнопка Google — показываю, как собирать кнопку из утилит */}
-          <button
-            type="button"
-            onClick={startGoogle}
-            disabled={redirecting}
-            className="
-              w-full inline-flex items-center justify-center gap-2
-              rounded-lg border border-gray-300 bg-white
-              px-4 py-2.5 text-sm font-medium text-gray-800
-              shadow-sm
-              hover:bg-gray-50
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-black
-              disabled:opacity-60
-            "
-            aria-label="Continue with Google"
-          >
-            <GoogleIcon className="h-5 w-5" />
-            {redirecting ? "Redirecting…" : "Continue with Google"}
-          </button>
+          {/* Right Panel - Login Form */}
+          <div className="flex-1 flex flex-col justify-center p-8 lg:p-16 bg-[#FDFDFD]">
+            <div className="max-w-sm mx-auto w-full space-y-8">
+              {/* Header */}
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Welcome to FinFix
+                  </h1>
+                  <p className="text-gray-600">
+                    Your personal finance command center
+                  </p>
+                </div>
+              </div>
 
-          {/* Дополнительный текст/ссылка */}
-          <p className="text-xs text-gray-500">
-            By continuing you agree to our Terms and Privacy Policy.
-          </p>
+              {/* Google Button */}
+              <div className="space-y-6">
+                <Button
+                  onClick={startGoogle}
+                  disabled={redirecting}
+                  className="w-full h-12 text-base font-medium bg-gray-100 hover:bg-gray-200 border-0 text-gray-900 shadow-sm hover:shadow-md transition-all duration-200 rounded-lg"
+                >
+                  <GoogleIcon className="mr-3 h-5 w-5" />
+                  {redirecting ? "Redirecting..." : "Continue with Google"}
+                </Button>
+
+                <p className="text-center text-sm text-gray-500">
+                  Secure • Private • Powerful
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// Очень маленькая иконка Google SVG (без внешних файлов)
 function GoogleIcon({ className = "" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
       <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+      />
+      <path
         fill="#EA4335"
-        d="M12 10.2v3.6h5.1c-.2 1.2-1.5 3.5-5.1 3.5-3.1 0-5.6-2.6-5.6-5.8S8.9 5.7 12 5.7c1.8 0 3 .7 3.7 1.3l2.5-2.4C16.8 3.2 14.6 2.3 12 2.3 6.9 2.3 2.7 6.6 2.7 11.7S6.9 21 12 21c7 0 9.3-4.9 9.3-7.5 0-.5-.1-1-.2-1.3H12z"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
       />
     </svg>
   );
