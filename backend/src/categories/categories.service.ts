@@ -7,7 +7,7 @@ import { Repository } from "typeorm";
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
+    private categoryRepository: Repository<Category>
   ) {}
 
   async seedDefaults(userId: string) {
@@ -15,7 +15,6 @@ export class CategoriesService {
     if (exists) return;
 
     const categories: Array<Partial<Category>> = [
-      //Expenses
       { userId, kind: CategoryKind.EXPENSE, name: "House", isSystem: true },
       {
         userId,
@@ -60,7 +59,6 @@ export class CategoriesService {
       },
       { userId, kind: CategoryKind.EXPENSE, name: "Family", isSystem: true },
 
-      //Incomes
       { userId, kind: CategoryKind.INCOME, name: "Salary", isSystem: true },
       { userId, kind: CategoryKind.INCOME, name: "Freelance", isSystem: true },
     ];
