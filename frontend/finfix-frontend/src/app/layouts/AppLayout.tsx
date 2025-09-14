@@ -3,13 +3,7 @@ import { Outlet } from "react-router";
 
 export default function AppLayout() {
   return (
-    <div>
-      <header>
-        <nav>
-          <div>Logo</div>
-          <button>Logout</button>
-        </nav>
-      </header>
+    <div className="bg-primary-blue">
       <Outlet />
     </div>
   );

@@ -1,5 +1,5 @@
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/app/providers/AuthProvider';
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 function Loader() {
   return (
@@ -13,27 +13,34 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const loc = useLocation();
   if (loading) return <Loader />;
-  if (!user) return <Navigate to="/login" replace state={{ next: loc.pathname }} />;
+  if (!user)
+    return <Navigate to="/login" replace state={{ next: loc.pathname }} />;
   return <>{children}</>;
 }
 
-export function RequireOnboarded({ children, invert = false }: { children: React.ReactNode; invert?: boolean }) {
+export function RequireOnboarded({
+  children,
+  invert = false,
+}: {
+  children: React.ReactNode;
+  invert?: boolean;
+}) {
   const { user, loading } = useAuth();
   if (loading) return <Loader />;
-  if (!user) return null; // перехвачено RequireAuth
+  if (!user) return null;
   const ok = invert ? !user.isOnboarded : user.isOnboarded;
-  if (!ok) return <Navigate to={invert ? '/dashboard' : '/onboarding'} replace />;
+  if (!ok)
+    return <Navigate to={invert ? "/dashboard" : "/onboarding"} replace />;
   return <>{children}</>;
 }
 
-// НОВОЕ: гостевой гард — не пускаем авторизованных на /login
 export function RequireGuest({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const loc = useLocation();
   if (loading) return <Loader />;
   if (user) {
-    const next = (loc.state as any)?.next as string | undefined;
-    const target = next ?? (user.isOnboarded ? '/dashboard' : '/onboarding');
+    const next = loc.state?.next as string | undefined;
+    const target = next ?? (user.isOnboarded ? "/dashboard" : "/onboarding");
     return <Navigate to={target} replace />;
   }
   return <>{children}</>;
