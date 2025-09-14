@@ -11,8 +11,9 @@ export const Header: React.FC<HeaderProps> = ({ title = "Finfix" }) => {
   const { user } = useAuth();
 
   return (
-    <header className="h-14 ">
-      <nav className="px-3 flex items-center justify-between border-b bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className="px-10 flex items-center justify-between h-14 border-b bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-slate-300/60">
+      <div className="text-base font-semibold tracking-tight">{title}</div>
+      <div className="flex item-center gap-2">
         <div className="flex items-center justify-center gap-2">
           <div className="size-8 rounded-full bg-neutral-200 overflow-hidden">
             {user?.avatarUrl ? (
@@ -25,12 +26,8 @@ export const Header: React.FC<HeaderProps> = ({ title = "Finfix" }) => {
             {user?.userName}
           </p>
         </div>
-
-        <div className="text-base font-semibold tracking-tight">{title}</div>
-        <div>
-          <LogoutButton />
-        </div>
-      </nav>
+        <LogoutButton />
+      </div>
     </header>
   );
 };

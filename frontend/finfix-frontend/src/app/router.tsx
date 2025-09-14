@@ -9,8 +9,7 @@ import {
 import OnboardingLayout from "./layouts/OnboardingLayout";
 import { LoginPage } from "@/pages/login/LoginPage";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
-
-const OnboardingPage = () => <div className="p-6">Onboarding (stub)</div>;
+import { OnboardingWelcome } from "@/pages/onboarding";
 
 export function AppRouter() {
   return (
@@ -34,7 +33,7 @@ export function AppRouter() {
           </RequireAuth>
         }
       >
-        <Route index element={<OnboardingPage />} />
+        <Route index element={<OnboardingWelcome />} />
       </Route>
 
       <Route
