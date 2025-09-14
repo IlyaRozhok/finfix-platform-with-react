@@ -1,8 +1,8 @@
 export interface User {
   id: string;
   email: string;
-  name?: string;
-  avatarUrl?: string;
+  userName: string;
   isOnboarded: boolean;
-  currency?: string;
+  currency: string;
+  avatarUrl?: string;
 }

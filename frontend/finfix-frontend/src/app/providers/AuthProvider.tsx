@@ -17,14 +17,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   async function refresh() {
-    if (user) return;
-
     setLoading(true);
     const me = await getMe();
     setUser(me);
     setLoading(false);
   }
-  console.log(user);
   async function logout() {
     await apiLogout();
     setUser(null);
@@ -32,10 +29,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     refresh();
-    // const onUnauthorized = () => setUser(null);
-    // window.addEventListener("auth:unauthorized", onUnauthorized);
-    // return () =>
-    // window.removeEventListener("auth:unauthorized", onUnauthorized);
   }, []);
 
   const value = useMemo(

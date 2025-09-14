@@ -1,58 +1,74 @@
-import axios from "axios";
+// src/shared/api/axios.ts
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { ENV } from "@/shared/config/env";
 
-// Базовый клиент с cookie
+type AxError = {
+  reason: string;
+  code: string;
+  message: string;
+};
+
 export const api = axios.create({
   baseURL: ENV.API_URL,
   withCredentials: true,
 });
 
-// Простое хранилище CSRF
-let csrfToken: string | null = null;
-let csrfPromise: Promise<void> | null = null;
+// --- мини-утилиты ---
+const CSRF_COOKIE = "csrf";
+const CSRF_HEADER = "X-CSRF-Token";
 
-async function fetchCsrf() {
-  const res = await api.get("/api/auth/csrf");
-  // сервер может вернуть в body { csrfToken } или заголовком — поддержим оба
-  csrfToken =
-    res.data?.csrfToken ?? (res.headers["x-csrf-token"] as string) ?? null;
-}
+const getCookie = (name: string) => {
+  const m = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return m ? decodeURIComponent(m[1]) : null;
+};
 
-export async function ensureCsrf() {
-  if (csrfToken) return;
-  if (!csrfPromise)
-    csrfPromise = fetchCsrf().finally(() => (csrfPromise = null));
-  await csrfPromise;
-}
+const isMutation = (cfg: InternalAxiosRequestConfig) =>
+  ["post", "put", "patch", "delete"].includes(
+    (cfg.method ?? "get").toLowerCase()
+  );
 
-// Добавляем CSRF только на мутации
-api.interceptors.request.use(async (config) => {
-  const method = (config.method ?? "get").toLowerCase();
-  if (["post", "put", "patch", "delete"].includes(method)) {
-    await ensureCsrf();
-    if (csrfToken) {
-      config.headers = { ...(config.headers ?? {}), "X-CSRF-Token": csrfToken };
+const isCsrfError = (err: AxiosError<AxError>) => {
+  const status = err?.response?.status;
+  const data = err?.response?.data;
+  return (
+    status === 403 &&
+    (data?.reason === "CSRF" ||
+      data?.code === "EBADCSRFTOKEN" ||
+      (typeof data?.message === "string" &&
+        data.message.toLowerCase().includes("csrf")))
+  );
+};
+
+const primeCsrf = () => api.get("/api/auth/csrf")
+
+// --- request: ставим заголовок для мутаций ---
+api.interceptors.request.use(async (cfg) => {
+  if (isMutation(cfg)) {
+    let token = getCookie(CSRF_COOKIE);
+    if (!token) {
+      await primeCsrf();
+      token = getCookie(CSRF_COOKIE);
     }
+    cfg.headers = { ...(cfg.headers ?? {}), [CSRF_HEADER]: token ?? "" };
   }
-  return config;
+  return cfg;
 });
 
-// Авто-рефреш CSRF при 403 из-за CSRF и сигнал о 401
+// --- response: один ретрай при CSRF + сигнал о 401 ---
 api.interceptors.response.use(
   (r) => r,
   async (err) => {
-    const status = err?.response?.status;
-    if (
-      status === 403 &&
-      (err.response?.data?.reason === "CSRF" ||
-        err.response?.data?.code === "EBADCSRFTOKEN")
-    ) {
-      csrfToken = null;
-      await ensureCsrf();
-      err.config.headers["X-CSRF-Token"] = csrfToken;
-      return api.request(err.config);
+    const cfg = err?.config ?? {};
+
+    if (isCsrfError(err) && !cfg.__csrfRetried) {
+      cfg.__csrfRetried = true;
+      await primeCsrf();
+      const token = getCookie(CSRF_COOKIE);
+      cfg.headers = { ...(cfg.headers ?? {}), [CSRF_HEADER]: token ?? "" };
+      return api.request(cfg);
     }
-    if (status === 401) {
+
+    if (err?.response?.status === 401) {
       window.dispatchEvent(new CustomEvent("auth:unauthorized"));
     }
     return Promise.reject(err);
