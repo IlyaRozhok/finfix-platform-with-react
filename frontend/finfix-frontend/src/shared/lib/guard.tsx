@@ -17,16 +17,24 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-export function RequireOnboarded({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  if (!user) return null; // уже отфильтровано в RequireAuth
-  if (!user.isOnboarded) return <Navigate to="/onboarding" replace />;
+export function RequireOnboarded({ children, invert = false }: { children: React.ReactNode; invert?: boolean }) {
+  const { user, loading } = useAuth();
+  if (loading) return <Loader />;
+  if (!user) return null; // перехвачено RequireAuth
+  const ok = invert ? !user.isOnboarded : user.isOnboarded;
+  if (!ok) return <Navigate to={invert ? '/dashboard' : '/onboarding'} replace />;
   return <>{children}</>;
 }
 
-export function RequireNotOnboarded({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  if (!user) return null;
-  if (user.isOnboarded) return <Navigate to="/dashboard" replace />;
+// НОВОЕ: гостевой гард — не пускаем авторизованных на /login
+export function RequireGuest({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const loc = useLocation();
+  if (loading) return <Loader />;
+  if (user) {
+    const next = (loc.state as any)?.next as string | undefined;
+    const target = next ?? (user.isOnboarded ? '/dashboard' : '/onboarding');
+    return <Navigate to={target} replace />;
+  }
   return <>{children}</>;
 }

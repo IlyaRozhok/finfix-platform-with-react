@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { User } from '@/entities/user/model';
-import { getMe, logout as apiLogout} from '@/entities/user/api';
+import { User } from "@/entities/user/model";
+import { getMe, logout as apiLogout } from "@/entities/user/api";
 
 type AuthState = {
   user: User | null;
@@ -17,12 +17,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   async function refresh() {
+    if (user) return;
+
     setLoading(true);
     const me = await getMe();
     setUser(me);
     setLoading(false);
   }
-
+  console.log(user);
   async function logout() {
     await apiLogout();
     setUser(null);
@@ -30,17 +32,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     refresh();
-    const onUnauthorized = () => setUser(null);
-    window.addEventListener('auth:unauthorized', onUnauthorized);
-    return () => window.removeEventListener('auth:unauthorized', onUnauthorized);
+    // const onUnauthorized = () => setUser(null);
+    // window.addEventListener("auth:unauthorized", onUnauthorized);
+    // return () =>
+    // window.removeEventListener("auth:unauthorized", onUnauthorized);
   }, []);
 
-  const value = useMemo(() => ({ user, loading, refresh, logout }), [user, loading]);
+  const value = useMemo(
+    () => ({ user, loading, refresh, logout }),
+    [user, loading]
+  );
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 
 export function useAuth() {
   const ctx = useContext(AuthCtx);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
 }

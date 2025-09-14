@@ -4,5 +4,5 @@ export interface User {
   name?: string;
   avatarUrl?: string;
   isOnboarded: boolean;
-  baseCurrency?: string;
+  currency?: string;
 }

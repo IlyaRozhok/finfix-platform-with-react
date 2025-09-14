@@ -1,16 +1,17 @@
 import { useAuth } from "@/app/providers/AuthProvider";
 import { GoogleLoginButton } from "@/features/auth/google-login/GoogleLoginButton";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 export function LoginPage() {
   const { user, loading } = useAuth();
+  const loc = useLocation();
 
-  console.log(user);
-  //   if (!loading && user) {
-  //     return (
-  //       <Navigate to={user.isOnboarded ? "/dashboard" : "/onboarding"} replace />
-  //     );
-  //   }
+  if (!loading && user) {
+    const next = (loc.state as any)?.next as string | undefined;
+    const target = next ?? (user.isOnboarded ? "/dashboard" : "/onboarding");
+    return <Navigate to={target} replace />;
+  }
+
   return (
     <div className="grid min-h-screen place-items-center">
       <div className="w-full max-w-sm rounded-2xl border bg-white p-6 shadow-sm">
@@ -18,7 +19,9 @@ export function LoginPage() {
         <p className="mb-6 text-center text-sm text-neutral-600">
           Personal finance assistant
         </p>
-        <GoogleLoginButton />
+        <div className="flex">
+          <GoogleLoginButton />
+        </div>
       </div>
     </div>
   );

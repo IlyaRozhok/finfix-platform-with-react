@@ -85,6 +85,7 @@ export class AuthController {
       email: user.email,
       avatarUrl: user.avatarUrl,
       isOnboarded: user.isOnboarded,
+      currency: user.currency,
     };
   }
 

@@ -1,26 +1,34 @@
-import { LoginPage } from "@/pages/login/LoginPage";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { LoginPage } from "@/pages/login/LoginPage";
+import { RequireAuth, RequireGuest, RequireOnboarded } from "@/shared/lib/guard";
+import { DashboardPage } from "@/pages/dashboard/DashboardPage";
 
-// import { OnboardingPage } from "@/pages/onboarding/OnboardingPage";
-// import { DashboardPage } from "@/pages/dashboard/DashboardPage";
+const OnboardingPage = () => <div className="p-6">Onboarding (stub)</div>;
 
 export function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<LoginPage />} />
+      <Route
+        path="/login"
+        element={
+          <RequireGuest>
+            <LoginPage />
+          </RequireGuest>
+        }
+      />
 
-      {/* <Route
+      <Route
         path="/onboarding"
         element={
           <RequireAuth>
-            <RequireNotOnboarded>
+            <RequireOnboarded invert>
               <OnboardingPage />
-            </RequireNotOnboarded>
+            </RequireOnboarded>
           </RequireAuth>
         }
-      /> */}
+      />
 
-      {/* <Route
+      <Route
         path="/dashboard"
         element={
           <RequireAuth>
@@ -29,9 +37,9 @@ export function AppRouter() {
             </RequireOnboarded>
           </RequireAuth>
         }
-      /> */}
+      />
 
-      {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
