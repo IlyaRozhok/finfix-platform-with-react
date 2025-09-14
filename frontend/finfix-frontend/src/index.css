@@ -13,3 +13,9 @@
     @apply h-full;
   }
 }
+
+@theme {
+  --color-deep-blue: #00171f;
+  --color-primary-blue: #003459;
+  --color-light-blue: #adebff;
+}

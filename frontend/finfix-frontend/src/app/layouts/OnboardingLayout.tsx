@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 const OnboardingLayout: React.FC = () => {
   return (
-    <div className="bg-violet-100 h-full">
+    <div className="bg-deep-blue h-full">
       <Header />
       <Outlet />
     </div>
