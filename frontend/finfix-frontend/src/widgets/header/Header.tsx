@@ -1,6 +1,7 @@
 import { useAuth } from "@/app/providers/AuthProvider";
 import LogoutButton from "@/features/auth/logout/LogoutButton";
 import React from "react";
+import logo from "@/assets/logo.png";
 
 type HeaderProps = {
   title?: string;
@@ -11,8 +12,11 @@ export const Header: React.FC<HeaderProps> = ({ title = "Finfix" }) => {
   const { user } = useAuth();
 
   return (
-    <header className="px-10 flex items-center justify-between h-14 border-b bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-slate-300/60">
-      <div className="text-base font-semibold tracking-tight">{title}</div>
+    <header className="px-10 flex items-center justify-between h-14 backdrop-blur supports-[backdrop-filter]:bg-light-blue/90">
+      <div className="flex gap-2">
+        <div className="text-xl font-semibold tracking-tight pt-1">{title}</div>
+        <img src={logo} alt="logo" className="w-10" />
+      </div>
       <div className="flex item-center gap-2">
         <div className="flex items-center justify-center gap-2">
           <div className="size-8 rounded-full bg-neutral-200 overflow-hidden">

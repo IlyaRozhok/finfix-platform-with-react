@@ -6,7 +6,7 @@ export function DashboardPage() {
     <div className="p-6">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
       <p className="mt-2 text-neutral-600">
-        Welcome, {user?.name ?? user?.email}
+        Welcome, {user?.userName ?? user?.email}
       </p>
     </div>
   );
