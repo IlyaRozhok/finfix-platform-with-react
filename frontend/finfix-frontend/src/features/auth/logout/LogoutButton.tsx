@@ -1,12 +1,29 @@
 import { useAuth } from "@/app/providers/AuthProvider";
-import { Button } from "@/shared/ui/Button";
-import React from "react";
+import { ConfirmationModal } from "@/shared/ui";
+import { Button } from "@/shared/ui";
+import React, { useState } from "react";
 
-export default function LogoutButton() {
+export const LogoutButton = () => {
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const { logout } = useAuth();
   return (
-    <Button onClick={logout} variant="primary">
-      Exit
-    </Button>
+    <>
+      {!openModal && (
+        <div className="grid">
+          <Button onClick={() => setOpenModal(true)} variant="ghost">
+            Log out
+          </Button>
+        </div>
+      )}
+      {openModal && (
+        <ConfirmationModal
+          title="Are you sure you want to leave?"
+          action={logout}
+          cancel={() => setOpenModal(false)}
+        />
+      )}
+    </>
   );
-}
+};
+
+export default LogoutButton;
