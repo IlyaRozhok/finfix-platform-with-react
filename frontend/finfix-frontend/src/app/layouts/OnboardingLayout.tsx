@@ -3,9 +3,11 @@ import { Outlet } from "react-router-dom";
 
 const OnboardingLayout: React.FC = () => {
   return (
-    <div className="bg-deep-blue h-full">
+    <div className="text-white md:bg-top h-full bg-[url(src/assets/bank-card.jpg)] bg-position-[top_left_100px] bg-cover bg-no-repeat">
       <OnboardingHeader />
-      <Outlet />
+      <div className="p-[5%]">
+        <Outlet />
+      </div>
     </div>
   );
 };

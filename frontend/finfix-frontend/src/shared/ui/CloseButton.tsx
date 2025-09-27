@@ -2,16 +2,20 @@ import React from "react";
 
 type CloseButton = {
   handleClose: () => void;
+  fill?: "black" | "white";
 };
-export const CloseButton: React.FC<CloseButton> = ({ handleClose }) => {
+export const CloseButton: React.FC<CloseButton> = ({
+  handleClose,
+  fill = "black",
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      fill={fill}
       viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="size-5 cursor-pointer hover:scale"
+      strokeWidth={1}
+      stroke={fill === "black" ? "white" : "black"}
+      className="size-6 cursor-pointer hover:scale-110"
       onClick={handleClose}
     >
       <path

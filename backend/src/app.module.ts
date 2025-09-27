@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
-import { CategoriesModule } from "./categories/categories.module";
+import { CategoriesModule } from "./onboarding/onboarding.module";
 import { DebtsModule } from "./debts/debts.module";
 import { RecurringExpensesModule } from "./recurring-expenses/recurring-expenses.module";
 import { RecurringIncomesModule } from "./recurring-incomes/recurring-incomes.module";

@@ -7,7 +7,7 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { GoogleStrategy } from "./strategies/google.strategy";
 import { JwtStrategy } from "./strategies/jwt.strategy";
-import { CategoriesModule } from "@/categories/categories.module";
+import { CategoriesModule } from "@/onboarding/onboarding.module";
 
 @Module({
   imports: [

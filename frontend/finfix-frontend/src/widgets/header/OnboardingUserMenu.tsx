@@ -8,6 +8,7 @@ export const OnboardingUserMenu = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { user } = useAuth();
 
+  console.log(user?.avatarUrl);
   return (
     <>
       <div className="flex items-center justify-center gap-2">
@@ -18,17 +19,17 @@ export const OnboardingUserMenu = () => {
           {user?.avatarUrl ? (
             <img src={user?.avatarUrl} alt="avatar" />
           ) : (
-            <p>Ava</p>
+            <img src={user?.avatarUrl} alt="avatar" />
           )}
         </div>
       </div>
 
       {isOpen && (
-        <div className="absolute right-3 top-14 w-64 rounded-2xl border bg-white shadow-md p-2 item: px-3 py-2 rounded-xl text-sm">
+        <div className="absolute z-10 right-3 top-14 w-64 bg-white/40 backdrop-blur-[3px] shadow-md p-2 item: px-3 py-2 rounded-xl text-sm">
           <div className="absolute right-3 top-1">
             <CloseButton handleClose={() => setIsOpen(false)} />
           </div>
-          <p className="text-xs font-medium text-neutral-700 grid place-items-center mb-5">
+          <p className="text-xs font-medium text-black grid place-items-center mb-5">
             Hello, {user?.userName}
           </p>
           <LogoutButton />

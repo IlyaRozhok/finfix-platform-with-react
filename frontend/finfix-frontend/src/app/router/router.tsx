@@ -4,9 +4,9 @@ import {
   RequireAuth,
   RequireGuest,
   RequireOnboarded,
-} from "@/shared/lib/guard";
+} from "@/app/guards/guard";
 
-import OnboardingLayout from "./layouts/OnboardingLayout";
+import OnboardingLayout from "../layouts/OnboardingLayout";
 import { LoginPage } from "@/pages/login/LoginPage";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
 import { OnboardingWelcome } from "@/pages/onboarding";
@@ -34,6 +34,7 @@ export function AppRouter() {
         }
       >
         <Route index element={<OnboardingWelcome />} />
+        {/* <Route path="currency" element={<OnboardingCurrency />} /> */}
       </Route>
 
       <Route

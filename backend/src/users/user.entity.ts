@@ -1,4 +1,4 @@
-import { Category } from "@/categories/category.entity";
+import { Category } from "@/onboarding/onboarding.entity";
 import { Debt } from "@/debts/debt.entity";
 import { Installment } from "@/installments/installment.entity";
 import { RecurringExpense } from "@/recurring-expenses/recurring-expense.entity";

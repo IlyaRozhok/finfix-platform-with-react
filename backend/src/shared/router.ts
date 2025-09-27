@@ -2,7 +2,7 @@ import { CATCH_WATERMARK } from "@nestjs/common/constants";
 
 export const ROUTE_SEGMENTS = {
   AUTH: "auth",
-  CATEGORIES: "categories",
+  ONBOARDING: "onboarding",
 };
 
 export const ENDPOINTS = {
@@ -13,7 +13,8 @@ export const ENDPOINTS = {
     LOGOUT: "logout",
     CSRF: "csrf",
   },
-  CATEGORIES: {
-    ONBOARDING: "onboarding",
+  ONBOARDING: {
+    CATEGORIES: "categories",
+    CURRENCIES: "currencies",
   },
 };

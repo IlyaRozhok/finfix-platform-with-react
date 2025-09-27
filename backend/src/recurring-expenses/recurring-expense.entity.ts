@@ -9,7 +9,7 @@ import {
   Index,
 } from "typeorm";
 
-import { Category } from "../categories/category.entity";
+import { Category } from "../onboarding/onboarding.entity";
 import { User } from "@/users/user.entity";
 
 @Entity("recurring_expense")
