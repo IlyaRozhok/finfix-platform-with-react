@@ -1,4 +1,3 @@
-// src/pages/onboarding/OnboardingExpenses.tsx
 import {
   OnboardingStep,
   ExpenseRow as Row,
@@ -35,14 +34,12 @@ export const OnboardingExpenses = () => {
     <div className="flex justify-center item-center">
       <OnboardingFrame {...widgetData}>
         <div className="mt-2 space-y-3">
-          {/* внутренний скролл, не перекрывается футером */}
           <div className="custom-scroll max-h-[45vh] md:max-h-72 overflow-y-auto space-y-3 px-5">
             {data.expenses.map((r) => (
               <ExpenseRow key={r.id} row={r} />
             ))}
           </div>
 
-          {/* нижняя панель: колонкой на мобиле, строкой на md+ */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-1 items-center mb-3">
             <Button
               variant="ghost"

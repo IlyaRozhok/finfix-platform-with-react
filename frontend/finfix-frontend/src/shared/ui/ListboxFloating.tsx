@@ -1,4 +1,3 @@
-// src/shared/ui/ListboxFloating.tsx
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import {
@@ -20,11 +19,11 @@ type ListboxFloatingProps<T extends string> = {
   placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
   matchWidth?: boolean;
   maxHeight?: number;
-  optionsClassName?: string; // <- стили контейнера меню
-  optionClassName?: string; // <- стили пункта меню
+  optionsClassName?: string;
+  optionClassName?: string;
 };
 
-export function ListboxFloating<T extends string>({
+export const ListboxFloating = <T extends string>({
   value,
   onChange,
   options,
@@ -35,7 +34,7 @@ export function ListboxFloating<T extends string>({
   maxHeight = 280,
   optionsClassName,
   optionClassName,
-}: ListboxFloatingProps<T>) {
+}: ListboxFloatingProps<T>) => {
   const { refs, floatingStyles } = useFloating({
     placement,
     strategy: "fixed",
@@ -81,7 +80,7 @@ export function ListboxFloating<T extends string>({
                   "z-[1000] overflow-auto rounded-xl",
                   "bg-black/90 backdrop-blur-md",
                   "ring-1 ring-slate-400/25 shadow-2xl",
-                  "p-1", // тонкий внутренний паддинг
+                  "p-1",
                   optionsClassName
                 )}
               >
@@ -109,4 +108,4 @@ export function ListboxFloating<T extends string>({
       )}
     </Listbox>
   );
-}
+};

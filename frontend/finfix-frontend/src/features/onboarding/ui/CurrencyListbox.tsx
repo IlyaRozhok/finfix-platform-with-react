@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { ListboxFloating } from "@/shared/ui/ListboxFloating";
+import { ListboxFloating } from "@/shared/ui";
 import { useOnboarding } from "../model/store";
 import clsx from "clsx";
 

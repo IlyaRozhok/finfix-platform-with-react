@@ -1,10 +1,9 @@
-// src/features/onboarding/ui/ExpenseRow.tsx
 import { ChevronDownIcon, TrashIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { ExpenseRow as Row } from "../model/types";
 import { Input } from "@/shared/ui";
 import { PRESET_CATEGORIES, useOnboarding } from "../model/store";
-import { ListboxFloating } from "@/shared/ui/ListboxFloating";
+import { ListboxFloating } from "@/shared/ui";
 
 const FREQUENCIES: Row["frequency"][] = ["monthly", "weekly", "yearly"];
 const numberRe = /^-?\d*(\.\d*)?$/;
