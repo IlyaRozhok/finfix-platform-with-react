@@ -1,12 +1,11 @@
-import {
-  OnboardingStep,
-  ExpenseRow as Row,
-} from "@/features/onboarding/model/types";
+import { OnboardingStep } from "@/features/onboarding/model/types";
 import { useOnboarding } from "@/features/onboarding/model/store";
 import { OnboardingFrame } from "@/widgets/onboarding";
-import { ExpenseRow } from "@/features/onboarding/ui/ExpenseRow";
+
 import { Button } from "@/shared/ui";
 import { useMemo } from "react";
+import { ExpenseRow } from "@/features/onboarding/ui/ExpenseRow";
+import { Expense as Row } from "@entities/expenses/model";
 
 export const OnboardingExpenses = () => {
   const { data, addExpense } = useOnboarding();

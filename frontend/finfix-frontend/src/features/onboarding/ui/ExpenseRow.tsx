@@ -1,9 +1,10 @@
 import { ChevronDownIcon, TrashIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { ExpenseRow as Row } from "../model/types";
+import { Expense as Row } from "@/entities/expenses/model";
 import { Input } from "@/shared/ui";
 import { PRESET_CATEGORIES, useOnboarding } from "../model/store";
 import { ListboxFloating } from "@/shared/ui";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 const FREQUENCIES: Row["frequency"][] = ["monthly", "weekly", "yearly"];
 const numberRe = /^-?\d*(\.\d*)?$/;
@@ -11,8 +12,8 @@ const numberRe = /^-?\d*(\.\d*)?$/;
 export function ExpenseRow({ row }: { row: Row }) {
   const { updateExpense, removeExpense, errors, clearExpenseError } =
     useOnboarding();
+  const { user } = useAuth();
   const rowError = errors.expenses?.[row.id];
-
   const renderBtn = (label: string) => (
     <button
       type="button"
@@ -37,21 +38,30 @@ export function ExpenseRow({ row }: { row: Row }) {
       {/* 1. Category */}
       <div className="order-1 md:order-none min-w-0">
         <ListboxFloating
-          value={row.category}
-          onChange={(v) => updateExpense(row.id, "category", v)}
+          value={row.categoryId}
+          onChange={(v) =>
+            updateExpense(row.id, "categoryId", v, user?.id as string)
+          }
           options={PRESET_CATEGORIES as string[]}
           placement="bottom-start"
-          renderButton={() => renderBtn(row.category)}
+          renderButton={() => renderBtn(row.categoryId)}
           optionsClassName="!bg-black/95"
         />
       </div>
 
-      {/* 2. Title */}
+      {/* 2. Description */}
       <div className="order-2 md:order-none min-w-0">
         <Input
-          placeholder="Title (optional)"
-          value={row.title ?? ""}
-          onChange={(e) => updateExpense(row.id, "title", e.target.value)}
+          placeholder="Description (optional)"
+          value={row.description ?? ""}
+          onChange={(e) =>
+            updateExpense(
+              row.id,
+              "description",
+              e.target.value,
+              user?.id as string
+            )
+          }
           className="h-11 min-w-0"
           containerClassName="h-11"
         />
@@ -67,7 +77,7 @@ export function ExpenseRow({ row }: { row: Row }) {
           onChange={(e) => {
             const v = e.target.value;
             if (v === "" || numberRe.test(v)) {
-              updateExpense(row.id, "amount", v);
+              updateExpense(row.id, "amount", v, user?.id as string);
               if (v !== "" && rowError) clearExpenseError(row.id);
             }
             if (v !== "" && Number(v) > 0 && rowError) {
@@ -84,7 +94,9 @@ export function ExpenseRow({ row }: { row: Row }) {
       <div className="order-4 md:order-none min-w-0">
         <ListboxFloating
           value={row.frequency}
-          onChange={(v) => updateExpense(row.id, "frequency", v)}
+          onChange={(v) =>
+            updateExpense(row.id, "frequency", v, user?.id as string)
+          }
           options={FREQUENCIES as string[]}
           placement="bottom-start"
           renderButton={() => renderBtn(cap(row.frequency))}

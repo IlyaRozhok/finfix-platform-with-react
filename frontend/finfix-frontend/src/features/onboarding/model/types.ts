@@ -1,3 +1,5 @@
+import { Expense } from "@/entities/expenses/model";
+
 export enum OnboardingStep {
   WELCOME = "Welcome",
   CURRENCY = "Currency",
@@ -10,16 +12,9 @@ export type OnboardingStepsCfg = {
   path: string;
   title: string;
 };
-export type ExpenseRow = {
-  id: string;
-  category: string;
-  title?: string;
-  amount: string;
-  frequency: "monthly" | "weekly" | "yearly";
-};
 
 export type OnboardingData = {
   baseCurrency: string;
   incomes: string;
-  expenses: ExpenseRow[];
+  expenses: Expense[];
 };

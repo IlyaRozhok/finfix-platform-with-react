@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { ExpenseRow, OnboardingData } from "./types";
+import { OnboardingData } from "./types";
+import { Expense } from "@/entities/expenses/model";
 
 const PRESET_CATEGORIES = [
   "Rent",
@@ -12,10 +13,11 @@ const PRESET_CATEGORIES = [
   "Other",
 ];
 
-const mkRow = (): ExpenseRow => ({
+const mkRow = (): Expense => ({
   id: crypto.randomUUID(),
-  category: "Other",
-  title: "",
+  userId: "",
+  categoryId: "Other",
+  description: "",
   amount: "",
   frequency: "monthly",
 });
@@ -32,10 +34,11 @@ type OnboardingState = {
   clearIncomesError: () => void;
   addExpense: () => void;
   removeExpense: (id: string) => void;
-  updateExpense: <K extends keyof ExpenseRow>(
+  updateExpense: <K extends keyof Expense>(
     id: string,
     key: K,
-    value: ExpenseRow[K]
+    value: Expense[K],
+    userId: string
   ) => void;
   validateExpenses: () => boolean;
   clearExpenseError: (id: string) => void;
@@ -74,15 +77,18 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
       },
     })),
 
-  updateExpense: (id, key, value) =>
-    set((s) => ({
-      data: {
-        ...s.data,
-        expenses: s.data.expenses.map((e) =>
-          e.id === id ? { ...e, [key]: value } : e
-        ),
-      },
-    })),
+  updateExpense: (id, key, value, userId) =>
+    set((s) => {
+      console.log("s", s);
+      return {
+        data: {
+          ...s.data,
+          expenses: s.data.expenses.map((e) =>
+            e.id === id ? { ...e, [key]: value, userId } : e
+          ),
+        },
+      };
+    }),
 
   validateExpenses: () => {
     const { expenses } = get().data;
