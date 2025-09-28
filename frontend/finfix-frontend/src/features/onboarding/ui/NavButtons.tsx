@@ -34,7 +34,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
     }
     if (step === OnboardingStep.EXPENSES) {
       const ok = validateExpenses();
-      if (!ok) return; // ошибки подсветятся под строками
+      if (!ok) return;
     }
     console.log("data", data);
     navigate(getOnboardingPath({ step, type: "next" }));

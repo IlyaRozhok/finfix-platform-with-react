@@ -38,11 +38,12 @@ type OnboardingState = {
     value: ExpenseRow[K]
   ) => void;
   validateExpenses: () => boolean;
+  clearExpenseError: (id: string) => void;
 };
 
 export const useOnboarding = create<OnboardingState>((set, get) => ({
   data: {
-    baseCurrency: "",
+    baseCurrency: "UAH",
     incomes: "",
     expenses: [mkRow()],
   },
@@ -93,6 +94,16 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     set((s) => ({ errors: { ...s.errors, expenses: errs } }));
     return Object.keys(errs).length === 0;
   },
+  clearExpenseError: (id) =>
+    set((s) => ({
+      errors: {
+        ...s.errors,
+        expenses: {
+          ...(s.errors.expenses ?? {}),
+          [id]: "",
+        },
+      },
+    })),
 }));
 
 export { PRESET_CATEGORIES };
