@@ -9,7 +9,12 @@ import {
 import OnboardingLayout from "../layouts/OnboardingLayout";
 import { LoginPage } from "@/pages/login/LoginPage";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
-import { OnboardingWelcome } from "@/pages/onboarding";
+import {
+  OnboardingCurrency,
+  OnboardingIncomes,
+  OnboardingWelcome,
+  OnboardingExpenses
+} from "@/pages/onboarding";
 
 export function AppRouter() {
   return (
@@ -34,7 +39,9 @@ export function AppRouter() {
         }
       >
         <Route index element={<OnboardingWelcome />} />
-        {/* <Route path="currency" element={<OnboardingCurrency />} /> */}
+        <Route path="currency" element={<OnboardingCurrency />} />
+        <Route path="incomes" element={<OnboardingIncomes />} />
+        <Route path="expenses" element={<OnboardingExpenses />} />
       </Route>
 
       <Route

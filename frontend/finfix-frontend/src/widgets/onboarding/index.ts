@@ -1,1 +1,1 @@
-export {OnboardingFrame} from "./OnboardingFrame";
+export { OnboardingFrame } from "./OnboardingFrame";

@@ -56,7 +56,6 @@ export class AuthController {
       res.cookie(COOKIE_NAME, access_token, base);
       res.cookie("csrf", csrf, { ...base, httpOnly: false });
 
-      console.log("USER", user);
       const route = user.isOnboarded ? "dashboard" : "onboarding";
       return res.redirect(`${process.env.FRONTEND_URL}/${route}`);
     } catch (error) {

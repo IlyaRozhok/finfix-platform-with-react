@@ -25,5 +25,5 @@
       "@widgets/*": ["src/widgets/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "src/features/onboarding/ui/OnboardingNextButton.tsx"]
 }

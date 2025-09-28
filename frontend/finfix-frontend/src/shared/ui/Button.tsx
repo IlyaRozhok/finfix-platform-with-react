@@ -3,9 +3,11 @@ import { clsx } from "clsx";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "ghost" | "black-blur";
+  handler?: (param?: string | number) => void;
+  param?: string | number;
 };
 export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
-  { className, variant = "primary", ...p },
+  { className, handler, param, variant = "primary", ...p },
   ref
 ) {
   const base =
@@ -20,5 +22,21 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
     styles =
       "bg-black/60 backdrop-blur-[3px] hover:text-black hover:bg-white/90";
   }
-  return <button ref={ref} className={clsx(base, styles, className)} {...p} />;
+
+  const handleClick = () => {
+    if (handler && param) {
+      return handler(param);
+    }
+    if (handler) {
+      handler();
+    }
+  };
+  return (
+    <button
+      onClick={handleClick}
+      ref={ref}
+      className={clsx(base, styles, className)}
+      {...p}
+    />
+  );
 });
