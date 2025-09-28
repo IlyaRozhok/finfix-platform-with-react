@@ -1,4 +1,3 @@
-// src/features/onboarding/model/store.ts
 import { create } from "zustand";
 import { ExpenseRow, OnboardingData } from "./types";
 
@@ -27,13 +26,10 @@ type OnboardingState = {
     incomes: string;
     expenses?: Record<string, string>; // по id строки
   };
-  // currency & incomes — как у тебя
   setCurrency: (currencyId: string) => void;
   setIncomes: (amount: string) => void;
   setIncomesError: (message: string) => void;
   clearIncomesError: () => void;
-
-  // expenses
   addExpense: () => void;
   removeExpense: (id: string) => void;
   updateExpense: <K extends keyof ExpenseRow>(
@@ -41,14 +37,14 @@ type OnboardingState = {
     key: K,
     value: ExpenseRow[K]
   ) => void;
-  validateExpenses: () => boolean; // true = ок
+  validateExpenses: () => boolean;
 };
 
 export const useOnboarding = create<OnboardingState>((set, get) => ({
   data: {
     baseCurrency: "",
     incomes: "",
-    expenses: [mkRow()], // одну строку по умолчанию
+    expenses: [mkRow()],
   },
   errors: { incomes: "", expenses: {} },
 
@@ -91,7 +87,6 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     const { expenses } = get().data;
     const errs: Record<string, string> = {};
     expenses.forEach((e) => {
-      // требуем только положительную сумму; остальное — опционально
       if (!e.amount || Number(e.amount) <= 0)
         errs[e.id] = "Enter a positive amount";
     });

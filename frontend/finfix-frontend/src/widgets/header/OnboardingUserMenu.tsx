@@ -2,7 +2,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import LogoutButton from "@/features/auth/logout/LogoutButton";
 import { CloseButton } from "@/shared/ui";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 export const OnboardingUserMenu = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
