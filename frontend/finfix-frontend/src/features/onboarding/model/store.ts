@@ -55,7 +55,7 @@ type OnboardingState = {
     expenses?: Record<string, string>;
     debts?: Record<string, string>;
   };
-  setCurrency: (currencyId: string) => void;
+  setCurrency: (userId: string, currencyId: string) => void;
   setIncomes: (amount: string) => void;
   setIncomesError: (message: string) => void;
   clearIncomesError: () => void;
@@ -86,8 +86,11 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
   },
   errors: { incomes: "", expenses: {}, debts: {} },
 
-  setCurrency: (currencyId) =>
-    set((s) => ({ data: { ...s.data, baseCurrency: currencyId } })),
+  setCurrency: (userId, currencyId) =>
+    set((s) => {
+      console.log("ssa");
+      return { data: { ...s.data, baseCurrency: currencyId } };
+    }),
   setIncomes: (amount) =>
     set((s) => ({ data: { ...s.data, incomes: amount } })),
   setIncomesError: (message) =>

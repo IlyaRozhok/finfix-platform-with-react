@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./user.entity";
 import { GooglePayload } from "@/auth/strategies/types";
+import { identity } from "rxjs";
 
 @Injectable()
 export class UsersService {
@@ -49,6 +50,21 @@ export class UsersService {
   }
 
   async updateCurrency(id: string, currency: string): Promise<User> {
+    console.log("id", id);
+    console.log("currnecy", currency);
+    if (!id && !currency) {
+      throw new BadRequestException("User id and currency are required");
+    }
+
+    if (!id) {
+      throw new BadRequestException("User id is required");
+    }
+
+    if (!currency) {
+      throw new BadRequestException("Currency id is required");
+    }
+
+    
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException("User not found");

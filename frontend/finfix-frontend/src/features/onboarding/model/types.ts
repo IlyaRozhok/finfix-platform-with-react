@@ -21,3 +21,8 @@ export type OnboardingData = {
   expenses: Expense[];
   debts: Debt[];
 };
+
+export type ReqUserCurrency = {
+  uid: string;
+  currency: string;
+};

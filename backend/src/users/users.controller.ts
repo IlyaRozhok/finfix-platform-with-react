@@ -24,8 +24,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get(":id")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
   @ApiOperation({ summary: "Get user by ID" })
   @ApiResponse({ status: 200, description: "User found" })
   @ApiResponse({ status: 404, description: "User not found" })
