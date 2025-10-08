@@ -1,17 +1,10 @@
-import {
-  Controller,
-  Get,
-  UseGuards,
-  Query,
-  Post,
-  Body,
-  BadRequestException,
-} from "@nestjs/common";
+import { Controller, Get, UseGuards, Query, Post, Body } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { ROUTE_SEGMENTS, ENDPOINTS } from "../shared/router";
 import { categories } from "@/shared/consts";
 
 import { UsersService } from "../users/users.service";
+import { UpdateCurrencyDto } from "./update-currency.dto";
 
 @Controller(ROUTE_SEGMENTS.ONBOARDING)
 export class OnboardingController {
@@ -23,11 +16,11 @@ export class OnboardingController {
   }
 
   @Post(ENDPOINTS.ONBOARDING.CURRENCIES)
-  async setOnboardingCurrencies(
-    @Body("uid") uid: string,
-    @Body("currency") currency: string
-  ) {
-    const updatedUser = this.userService.updateCurrency(uid, currency);
+  async setOnboardingCurrencies(@Body() dto: UpdateCurrencyDto) {
+    const updatedUser = await this.userService.updateCurrency(
+      dto.uid,
+      dto.currency
+    );
     return updatedUser;
   }
 }
