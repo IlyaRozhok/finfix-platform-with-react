@@ -1,3 +1,4 @@
+
 import { OnboardingData } from "@/features/onboarding";
 import { create } from "zustand";
 
@@ -10,8 +11,9 @@ type OnboardingState = {
 export const useOnboarding = create<OnboardingState>((set) => ({
   data: {
     baseCurrency: "",
-    expenses: [],
     incomes: "",
+    expenses: [],
+    debts: [],
   },
   setCurrency: (currencyId: string) =>
     set((state) => ({

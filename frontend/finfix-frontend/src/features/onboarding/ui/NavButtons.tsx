@@ -26,7 +26,8 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
   step,
 }) => {
   const navigate = useNavigate();
-  const { data, setIncomesError, validateExpenses } = useOnboarding();
+  const { data, setIncomesError, validateExpenses, validateDebts } =
+    useOnboarding();
 
   const handleNext = () => {
     if (step === OnboardingStep.INCOMES && !data.incomes) {
@@ -34,6 +35,12 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
     }
     if (step === OnboardingStep.EXPENSES) {
       const ok = validateExpenses();
+      if (!ok) return;
+    }
+
+    if (step === OnboardingStep.BANK_DEBT) {
+      const ok = validateDebts();
+      console.log("[Next] BANK_DEBT ok=", ok);
       if (!ok) return;
     }
     console.log("data", data);

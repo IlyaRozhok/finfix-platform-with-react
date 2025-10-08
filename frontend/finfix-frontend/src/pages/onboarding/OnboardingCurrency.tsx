@@ -1,5 +1,5 @@
 import { OnboardingStep } from "@/features/onboarding";
-import { CurrencyListbox } from "@/features/onboarding/ui/CurrencyListbox";
+import { CurrencyListbox } from "@/features/onboarding/";
 
 import { OnboardingFrame } from "@/widgets/onboarding";
 

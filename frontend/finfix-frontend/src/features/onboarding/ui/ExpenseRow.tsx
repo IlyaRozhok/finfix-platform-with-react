@@ -52,7 +52,7 @@ export function ExpenseRow({ row }: { row: Row }) {
       {/* 2. Description */}
       <div className="order-2 md:order-none min-w-0">
         <Input
-          placeholder="Description (optional)"
+          placeholder="Description"
           value={row.description ?? ""}
           onChange={(e) =>
             updateExpense(

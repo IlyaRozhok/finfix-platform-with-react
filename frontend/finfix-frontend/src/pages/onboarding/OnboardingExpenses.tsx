@@ -4,7 +4,7 @@ import { OnboardingFrame } from "@/widgets/onboarding";
 
 import { Button } from "@/shared/ui";
 import { useMemo } from "react";
-import { ExpenseRow } from "@/features/onboarding/ui/ExpenseRow";
+import { ExpenseRow } from "@/features/onboarding/";
 import { Expense as Row } from "@entities/expenses/model";
 
 export const OnboardingExpenses = () => {

@@ -13,7 +13,8 @@ import {
   OnboardingCurrency,
   OnboardingIncomes,
   OnboardingWelcome,
-  OnboardingExpenses
+  OnboardingExpenses,
+  OnboardingDebts,
 } from "@/pages/onboarding";
 
 export function AppRouter() {
@@ -42,6 +43,7 @@ export function AppRouter() {
         <Route path="currency" element={<OnboardingCurrency />} />
         <Route path="incomes" element={<OnboardingIncomes />} />
         <Route path="expenses" element={<OnboardingExpenses />} />
+        <Route path="debts" element={<OnboardingDebts />} />
       </Route>
 
       <Route

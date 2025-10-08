@@ -29,7 +29,7 @@ export const Input: React.FC<InputProps> = ({
 
       <div
         className={clsx(
-          "relative flex items-center rounded-xl transition-shadow",
+          "relative flex h-11 items-center rounded-xl transition-shadow",
           "bg-black/90 backdrop-blur-md",
           "ring-1 ring-slate-400/25 hover:ring-slate-400/40",
           "focus-within:ring-2 focus-within:ring-sky-400/40",
