@@ -134,7 +134,3 @@ export function ExpenseRow({ row }: { row: Row }) {
     </div>
   );
 }
-
-function cap(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
