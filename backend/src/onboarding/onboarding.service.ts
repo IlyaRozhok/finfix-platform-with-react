@@ -7,32 +7,42 @@ import { Category, CategoryKind } from "./onboarding.entity";
 export class OnboardingService {
   constructor(
     @InjectRepository(Category)
-    private onboardingRepository: Repository<Category>
+    private categoryRepository: Repository<Category>
   ) {}
 
-  async findOnboardingCategories(uid: string) {
-    return await this.onboardingRepository.find({
-      select: { id: true, name: true },
-      where: {
-        kind: CategoryKind.EXPENSE,
-        userId: uid,
-      },
-      order: {
-        name: "ASC",
-      },
-    });
+  // async findOnboardingCategories(uid: string) {
+  //   return await this.categoryRepository.find({
+  //     select: { id: true, name: true },
+  //     where: {
+  //       // kind: CategoryKind.EXPENSE,
+  //       userId: uid,
+  //     },
+  //     order: {
+  //       name: "ASC",
+  //     },
+  //   });
+  // }
+
+  // async findOnboardingCurrencies(uid: string) {
+  //   return await this.categoryRepository.find({
+  //     select: { id: true, name: true },
+  //     where: {
+  //       kind: CategoryKind.EXPENSE,
+  //       userId: uid,
+  //     },
+  //     order: {
+  //       name: "ASC",
+  //     },
+  //   });
+  // }
+
+  async setCategories(dto: Category[]) {
+    const categories = this.categoryRepository.create(dto);
+    return await this.categoryRepository.save(categories);
   }
 
-  async findOnboardingCurrencies(uid: string) {
-    return await this.onboardingRepository.find({
-      select: { id: true, name: true },
-      where: {
-        kind: CategoryKind.EXPENSE,
-        userId: uid,
-      },
-      order: {
-        name: "ASC",
-      },
-    });
+  async getCategories() {
+    const categories = await this.categoryRepository.find();
+    return categories;
   }
 }

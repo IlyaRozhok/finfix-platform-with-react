@@ -45,7 +45,7 @@ export class UsersService {
   }
 
   async updateCurrency(id: string, currency: string): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { id } });
+    const user = await this.findById(id);
     if (!user) {
       throw new NotFoundException("User not found");
     }
@@ -54,7 +54,7 @@ export class UsersService {
   }
 
   async updateIncomes(id: string, incomes: number): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { id } });
+    const user = await this.findById(id);
     if (!user) {
       throw new NotFoundException("User not found");
     }

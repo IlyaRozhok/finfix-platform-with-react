@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { OnboardingData } from "./types";
-import { Expense } from "@/entities/expenses/model";
+import { ReqUpdateUserExpense } from "@/features/onboarding/model/types";
 import { Debt } from "@/entities/debts/model";
-import { postUserCurrency } from "../api";
+import { createUserOnboardingCurrency } from "../api";
 
 const PRESET_CATEGORIES = [
   "Rent",
@@ -24,13 +24,11 @@ const mkDebt = (): Debt => ({
   interestRateMonthly: "",
 });
 
-const mkRow = (): Expense => ({
-  id: crypto.randomUUID(),
+const mkRow = (): ReqUpdateUserExpense => ({
   userId: "",
   categoryId: "Other",
   description: "",
-  amount: "",
-  frequency: "monthly",
+  amount: 0,
 });
 
 const isEmptyDebt = (d: Debt) =>
@@ -62,10 +60,10 @@ type OnboardingState = {
   clearIncomesError: () => void;
   addExpense: () => void;
   removeExpense: (id: string) => void;
-  updateExpense: <K extends keyof Expense>(
+  updateExpense: <K extends keyof ReqUpdateUserExpense>(
     id: string,
     key: K,
-    value: Expense[K],
+    value: ReqUpdateUserExpense[K],
     userId: string
   ) => void;
   validateExpenses: () => boolean;
@@ -89,7 +87,10 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
 
   setCurrency: async (userId, currency) => {
     try {
-      const response = await postUserCurrency({ uid: userId, currency });
+      const response = await createUserOnboardingCurrency({
+        uid: userId,
+        currency,
+      });
       if (response) {
         set((s) => ({ data: { ...s.data, baseCurrency: currency } }));
       }

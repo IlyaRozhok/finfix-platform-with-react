@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getOnboardingPath } from "../model/steps";
 import { OnboardingStep } from "../model/types";
 import { useOnboarding } from "../model/store";
-import { postUserIncomes } from "../api";
+import { createUserIncomes, createUserOnboardingIncomes } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 interface OnboardingNextButtonProps {
@@ -37,12 +37,19 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
         return setIncomesError("Please, enter amount of your incomes");
       }
       if (user?.id) {
-        postUserIncomes({ uid: user.id as string, incomes: data.incomes });
+        createUserOnboardingIncomes({
+          uid: user.id as string,
+          incomes: data.incomes,
+        });
       }
     }
     if (step === OnboardingStep.EXPENSES) {
       const ok = validateExpenses();
       if (!ok) return;
+
+      if (user?.id) {
+        createUserIncomes(data.expenses);
+      }
     }
 
     if (step === OnboardingStep.BANK_DEBT) {

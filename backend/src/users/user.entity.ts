@@ -45,7 +45,7 @@ export class User {
   @UpdateDateColumn({ name: "updated_at", type: "timestamptz" })
   updatedAt: Date;
 
-  @OneToMany(() => Category, (c) => c.user) categories: Category[];
+  // @OneToMany(() => Category, (c) => c.user) categories: Category[];
   @OneToMany(() => RecurringExpense, (e) => e.user)
   recurringExpenses: RecurringExpense[];
   @OneToMany(() => RecurringIncome, (i) => i.user)

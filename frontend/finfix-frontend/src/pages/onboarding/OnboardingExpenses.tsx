@@ -5,7 +5,7 @@ import { OnboardingFrame } from "@/widgets/onboarding";
 import { Button } from "@/shared/ui";
 import { useMemo } from "react";
 import { ExpenseRow } from "@/features/onboarding/";
-import { Expense as Row } from "@entities/expenses/model";
+import { ReqUpdateUserExpense as Row } from "@/features/onboarding/model/types";
 
 export const OnboardingExpenses = () => {
   const { data, addExpense } = useOnboarding();
@@ -22,8 +22,6 @@ export const OnboardingExpenses = () => {
     const toMonthly = (r: Row) => {
       const n = Number(r.amount);
       if (!Number.isFinite(n)) return 0;
-      if (r.frequency === "monthly") return n;
-      if (r.frequency === "weekly") return n * 4.33;
       return n / 12;
     };
     return data.expenses.reduce((acc, r) => acc + toMonthly(r), 0);

@@ -1,12 +1,12 @@
 import { ChevronDownIcon, TrashIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { Expense as Row } from "@/entities/expenses/model";
+import { ReqUserExpense as Row } from "@/features/onboarding/model/types";
 import { Input } from "@/shared/ui";
 import { PRESET_CATEGORIES, useOnboarding } from "../model/store";
 import { ListboxFloating } from "@/shared/ui";
 import { useAuth } from "@/app/providers/AuthProvider";
 
-const FREQUENCIES: Row["frequency"][] = ["monthly", "weekly", "yearly"];
+// const FREQUENCIES: Row["frequency"][] = ["monthly", "weekly", "yearly"];
 const numberRe = /^-?\d*(\.\d*)?$/;
 
 export function ExpenseRow({ row }: { row: Row }) {
@@ -91,7 +91,7 @@ export function ExpenseRow({ row }: { row: Row }) {
       </div>
 
       {/* 4. Frequency */}
-      <div className="order-4 md:order-none min-w-0">
+      {/* <div className="order-4 md:order-none min-w-0">
         <ListboxFloating
           value={row.frequency}
           onChange={(v) =>
@@ -103,10 +103,10 @@ export function ExpenseRow({ row }: { row: Row }) {
           renderOption={(opt) => <span className="capitalize">{opt}</span>}
           optionsClassName="!bg-black/95"
         />
-      </div>
+      </div> */}
 
       {/* 5. Delete */}
-      <div className="order-5 md:order-none flex justify-end">
+      <div className="order-5 md:order-none flex justify-start">
         <button
           aria-label="Remove expense"
           onClick={() => removeExpense(row.id)}

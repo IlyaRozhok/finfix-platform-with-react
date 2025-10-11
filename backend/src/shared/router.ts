@@ -17,5 +17,6 @@ export const ENDPOINTS = {
     CATEGORIES: "categories",
     CURRENCIES: "currencies",
     INCOMES: "incomes",
+    EXPENSES: "expenses"
   },
 };

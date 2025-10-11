@@ -1,5 +1,4 @@
 import { Debt } from "@/entities/debts/model";
-import { Expense } from "@/entities/expenses/model";
 
 export enum OnboardingStep {
   WELCOME = "Welcome",
@@ -18,7 +17,7 @@ export type OnboardingStepsCfg = {
 export type OnboardingData = {
   baseCurrency: string;
   incomes: string;
-  expenses: Expense[];
+  expenses: ReqUserExpense[];
   debts: Debt[];
 };
 
@@ -30,4 +29,20 @@ export type ReqUserCurrency = {
 export type ReqUserIncomes = {
   uid: string;
   incomes: string;
+};
+
+export type ReqUserExpense = {
+  id: string;
+  userId: string;
+  categoryId: string;
+  amount: number;
+  description?: string;
+};
+
+export type ReqUpdateUserExpense = {
+  id?:  string;
+  userId: string;
+  categoryId: string;
+  amount: number;
+  description?: string;
 };

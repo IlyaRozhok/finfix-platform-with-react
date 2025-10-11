@@ -7,10 +7,7 @@ export class InitSchema1755943618564 implements MigrationInterface {
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
 
     await queryRunner.query(
-      `CREATE TYPE "public"."category_kind" AS ENUM('expense', 'income')`
-    );
-    await queryRunner.query(
-      `CREATE TABLE "categories" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" uuid NOT NULL, "kind" "public"."category_kind" NOT NULL, "name" character varying(64) NOT NULL, "is_system" boolean NOT NULL DEFAULT false, CONSTRAINT "uq_categories_user_kind_name" UNIQUE ("user_id", "kind", "name"), CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY ("id"))`
+      `CREATE TABLE "categories" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(),"name" character varying(64) NOT NULL, "is_system" boolean NOT NULL DEFAULT false, CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY ("id"))`
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_8b0be371d28245da6e4f4b6187" ON "categories" ("name") `
@@ -154,6 +151,5 @@ export class InitSchema1755943618564 implements MigrationInterface {
       `DROP INDEX "public"."IDX_8b0be371d28245da6e4f4b6187"`
     );
     await queryRunner.query(`DROP TABLE "categories"`);
-    await queryRunner.query(`DROP TYPE "public"."category_kind"`);
   }
 }

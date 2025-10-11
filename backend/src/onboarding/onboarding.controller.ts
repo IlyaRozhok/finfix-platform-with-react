@@ -5,15 +5,15 @@ import { categories } from "@/shared/consts";
 
 import { UsersService } from "../users/users.service";
 import { UpdateCurrencyDto, UpdateIncomesDto } from "./index.dto";
+import { Category } from "./onboarding.entity";
+import { OnboardingService } from "./onboarding.service";
 
 @Controller(ROUTE_SEGMENTS.ONBOARDING)
 export class OnboardingController {
-  constructor(private readonly userService: UsersService) {}
-
-  @Get(ENDPOINTS.ONBOARDING.CATEGORIES)
-  async findOnboardingCategories(@Query("uid") uid: string) {
-    return categories;
-  }
+  constructor(
+    private readonly userService: UsersService,
+    private readonly onboardingService: OnboardingService
+  ) {}
 
   @Post(ENDPOINTS.ONBOARDING.CURRENCIES)
   async setOnboardingCurrencies(@Body() dto: UpdateCurrencyDto) {
@@ -31,5 +31,17 @@ export class OnboardingController {
       dto.incomes
     );
     return updatedUser;
+  }
+
+  @Post(ENDPOINTS.ONBOARDING.CATEGORIES)
+  async setCategories(@Body() dto: Category[]) {
+    const categories = await this.onboardingService.setCategories(dto);
+    return categories;
+  }
+
+  @Get(ENDPOINTS.ONBOARDING.CATEGORIES)
+  async getCategories() {
+    const categories = await this.onboardingService.getCategories();
+    return categories;
   }
 }
