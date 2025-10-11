@@ -35,10 +35,7 @@ export class RecurringExpense {
   description: string;
 
   @Column({ type: "numeric", precision: 14, scale: 2 })
-  amount: string; // план на месяц
-
-  @Column({ name: "is_mandatory", type: "boolean", default: false })
-  isMandatory: boolean;
+  amount: string;
 
   @Index()
   @Column({ name: "start_date", type: "date" })
