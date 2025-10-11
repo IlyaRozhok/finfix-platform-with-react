@@ -13,9 +13,8 @@ import clsx from "clsx";
 type ListboxFloatingProps<T extends string> = {
   value: T;
   onChange: (v: T) => void;
-  options: T[];
+  options: { id: string; label: string }[];
   renderButton: (args: { open: boolean }) => React.ReactNode;
-  renderOption?: (opt: T) => React.ReactNode;
   placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
   matchWidth?: boolean;
   maxHeight?: number;
@@ -28,7 +27,6 @@ export const ListboxFloating = <T extends string>({
   onChange,
   options,
   renderButton,
-  renderOption,
   placement = "bottom-start",
   matchWidth = true,
   maxHeight = 280,
@@ -86,8 +84,8 @@ export const ListboxFloating = <T extends string>({
               >
                 {options.map((opt) => (
                   <Listbox.Option
-                    key={opt}
-                    value={opt}
+                    key={opt.id}
+                    value={opt.label}
                     className={({ active, selected }) =>
                       clsx(
                         "cursor-pointer select-none rounded-lg px-3 py-2 text-sm",
@@ -98,7 +96,7 @@ export const ListboxFloating = <T extends string>({
                       )
                     }
                   >
-                    {renderOption ? renderOption(opt) : opt}
+                    {opt.label}
                   </Listbox.Option>
                 ))}
               </Listbox.Options>

@@ -33,7 +33,7 @@ export const OnboardingExpenses = () => {
         <div className="mt-2 space-y-3">
           <div className="custom-scroll max-h-[45vh] md:max-h-72 overflow-y-auto space-y-3 px-5">
             {data.expenses.map((r) => (
-              <ExpenseRow key={r.id} row={r} />
+              <ExpenseRow key={r.categoryId} row={r} />
             ))}
           </div>
 

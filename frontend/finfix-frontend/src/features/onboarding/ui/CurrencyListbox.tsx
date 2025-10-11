@@ -5,7 +5,20 @@ import { useOnboarding } from "../model/store";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { useEffect, useState } from "react";
 
-const CURRENCIES = ["UAH", "USD", "EUR"];
+const CURRENCIES = [
+  {
+    id: "UAH",
+    label: "UAH",
+  },
+  {
+    id: "USD",
+    label: "USD",
+  },
+  {
+    id: "EUR",
+    label: "EUR",
+  },
+];
 
 export function CurrencyListbox() {
   const { user } = useAuth();

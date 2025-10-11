@@ -1,32 +1,46 @@
-import { ChevronDownIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { ReqUserExpense as Row } from "@/features/onboarding/model/types";
 import { Input } from "@/shared/ui";
-import { PRESET_CATEGORIES, useOnboarding } from "../model/store";
+import { useOnboarding } from "../model/store";
 import { ListboxFloating } from "@/shared/ui";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { useEffect, useState } from "react";
+import { renderBtn } from "../lib";
+import { fetchCategories } from "../api";
 
 // const FREQUENCIES: Row["frequency"][] = ["monthly", "weekly", "yearly"];
 const numberRe = /^-?\d*(\.\d*)?$/;
 
 export function ExpenseRow({ row }: { row: Row }) {
+  const [categories, setCategories] = useState<
+    {
+      id: string;
+      label: string;
+    }[]
+  >();
+
   const { updateExpense, removeExpense, errors, clearExpenseError } =
     useOnboarding();
   const { user } = useAuth();
   const rowError = errors.expenses?.[row.id];
-  const renderBtn = (label: string) => (
-    <button
-      type="button"
-      className={clsx(
-        "relative h-12 w-full rounded-xl px-3 pr-9 text-sm text-slate-200",
-        "bg-black/90 backdrop-blur-md",
-        "ring-1 ring-slate-400/25 hover:ring-slate-400/40 transition"
-      )}
-    >
-      <span className="block truncate">{label}</span>
-      <ChevronDownIcon className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-200/80" />
-    </button>
-  );
+
+  const getCategories = async () => {
+    const categories = await fetchCategories();
+    if (categories.length) {
+      const formattedCategories = categories?.map((category) => {
+        return { id: category.id, label: category.name };
+      });
+      console.log("123", formattedCategories);
+      setCategories(formattedCategories);
+    }
+  };
+  useEffect(() => {
+    const data = getCategories();
+    console.log("cate", data);
+
+    // setCategories(data);
+  }, []);
 
   return (
     <div
@@ -37,16 +51,18 @@ export function ExpenseRow({ row }: { row: Row }) {
     >
       {/* 1. Category */}
       <div className="order-1 md:order-none min-w-0">
-        <ListboxFloating
-          value={row.categoryId}
-          onChange={(v) =>
-            updateExpense(row.id, "categoryId", v, user?.id as string)
-          }
-          options={PRESET_CATEGORIES as string[]}
-          placement="bottom-start"
-          renderButton={() => renderBtn(row.categoryId)}
-          optionsClassName="!bg-black/95"
-        />
+        {categories?.length && (
+          <ListboxFloating
+            value={row.categoryId}
+            onChange={(v) =>
+              updateExpense(row.id, "categoryId", v, user?.id as string)
+            }
+            options={categories}
+            placement="bottom-start"
+            renderButton={() => renderBtn(row.categoryId)}
+            optionsClassName="!bg-black/95"
+          />
+        )}
       </div>
 
       {/* 2. Description */}

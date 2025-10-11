@@ -44,3 +44,15 @@ export const createUserIncomes = async (payload: ReqUserExpense[]) => {
     throw err;
   }
 };
+
+export const fetchCategories = async (): Promise<
+  { id: string; name: string; userId: string | null }[]
+> => {
+  try {
+    const categories = await api.get("api/onboarding/categories");
+    return categories.data;
+  } catch (err) {
+    console.error("Failed to fetch categories:", err);
+    throw err;
+  }
+};

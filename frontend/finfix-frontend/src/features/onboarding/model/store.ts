@@ -4,17 +4,6 @@ import { ReqUpdateUserExpense } from "@/features/onboarding/model/types";
 import { Debt } from "@/entities/debts/model";
 import { createUserOnboardingCurrency } from "../api";
 
-const PRESET_CATEGORIES = [
-  "Rent",
-  "Utilities",
-  "Groceries",
-  "Transport",
-  "Subscriptions",
-  "Entertainment",
-  "Health",
-  "Other",
-];
-
 const mkDebt = (): Debt => ({
   id: crypto.randomUUID(),
   debtType: "credit_card",
@@ -233,4 +222,3 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     }),
 }));
 
-export { PRESET_CATEGORIES };
