@@ -27,7 +27,7 @@ import { envFileMap } from "./shared/envFileMap";
         password: configService.get<string>("POSTGRES_PASSWORD"),
         database: configService.get<string>("POSTGRES_DB"),
         entities: [__dirname + "/**/*.entity{.ts,.js}"],
-        synchronize: false,
+        synchronize: true,
         autoLoadEntities: true,
       }),
     }),

@@ -1,13 +1,30 @@
 import { api } from "@/shared/api/axios";
-import { ReqUserCurrency } from "../model/types";
+import { ReqUserCurrency, ReqUserIncomes } from "../model/types";
 
 export const postUserCurrency = async (params: ReqUserCurrency) => {
   const { uid, currency } = params;
   try {
-    const user = api.post("api/onboarding/currencies", { uid, currency });
-    return user;
+    const response = await api.post("api/onboarding/currencies", {
+      uid,
+      currency,
+    });
+    return response.data;
   } catch (err) {
-    console.log(err);
-    return null;
+    console.error("Failed to update currency:", err);
+    throw err;
+  }
+};
+
+export const postUserIncomes = async (params: ReqUserIncomes) => {
+  const { uid, incomes } = params;
+  try {
+    const response = await api.post("api/onboarding/incomes", {
+      uid,
+      incomes,
+    });
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update incomes:", err);
+    throw err;
   }
 };

@@ -16,5 +16,6 @@ export const ENDPOINTS = {
   ONBOARDING: {
     CATEGORIES: "categories",
     CURRENCIES: "currencies",
+    INCOMES: "incomes",
   },
 };

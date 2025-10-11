@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { OnboardingData } from "./types";
 import { Expense } from "@/entities/expenses/model";
 import { Debt } from "@/entities/debts/model";
+import { postUserCurrency } from "../api";
 
 const PRESET_CATEGORIES = [
   "Rent",
@@ -55,7 +56,7 @@ type OnboardingState = {
     expenses?: Record<string, string>;
     debts?: Record<string, string>;
   };
-  setCurrency: (userId: string, currencyId: string) => void;
+  setCurrency: (userId: string, currency: string) => Promise<void>;
   setIncomes: (amount: string) => void;
   setIncomesError: (message: string) => void;
   clearIncomesError: () => void;
@@ -86,11 +87,16 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
   },
   errors: { incomes: "", expenses: {}, debts: {} },
 
-  setCurrency: (userId, currencyId) =>
-    set((s) => {
-      console.log("ssa");
-      return { data: { ...s.data, baseCurrency: currencyId } };
-    }),
+  setCurrency: async (userId, currency) => {
+    try {
+      const response = await postUserCurrency({ uid: userId, currency });
+      if (response) {
+        set((s) => ({ data: { ...s.data, baseCurrency: currency } }));
+      }
+    } catch (error) {
+      console.error("Failed to update currency:", error);
+    }
+  },
   setIncomes: (amount) =>
     set((s) => ({ data: { ...s.data, incomes: amount } })),
   setIncomesError: (message) =>

@@ -11,7 +11,7 @@ export const OnboardingCurrency = () => {
   };
 
   return (
-    <div className="flex justify-center item-center">
+    <div className="flex justify-center items-center">
       <OnboardingFrame {...widgetData}>
         <CurrencyListbox />
       </OnboardingFrame>

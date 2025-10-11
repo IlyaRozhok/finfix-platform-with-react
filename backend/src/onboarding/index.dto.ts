@@ -13,3 +13,12 @@ export class UpdateCurrencyDto {
   @IsNotEmpty({ message: "Currency is required" })
   currency: string;
 }
+
+export class UpdateIncomesDto {
+  @IsUUID(4, { message: "Invalid user ID format" })
+  @IsNotEmpty({ message: "User ID is required" })
+  uid: string;
+
+  @IsNotEmpty({ message: "Currency is required" })
+  incomes: number;
+}

@@ -52,4 +52,13 @@ export class UsersService {
     user.currency = currency;
     return await this.usersRepository.save(user);
   }
+
+  async updateIncomes(id: string, incomes: number): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+    user.incomes = incomes;
+    return await this.usersRepository.save(user);
+  }
 }

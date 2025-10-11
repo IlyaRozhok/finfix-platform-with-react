@@ -26,3 +26,8 @@ export type ReqUserCurrency = {
   uid: string;
   currency: string;
 };
+
+export type ReqUserIncomes = {
+  uid: string;
+  incomes: string;
+};

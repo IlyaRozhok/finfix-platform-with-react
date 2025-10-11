@@ -16,6 +16,6 @@ export default new DataSource({
   database: process.env.POSTGRES_DB || "finfix",
   entities: ["src/**/*.entity.ts"],
   migrations: ["src/migrations/*.ts"],
-  synchronize: false,
+  synchronize: true,
   logging: false,
 });

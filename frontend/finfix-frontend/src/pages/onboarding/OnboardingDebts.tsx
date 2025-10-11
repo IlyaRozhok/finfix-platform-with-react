@@ -1,7 +1,6 @@
 import { OnboardingStep } from "@/features/onboarding/model/types";
 import { useOnboarding } from "@/features/onboarding/model/store";
 import { OnboardingFrame } from "@/widgets/onboarding";
-
 import { Button } from "@/shared/ui";
 import { useMemo } from "react";
 import { BankDebtRow } from "@/features/onboarding";

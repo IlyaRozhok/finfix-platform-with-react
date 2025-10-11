@@ -4,7 +4,7 @@ import { ROUTE_SEGMENTS, ENDPOINTS } from "../shared/router";
 import { categories } from "@/shared/consts";
 
 import { UsersService } from "../users/users.service";
-import { UpdateCurrencyDto } from "./update-currency.dto";
+import { UpdateCurrencyDto, UpdateIncomesDto } from "./index.dto";
 
 @Controller(ROUTE_SEGMENTS.ONBOARDING)
 export class OnboardingController {
@@ -20,6 +20,15 @@ export class OnboardingController {
     const updatedUser = await this.userService.updateCurrency(
       dto.uid,
       dto.currency
+    );
+    return updatedUser;
+  }
+
+  @Post(ENDPOINTS.ONBOARDING.INCOMES)
+  async setOnboardingIncomes(@Body() dto: UpdateIncomesDto) {
+    const updatedUser = await this.userService.updateIncomes(
+      dto.uid,
+      dto.incomes
     );
     return updatedUser;
   }

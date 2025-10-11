@@ -69,7 +69,7 @@ export const ListboxFloating = <T extends string>({
             <Transition
               as={Fragment}
               show={open}
-              leave="transition ease-in duration-100"
+              leave="transition ease-in duration-150"
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 -translate-y-1"
             >

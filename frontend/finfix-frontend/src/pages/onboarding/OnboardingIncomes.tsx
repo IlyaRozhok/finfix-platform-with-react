@@ -7,7 +7,7 @@ export const OnboardingIncomes = () => {
 
   const widgetData = {
     title: "Monthly income",
-    body: `Please, indicate your monthly income in ${data.baseCurrency}`,
+    body: `Please, indicate your monthly income`,
     step: OnboardingStep.INCOMES,
   };
 

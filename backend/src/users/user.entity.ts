@@ -33,6 +33,9 @@ export class User {
   @Column({ name: "is_onboarded", type: "boolean", default: false })
   isOnboarded: boolean;
 
+  @Column({ name: "incomes", type: "int", default: 0 })
+  incomes: number;
+
   @Column({ name: "currency", type: "char", length: 3, default: "UAH" })
   currency: string;
 

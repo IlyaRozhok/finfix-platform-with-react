@@ -1,7 +1,11 @@
-import { Controller } from '@nestjs/common';
-import { RecurringIncomesService } from './recurring-incomes.service';
+import { Body, Controller, Post } from "@nestjs/common";
+import { RecurringIncomesService } from "./recurring-incomes.service";
+import { ENDPOINTS } from "@/shared/router";
+import { UpdateCurrencyDto } from "@/onboarding/index.dto";
 
-@Controller('recurring-incomes')
+@Controller("recurring-incomes")
 export class RecurringIncomesController {
-  constructor(private readonly recurringIncomesService: RecurringIncomesService) {}
+  constructor(
+    private readonly recurringIncomesService: RecurringIncomesService
+  ) {}
 }
