@@ -6,7 +6,6 @@ import { UsersModule } from "./users/users.module";
 import { CategoriesModule } from "./onboarding/onboarding.module";
 import { DebtsModule } from "./debts/debts.module";
 import { RecurringExpensesModule } from "./recurring-expenses/recurring-expenses.module";
-import { RecurringIncomesModule } from "./recurring-incomes/recurring-incomes.module";
 import { InstallmentsModule } from "./installments/installments.module";
 import { TransactionsModule } from "./transactions/transactions.module";
 import { envFileMap } from "./shared/envFileMap";
@@ -36,7 +35,6 @@ import { envFileMap } from "./shared/envFileMap";
     CategoriesModule,
     DebtsModule,
     RecurringExpensesModule,
-    RecurringIncomesModule,
     InstallmentsModule,
     TransactionsModule,
   ],

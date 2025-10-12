@@ -37,10 +37,6 @@ export class RecurringExpense {
   @Column({ type: "numeric", precision: 14, scale: 2 })
   amount: string;
 
-  @Index()
-  @Column({ name: "start_date", type: "date" })
-  startDate: string;
-
   @Column({ name: "end_date", type: "date", nullable: true })
   endDate?: string | null;
 

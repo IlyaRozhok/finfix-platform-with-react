@@ -2,7 +2,6 @@ import { Category } from "@/onboarding/onboarding.entity";
 import { Debt } from "@/debts/debt.entity";
 import { Installment } from "@/installments/installment.entity";
 import { RecurringExpense } from "@/recurring-expenses/recurring-expense.entity";
-import { RecurringIncome } from "@/recurring-incomes/recurring-income.entity";
 import { Transaction } from "@/transactions/transaction.entity";
 import {
   Entity,
@@ -48,8 +47,6 @@ export class User {
   // @OneToMany(() => Category, (c) => c.user) categories: Category[];
   @OneToMany(() => RecurringExpense, (e) => e.user)
   recurringExpenses: RecurringExpense[];
-  @OneToMany(() => RecurringIncome, (i) => i.user)
-  recurringIncomes: RecurringIncome[];
   @OneToMany(() => Installment, (i) => i.user) installments: Installment[];
   @OneToMany(() => Debt, (d) => d.user) debts: Debt[];
   @OneToMany(() => Transaction, (t) => t.user) transactions: Transaction[];

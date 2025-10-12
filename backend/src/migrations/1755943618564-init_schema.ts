@@ -37,12 +37,6 @@ export class InitSchema1755943618564 implements MigrationInterface {
       `CREATE INDEX "IDX_cb98dd4ecdbf2e14a29bcfaf3c" ON "recurring_expense" ("start_date") `
     );
     await queryRunner.query(
-      `CREATE TABLE "recurring_income" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" uuid NOT NULL, "description" text NOT NULL, "amount" numeric(14,2) NOT NULL, "start_date" date NOT NULL, "end_date" date, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "PK_a61fffba1c4e85548b7fe42314a" PRIMARY KEY ("id"))`
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_c1299a1cc68bc85a348e406f8c" ON "recurring_income" ("start_date") `
-    );
-    await queryRunner.query(
       `CREATE TYPE "public"."transaction_type" AS ENUM('income', 'expense', 'installment_payment', 'debt_payment', 'transfer')`
     );
     await queryRunner.query(
@@ -71,9 +65,6 @@ export class InitSchema1755943618564 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "recurring_expense" ADD CONSTRAINT "FK_f472a254aea09af216f17527dbc" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE NO ACTION`
-    );
-    await queryRunner.query(
-      `ALTER TABLE "recurring_income" ADD CONSTRAINT "FK_e4428cb592ae36712ee4567f30d" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
     );
     await queryRunner.query(
       `ALTER TABLE "transactions" ADD CONSTRAINT "FK_e9acc6efa76de013e8c1553ed2b" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
@@ -105,9 +96,6 @@ export class InitSchema1755943618564 implements MigrationInterface {
       `ALTER TABLE "transactions" DROP CONSTRAINT "FK_e9acc6efa76de013e8c1553ed2b"`
     );
     await queryRunner.query(
-      `ALTER TABLE "recurring_income" DROP CONSTRAINT "FK_e4428cb592ae36712ee4567f30d"`
-    );
-    await queryRunner.query(
       `ALTER TABLE "recurring_expense" DROP CONSTRAINT "FK_f472a254aea09af216f17527dbc"`
     );
     await queryRunner.query(
@@ -132,7 +120,6 @@ export class InitSchema1755943618564 implements MigrationInterface {
     await queryRunner.query(
       `DROP INDEX "public"."IDX_c1299a1cc68bc85a348e406f8c"`
     );
-    await queryRunner.query(`DROP TABLE "recurring_income"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_cb98dd4ecdbf2e14a29bcfaf3c"`
     );
