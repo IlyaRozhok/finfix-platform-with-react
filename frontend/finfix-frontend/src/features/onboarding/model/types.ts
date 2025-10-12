@@ -35,14 +35,13 @@ export type ReqUserExpense = {
   id: string;
   userId: string;
   categoryId: string;
-  amount: number;
+  amount: number | string;
   description?: string;
 };
 
-export type ReqUpdateUserExpense = {
-  id?:  string;
+export type ReqCreateUserExpense = {
   userId: string;
   categoryId: string;
-  amount: number;
+  amount: number | string;
   description?: string;
 };

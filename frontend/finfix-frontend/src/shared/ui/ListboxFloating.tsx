@@ -76,6 +76,7 @@ export const ListboxFloating = <T extends string>({
                 style={floatingStyles}
                 className={clsx(
                   "z-[1000] overflow-auto rounded-xl",
+                  "nice-scroll",
                   "bg-black/90 backdrop-blur-md",
                   "ring-1 ring-slate-400/25 shadow-2xl",
                   "p-1",

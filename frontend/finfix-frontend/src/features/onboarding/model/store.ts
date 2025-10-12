@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { OnboardingData } from "./types";
-import { ReqUpdateUserExpense } from "@/features/onboarding/model/types";
+import { ReqUserExpense } from "@/features/onboarding/model/types";
 import { Debt } from "@/entities/debts/model";
 import { createUserOnboardingCurrency } from "../api";
 
@@ -13,11 +13,12 @@ const mkDebt = (): Debt => ({
   interestRateMonthly: "",
 });
 
-const mkRow = (): ReqUpdateUserExpense => ({
+const mkRow = (categoryId?: string): ReqUserExpense => ({
+  id: crypto.randomUUID(),
   userId: "",
-  categoryId: "Other",
+  categoryId: categoryId || "",
   description: "",
-  amount: 0,
+  amount: "",
 });
 
 const isEmptyDebt = (d: Debt) =>
@@ -47,12 +48,12 @@ type OnboardingState = {
   setIncomes: (amount: string) => void;
   setIncomesError: (message: string) => void;
   clearIncomesError: () => void;
-  addExpense: () => void;
+  addExpense: (categoryId?: string) => void;
   removeExpense: (id: string) => void;
-  updateExpense: <K extends keyof ReqUpdateUserExpense>(
+  updateExpense: <K extends keyof ReqUserExpense>(
     id: string,
     key: K,
-    value: ReqUpdateUserExpense[K],
+    value: ReqUserExpense[K],
     userId: string
   ) => void;
   validateExpenses: () => boolean;
@@ -69,7 +70,7 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
   data: {
     baseCurrency: "UAH",
     incomes: "",
-    expenses: [mkRow()],
+    expenses: [],
     debts: [],
   },
   errors: { incomes: "", expenses: {}, debts: {} },
@@ -94,14 +95,17 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
   clearIncomesError: () =>
     set((s) => ({ errors: { ...s.errors, incomes: "" } })),
 
-  addExpense: () =>
+  addExpense: (categoryId) =>
     set((s) => ({
-      data: { ...s.data, expenses: [...s.data.expenses, mkRow()] },
+      data: { ...s.data, expenses: [...s.data.expenses, mkRow(categoryId)] },
     })),
 
   removeExpense: (id) =>
     set((s) => ({
-      data: { ...s.data, expenses: s.data.expenses.filter((e) => e.id !== id) },
+      data: {
+        ...s.data,
+        expenses: s.data.expenses.filter((e) => e.id !== id),
+      },
       errors: {
         ...s.errors,
         expenses: Object.fromEntries(
@@ -111,17 +115,14 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     })),
 
   updateExpense: (id, key, value, userId) =>
-    set((s) => {
-      console.log("s", s);
-      return {
-        data: {
-          ...s.data,
-          expenses: s.data.expenses.map((e) =>
-            e.id === id ? { ...e, [key]: value, userId } : e
-          ),
-        },
-      };
-    }),
+    set((s) => ({
+      data: {
+        ...s.data,
+        expenses: s.data.expenses.map((e) =>
+          e.id === id ? { ...e, [key]: value, userId } : e
+        ),
+      },
+    })),
 
   validateExpenses: () => {
     const { expenses } = get().data;

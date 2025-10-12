@@ -1,7 +1,7 @@
 import { api } from "@/shared/api/axios";
 import {
   ReqUserCurrency,
-  ReqUserExpense,
+  ReqCreateUserExpense,
   ReqUserIncomes,
 } from "../model/types";
 
@@ -35,7 +35,7 @@ export const createUserOnboardingIncomes = async (payload: ReqUserIncomes) => {
   }
 };
 
-export const createUserExpenses = async (payload: ReqUserExpense[]) => {
+export const createUserExpenses = async (payload: ReqCreateUserExpense[]) => {
   try {
     const response = await api.post("api/onboarding/expenses", payload);
     return response.data;

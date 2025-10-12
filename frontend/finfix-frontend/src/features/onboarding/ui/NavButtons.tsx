@@ -1,10 +1,24 @@
 import { Button } from "@/shared/ui";
 import { useNavigate } from "react-router-dom";
 import { getOnboardingPath } from "../model/steps";
-import { OnboardingStep } from "../model/types";
+import {
+  OnboardingStep,
+  ReqUserExpense,
+  ReqCreateUserExpense,
+} from "../model/types";
 import { useOnboarding } from "../model/store";
 import { createUserExpenses, createUserOnboardingIncomes } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
+
+const prepareExpensesForApi = (
+  expenses: ReqUserExpense[]
+): ReqCreateUserExpense[] => {
+  return expenses.map((expense) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...rest } = expense;
+    return rest;
+  });
+};
 
 interface OnboardingNextButtonProps {
   step: OnboardingStep;
@@ -50,7 +64,8 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
       if (user?.id) {
         console.log("u", user);
         console.log("d", data);
-        createUserExpenses(data.expenses);
+        const cleanedExpenses = prepareExpensesForApi(data.expenses);
+        createUserExpenses(cleanedExpenses);
       }
     }
 

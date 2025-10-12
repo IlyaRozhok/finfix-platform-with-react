@@ -5,13 +5,11 @@ import { OnboardingFrame } from "@/widgets/onboarding";
 import { Button } from "@/shared/ui";
 import { useEffect, useMemo, useState } from "react";
 import { ExpenseRow } from "@/features/onboarding/";
-import { ReqUpdateUserExpense as Row } from "@/features/onboarding/model/types";
+import { ReqUserExpense as Row } from "@/features/onboarding/model/types";
 import { fetchCategories } from "@/features/onboarding/api";
 
-import { v4 as uuidv4 } from "uuid";
-
 export const OnboardingExpenses = () => {
-  const { data, addExpense } = useOnboarding();
+  const { data, addExpense, updateExpense } = useOnboarding();
   const [categories, setCategories] = useState<
     {
       id: string;
@@ -31,6 +29,21 @@ export const OnboardingExpenses = () => {
   useEffect(() => {
     getCategories();
   }, []);
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      data.expenses.forEach((expense) => {
+        if (!expense.categoryId) {
+          updateExpense(
+            expense.id,
+            "categoryId",
+            categories[0].id,
+            expense.userId
+          );
+        }
+      });
+    }
+  }, [categories, data.expenses, updateExpense]);
 
   const widgetData = {
     title: "Monthly expenses",
@@ -55,15 +68,16 @@ export const OnboardingExpenses = () => {
         <div className="mt-2 space-y-3">
           <div className="custom-scroll max-h-[45vh] md:max-h-72 overflow-y-auto space-y-3 px-5">
             {categories &&
+              data.expenses.length > 0 &&
               data.expenses.map((r) => (
-                <ExpenseRow key={uuidv4()} categories={categories} row={r} />
+                <ExpenseRow key={r.id} categories={categories} row={r} />
               ))}
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-1 items-center mb-3">
             <Button
               variant="ghost"
-              onClick={addExpense}
+              onClick={() => addExpense(categories?.[0]?.id)}
               className="w-full sm:w-auto"
             >
               + Add expense
