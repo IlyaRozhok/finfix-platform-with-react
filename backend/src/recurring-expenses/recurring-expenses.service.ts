@@ -1,9 +1,7 @@
-import { UsersService } from "@/users/users.service";
 import {
   BadRequestException,
-  Body,
+
   Injectable,
-  NotFoundException,
 } from "@nestjs/common";
 import { CreateRecurringExpenseDto } from "./dto";
 import { RecurringExpense } from "./recurring-expense.entity";
@@ -14,7 +12,7 @@ import { Repository } from "typeorm";
 export class RecurringExpensesService {
   constructor(
     @InjectRepository(RecurringExpense)
-    private readonly ReccuringExpensesRepository: Repository<RecurringExpense>
+    private readonly ReccuringExpensesRepository: Repository<RecurringExpense>,
   ) {}
 
   async updateExpenses(

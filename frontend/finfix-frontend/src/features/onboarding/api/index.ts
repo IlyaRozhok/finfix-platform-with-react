@@ -35,7 +35,7 @@ export const createUserOnboardingIncomes = async (payload: ReqUserIncomes) => {
   }
 };
 
-export const createUserIncomes = async (payload: ReqUserExpense[]) => {
+export const createUserExpenses = async (payload: ReqUserExpense[]) => {
   try {
     const response = await api.post("api/onboarding/expenses", payload);
     return response.data;
@@ -53,6 +53,16 @@ export const fetchCategories = async (): Promise<
     return categories.data;
   } catch (err) {
     console.error("Failed to fetch categories:", err);
+    throw err;
+  }
+};
+
+export const fetchSummary = async (id: string) => {
+  try {
+    const summary = await api.get(`api/onboarding/summary?uid=${id}`);
+    return summary.data;
+  } catch (err) {
+    console.error("Failed to fetch onboarding summary:", err);
     throw err;
   }
 };

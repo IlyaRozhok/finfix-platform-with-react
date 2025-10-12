@@ -221,4 +221,3 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
       return { ...s, errors: { ...s.errors, debts: debtsErrors } };
     }),
 }));
-

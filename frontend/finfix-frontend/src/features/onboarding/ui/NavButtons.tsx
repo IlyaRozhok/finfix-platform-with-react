@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getOnboardingPath } from "../model/steps";
 import { OnboardingStep } from "../model/types";
 import { useOnboarding } from "../model/store";
-import { createUserIncomes, createUserOnboardingIncomes } from "../api";
+import { createUserExpenses, createUserOnboardingIncomes } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 interface OnboardingNextButtonProps {
@@ -48,7 +48,9 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
       if (!ok) return;
 
       if (user?.id) {
-        createUserIncomes(data.expenses);
+        console.log("u", user);
+        console.log("d", data);
+        createUserExpenses(data.expenses);
       }
     }
 

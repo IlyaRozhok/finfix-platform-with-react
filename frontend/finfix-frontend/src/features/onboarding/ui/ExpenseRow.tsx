@@ -5,43 +5,25 @@ import { Input } from "@/shared/ui";
 import { useOnboarding } from "../model/store";
 import { ListboxFloating } from "@/shared/ui";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { useEffect, useState } from "react";
 import { renderBtn } from "../lib";
-import { fetchCategories } from "../api";
+
+interface Props {
+  row: Row;
+  categories: { id: string; label: string }[];
+}
 
 // const FREQUENCIES: Row["frequency"][] = ["monthly", "weekly", "yearly"];
 const numberRe = /^-?\d*(\.\d*)?$/;
 
-export function ExpenseRow({ row }: { row: Row }) {
-  const [categories, setCategories] = useState<
-    {
-      id: string;
-      label: string;
-    }[]
-  >();
+export function ExpenseRow(props: Props) {
+  const { categories, row } = props;
 
   const { updateExpense, removeExpense, errors, clearExpenseError } =
     useOnboarding();
   const { user } = useAuth();
   const rowError = errors.expenses?.[row.id];
 
-  const getCategories = async () => {
-    const categories = await fetchCategories();
-    if (categories.length) {
-      const formattedCategories = categories?.map((category) => {
-        return { id: category.id, label: category.name };
-      });
-      console.log("123", formattedCategories);
-      setCategories(formattedCategories);
-    }
-  };
-  useEffect(() => {
-    const data = getCategories();
-    console.log("cate", data);
-
-    // setCategories(data);
-  }, []);
-
+  console.log(row);
   return (
     <div
       className={clsx(

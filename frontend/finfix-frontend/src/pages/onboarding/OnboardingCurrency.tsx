@@ -10,6 +10,7 @@ export const OnboardingCurrency = () => {
     step: OnboardingStep.CURRENCY,
   };
 
+
   return (
     <div className="flex justify-center items-center">
       <OnboardingFrame {...widgetData}>

@@ -22,7 +22,7 @@ const CURRENCIES = [
 
 export function CurrencyListbox() {
   const { user } = useAuth();
-  const [currency, setCurr] = useState("UAH");
+  const [currency, setCurr] = useState("");
   const { setCurrency, data } = useOnboarding();
 
   const handleCurrencyChange = (currency: string) => {

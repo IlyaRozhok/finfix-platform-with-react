@@ -14,9 +14,10 @@ export const ENDPOINTS = {
     CSRF: "csrf",
   },
   ONBOARDING: {
+    SUMMARY: "summary",
     CATEGORIES: "categories",
     CURRENCIES: "currencies",
     INCOMES: "incomes",
-    EXPENSES: "expenses"
+    EXPENSES: "expenses",
   },
 };

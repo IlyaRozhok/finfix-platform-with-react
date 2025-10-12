@@ -1,10 +1,18 @@
-import { Controller, Get, UseGuards, Query, Post, Body } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Query,
+  Post,
+  Body,
+  Param,
+} from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { ROUTE_SEGMENTS, ENDPOINTS } from "../shared/router";
 import { categories } from "@/shared/consts";
 
 import { UsersService } from "../users/users.service";
-import { UpdateCurrencyDto, UpdateIncomesDto } from "./index.dto";
+import { UpdateCurrencyDto, UpdateIncomesDto } from "./dto";
 import { Category } from "./onboarding.entity";
 import { OnboardingService } from "./onboarding.service";
 
@@ -43,5 +51,11 @@ export class OnboardingController {
   async getCategories() {
     const categories = await this.onboardingService.getCategories();
     return categories;
+  }
+
+  @Get(ENDPOINTS.ONBOARDING.SUMMARY)
+  async getSummary(@Param("uid") uid: string) {
+    const summary = await this.onboardingService.getSummary(uid);
+    return summary;
   }
 }
