@@ -23,6 +23,11 @@ export function ExpenseRow(props: Props) {
   const { user } = useAuth();
   const rowError = errors.expenses?.[row.id];
 
+  // Find category name by ID
+  const categoryName =
+    categories.find((cat) => cat.id === row.categoryId)?.label ||
+    row.categoryId;
+
   console.log(row);
   return (
     <div
@@ -41,7 +46,7 @@ export function ExpenseRow(props: Props) {
             }
             options={categories}
             placement="bottom-start"
-            renderButton={() => renderBtn(row.categoryId)}
+            renderButton={() => renderBtn(categoryName)}
             optionsClassName="!bg-black/95"
           />
         )}

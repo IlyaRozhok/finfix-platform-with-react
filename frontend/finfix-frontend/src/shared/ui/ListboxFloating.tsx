@@ -86,7 +86,7 @@ export const ListboxFloating = <T extends string>({
                 {options.map((opt) => (
                   <Listbox.Option
                     key={opt.id}
-                    value={opt.label}
+                    value={opt.id}
                     className={({ active, selected }) =>
                       clsx(
                         "cursor-pointer select-none rounded-lg px-3 py-2 text-sm",
