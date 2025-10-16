@@ -4,13 +4,15 @@ import { Repository } from "typeorm";
 import { Category, CategoryKind } from "./onboarding.entity";
 import { User } from "@/users/user.entity";
 import { UsersService } from "@/users/users.service";
+import { RecurringExpensesService } from "@/recurring-expenses/recurring-expenses.service";
 
 @Injectable()
 export class OnboardingService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly expenseService: RecurringExpensesService
   ) {}
 
   // async findOnboardingCategories(uid: string) {
@@ -56,10 +58,12 @@ export class OnboardingService {
       throw new NotFoundException("User not found");
     }
 
+    const expenses = await this.expenseService.getExpenses(uid);
     const resData = {
       currency: user.currency,
       incomes: user.incomes,
       isOnboarded: user.isOnboarded,
+      expenses,
     };
     return resData;
   }

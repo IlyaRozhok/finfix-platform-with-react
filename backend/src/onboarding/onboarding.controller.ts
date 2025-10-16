@@ -54,7 +54,7 @@ export class OnboardingController {
   }
 
   @Get(ENDPOINTS.ONBOARDING.SUMMARY)
-  async getSummary(@Param("uid") uid: string) {
+  async getSummary(@Query("uid") uid: string) {
     const summary = await this.onboardingService.getSummary(uid);
     return summary;
   }

@@ -8,5 +8,6 @@ import { RecurringExpense } from "./recurring-expense.entity";
   imports: [TypeOrmModule.forFeature([RecurringExpense])],
   controllers: [RecurringExpensesController],
   providers: [RecurringExpensesService],
+  exports: [RecurringExpensesService],
 })
 export class RecurringExpensesModule {}
