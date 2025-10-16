@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { fetchSummary } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { ReqUserExpense } from "../model/types";
 
 interface ISummary {
   isOnboarded: boolean;
   incomes: string;
+  expenses: ReqUserExpense[];
 }
 export default function useOnboardingSummary() {
   const [summary, setSummary] = useState<ISummary>();

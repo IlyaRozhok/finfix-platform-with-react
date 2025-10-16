@@ -7,9 +7,11 @@ import { useEffect, useMemo, useState } from "react";
 import { ExpenseRow } from "@/features/onboarding/";
 import { ReqUserExpense as Row } from "@/features/onboarding/model/types";
 import { fetchCategories } from "@/features/onboarding/api";
+import useOnboardingSummary from "@/features/onboarding/lib/useOnboardingSummary";
 
 export const OnboardingExpenses = () => {
   const { data, addExpense, updateExpense } = useOnboarding();
+  const { expenses } = useOnboardingSummary();
   const [categories, setCategories] = useState<
     {
       id: string;
@@ -62,6 +64,7 @@ export const OnboardingExpenses = () => {
     return data.expenses.reduce((acc, r) => acc + toMonthly(r), 0);
   }, [data.expenses]);
 
+  console.log("data", data);
   return (
     <div className="flex justify-center item-center">
       <OnboardingFrame {...widgetData}>
