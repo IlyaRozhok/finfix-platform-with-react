@@ -6,13 +6,13 @@ import {
   RequireOnboarded,
 } from "@/app/guards/guard";
 
+import OnboardingLayout from "../layouts/OnboardingLayout";
 import { OnboardingWrapper } from "../layouts/OnboardingWrapper";
 import { LoginPage } from "@/pages/login/LoginPage";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
 import {
   OnboardingCurrency,
   OnboardingIncomes,
-  OnboardingWelcome,
   OnboardingExpenses,
   OnboardingDebts,
 } from "@/pages/onboarding";
@@ -34,12 +34,12 @@ export function AppRouter() {
         element={
           <RequireAuth>
             <RequireOnboarded invert>
-              <OnboardingWrapper />
+              <OnboardingLayout />
             </RequireOnboarded>
           </RequireAuth>
         }
       >
-        <Route index element={<OnboardingWelcome />} />
+        <Route index element={<OnboardingWrapper />} />
         <Route path="currency" element={<OnboardingCurrency />} />
         <Route path="incomes" element={<OnboardingIncomes />} />
         <Route path="expenses" element={<OnboardingExpenses />} />
