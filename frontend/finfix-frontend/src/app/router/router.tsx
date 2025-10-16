@@ -6,7 +6,7 @@ import {
   RequireOnboarded,
 } from "@/app/guards/guard";
 
-import OnboardingLayout from "../layouts/OnboardingLayout";
+import { OnboardingWrapper } from "../layouts/OnboardingWrapper";
 import { LoginPage } from "@/pages/login/LoginPage";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
 import {
@@ -34,7 +34,7 @@ export function AppRouter() {
         element={
           <RequireAuth>
             <RequireOnboarded invert>
-              <OnboardingLayout />
+              <OnboardingWrapper />
             </RequireOnboarded>
           </RequireAuth>
         }
