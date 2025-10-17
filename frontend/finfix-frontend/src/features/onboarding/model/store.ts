@@ -49,6 +49,7 @@ type OnboardingState = {
   setIncomesError: (message: string) => void;
   clearIncomesError: () => void;
   addExpense: (categoryId?: string) => void;
+  setExpenses: (expenses: ReqUserExpense[]) => void;
   removeExpense: (id: string) => void;
   updateExpense: <K extends keyof ReqUserExpense>(
     id: string,
@@ -98,6 +99,11 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
   addExpense: (categoryId) =>
     set((s) => ({
       data: { ...s.data, expenses: [...s.data.expenses, mkRow(categoryId)] },
+    })),
+
+  setExpenses: (expenses) =>
+    set((s) => ({
+      data: { ...s.data, expenses },
     })),
 
   removeExpense: (id) =>

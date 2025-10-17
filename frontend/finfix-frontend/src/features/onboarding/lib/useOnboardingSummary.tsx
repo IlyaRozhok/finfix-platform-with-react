@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { fetchSummary } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { ReqUserExpense } from "../model/types";
+
+interface BackendExpense {
+  id: string;
+  userId: string;
+  categoryId: string;
+  amount: string;
+  description: string;
+}
 
 interface ISummary {
   isOnboarded: boolean;
   incomes: string;
-  expenses: ReqUserExpense[];
+  expenses: BackendExpense[];
 }
 export default function useOnboardingSummary() {
   const [summary, setSummary] = useState<ISummary>();
@@ -23,7 +30,7 @@ export default function useOnboardingSummary() {
     } else {
       throw new Error("User id did not provided");
     }
-  }, []);
+  }, [user?.id]);
 
   return { ...summary };
 }

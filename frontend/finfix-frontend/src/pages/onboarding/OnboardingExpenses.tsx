@@ -9,9 +9,17 @@ import { ReqUserExpense as Row } from "@/features/onboarding/model/types";
 import { fetchCategories } from "@/features/onboarding/api";
 import useOnboardingSummary from "@/features/onboarding/lib/useOnboardingSummary";
 
+interface BackendExpense {
+  id: string;
+  userId: string;
+  categoryId: string;
+  amount: string;
+  description: string;
+}
+
 export const OnboardingExpenses = () => {
-  const { data, addExpense, updateExpense } = useOnboarding();
-  const { expenses } = useOnboardingSummary();
+  const { data, addExpense, updateExpense, setExpenses } = useOnboarding();
+  const { expenses: summaryExpenses } = useOnboardingSummary();
   const [categories, setCategories] = useState<
     {
       id: string;
@@ -31,6 +39,27 @@ export const OnboardingExpenses = () => {
   useEffect(() => {
     getCategories();
   }, []);
+
+  // Prefill expenses from summary data
+  useEffect(() => {
+    if (
+      summaryExpenses &&
+      summaryExpenses.length > 0 &&
+      data.expenses.length === 0
+    ) {
+      // Transform backend data to frontend format
+      const transformedExpenses = summaryExpenses.map(
+        (expense: BackendExpense) => ({
+          id: expense.id,
+          userId: expense.userId,
+          categoryId: expense.categoryId,
+          amount: expense.amount,
+          description: expense.description || "",
+        })
+      );
+      setExpenses(transformedExpenses);
+    }
+  }, [summaryExpenses, data.expenses.length, setExpenses]);
 
   useEffect(() => {
     if (categories && categories.length > 0) {
@@ -64,7 +93,6 @@ export const OnboardingExpenses = () => {
     return data.expenses.reduce((acc, r) => acc + toMonthly(r), 0);
   }, [data.expenses]);
 
-  console.log("data", data);
   return (
     <div className="flex justify-center item-center">
       <OnboardingFrame {...widgetData}>
