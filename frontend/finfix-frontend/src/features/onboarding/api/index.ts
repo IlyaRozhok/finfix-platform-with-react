@@ -79,12 +79,43 @@ export const fetchSummary = async (id: string) => {
   }
 };
 
+export const fetchDebts = async (uid: string): Promise<ReqCreateDebt[]> => {
+  try {
+    const response = await api.get(`api/onboarding/debts/${uid}`);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch debts:", err);
+    throw err;
+  }
+};
+
 export const createDebts = async (payload: ReqCreateDebt[], uid: string) => {
   try {
-    const response = await api.post(`api/onboarding/debts/uid?=${uid}`, payload);
+    const response = await api.post(`api/onboarding/debts?uid=${uid}`, payload);
     return response.data;
   } catch (err) {
     console.error("Failed to update debts:", err);
+    throw err;
+  }
+};
+
+export const updateDebt = async (id: string, payload: ReqCreateDebt) => {
+  try {
+    const response = await api.put(`/api/onboarding/debts/${id}`, payload);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update debt:", err);
+    throw err;
+  }
+};
+
+export const deleteDebt = async (id: string) => {
+  try {
+    const debt = await api.delete(`/api/onboarding/debts/${id}`);
+    alert("Debt sucessfully deleted");
+    return debt.data;
+  } catch (err) {
+    console.error("Failed to update debt:", err);
     throw err;
   }
 };

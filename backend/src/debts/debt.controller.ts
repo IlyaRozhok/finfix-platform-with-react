@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
 } from "@nestjs/common";
 
@@ -26,6 +27,12 @@ export class DebtsController {
   async createExpense(@Body() dto: CreateDebtDto[]) {
     const expenses = await this.DebtsService.createDebts(dto);
     return expenses;
+  }
+
+  @Put(`${ENDPOINTS.ONBOARDING.DEBTS}/:id`)
+  async updateDebt(@Param("id") id: string, @Body() dto: CreateDebtDto) {
+    const debt = await this.DebtsService.updateDebt(id, dto);
+    return debt;
   }
 
   @Delete(`${ENDPOINTS.ONBOARDING.DEBTS}/:id`)

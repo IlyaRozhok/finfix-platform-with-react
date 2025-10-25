@@ -49,6 +49,7 @@ export type ReqCreateUserExpense = {
 
 export type ReqCreateDebt = {
   id?: string;
+  userId: string;
   totalDebt: string;
   interest: string;
   description?: string;

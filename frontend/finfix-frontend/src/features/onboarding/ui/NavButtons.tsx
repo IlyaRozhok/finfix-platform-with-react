@@ -7,11 +7,14 @@ import {
   ReqCreateUserExpense,
   ReqUserExpense,
 } from "../model/types";
+import { Debt } from "@entities/debts/model";
 import { useOnboarding } from "../model/store";
 import {
   createDebts,
   createUserExpenses,
   createUserOnboardingIncomes,
+  updateDebt,
+  deleteDebt,
 } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -27,14 +30,20 @@ const prepareExpensesForApi = (
   });
 };
 
-const prepareDebtsForApi = (expenses: ReqCreateDebt[]): ReqCreateDebt[] => {
-  return expenses.map((expense) => {
-    const { id, ...rest } = expense;
-    return {
-      ...rest,
-      ...(id && { id }),
-    };
-  });
+const prepareNewDebtsForApi = (
+  debts: Debt[],
+  userId: string
+): ReqCreateDebt[] => {
+  return debts
+    .filter((debt) => !debt.id || debt.id.startsWith("temp-")) // Only include new debts
+    .map((debt) => {
+      const { id, ...rest } = debt;
+      return {
+        ...rest,
+        userId: userId,
+        // Don't include id for new debts
+      };
+    });
 };
 
 interface OnboardingNextButtonProps {
@@ -66,6 +75,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
     validateExpenses,
     validateDebts,
     hasExpensesChanged,
+    hasDebtsChanged,
   } = useOnboarding();
   const handleNext = () => {
     if (step === OnboardingStep.INCOMES) {
@@ -93,10 +103,30 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
     if (step === OnboardingStep.BANK_DEBT) {
       const ok = validateDebts();
       if (!ok) return;
+
+      // Only send request if debts have changed
+      if (hasDebtsChanged() && user?.id) {
+        // Create new debts (only those with temp- prefix)
+        const newDebtsPayload = prepareNewDebtsForApi(data.debts, user.id);
+        if (newDebtsPayload.length > 0) {
+          createDebts(newDebtsPayload, user.id);
+        }
+
+        // Update existing debts individually
+        const existingDebts = data.debts.filter(
+          (debt) => debt.id && !debt.id.startsWith("temp-")
+        );
+        for (const debt of existingDebts) {
+          const debtPayload = {
+            userId: user.id,
+            totalDebt: debt.totalDebt,
+            interest: debt.interest,
+            description: debt.description || "",
+          };
+          updateDebt(debt.id!, debtPayload);
+        }
+      }
     }
-    const debtsPayload = prepareDebtsForApi(data.debts);
-    createDebts(debtsPayload, user?.id as string);
-    console.log(debtsPayload);
     navigate(getOnboardingPath({ step, type: "next" }));
   };
 

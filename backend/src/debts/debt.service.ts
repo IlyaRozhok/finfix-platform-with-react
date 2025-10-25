@@ -47,6 +47,30 @@ export class DebtsService {
     return await this.DebtsRepository.save(debts);
   }
 
+  async updateDebt(id: string, dto: CreateDebtDto): Promise<Debt> {
+    if (!id) {
+      throw new BadRequestException("Debt id not provided");
+    }
+
+    const debt = await this.DebtsRepository.findOne({ where: { id } });
+
+    if (!debt) {
+      throw new NotFoundException(`Debt with id ${id} not found`);
+    }
+
+    debt.description = dto.description ?? debt.description;
+    debt.interest = dto.interest ? String(Number(dto.interest)) : debt.interest;
+    debt.totalDebt = dto.totalDebt
+      ? String(Number(dto.totalDebt))
+      : debt.totalDebt;
+    debt.monthlyPayment =
+      debt.totalDebt && debt.interest
+        ? String((Number(debt.totalDebt) * Number(debt.interest)) / 100)
+        : debt.monthlyPayment;
+
+    return await this.DebtsRepository.save(debt);
+  }
+
   async deleteDebt(id: string) {
     console.log("id", id);
     if (!id) {

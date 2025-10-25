@@ -2,9 +2,10 @@ import { create } from "zustand";
 import { OnboardingData } from "./types";
 import { ReqUserExpense } from "@/features/onboarding/model/types";
 import { Debt } from "@/entities/debts/model";
-import { createUserOnboardingCurrency } from "../api";
+import { createUserOnboardingCurrency, deleteDebt } from "../api";
 
 const mkDebt = (): Debt => ({
+  id: `temp-${crypto.randomUUID()}`,
   description: "",
   totalDebt: "",
   interest: "",
@@ -49,12 +50,14 @@ type OnboardingState = {
   validateExpenses: () => boolean;
   clearExpenseError: (id: string) => void;
   addDebt: () => void;
+  setDebts: (debts: Debt[]) => void;
   removeDebt: (id: string) => void;
   updateDebt: <K extends keyof Debt>(id: string, k: K, v: Debt[K]) => void;
   validateDebts: () => boolean;
   clearDebtError: (id: string) => void;
   validateDebtRow: (id: string) => void;
   hasExpensesChanged: () => boolean;
+  hasDebtsChanged: () => boolean;
 };
 
 export const useOnboarding = create<OnboardingState>((set, get) => ({
@@ -150,7 +153,23 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
   addDebt: () =>
     set((s) => ({ data: { ...s.data, debts: [...s.data.debts, mkDebt()] } })),
 
-  removeDebt: (id) =>
+  setDebts: (debts) =>
+    set((s) => ({
+      data: { ...s.data, debts },
+      originalData: { ...s.originalData, debts },
+    })),
+
+  removeDebt: (id) => {
+    // Check if this debt exists on server (has a real ID, not a temporary one)
+    const debt = get().data.debts.find((d) => d.id === id);
+    const isExistingDebt = debt && debt.id && !debt.id.startsWith("temp-");
+
+    // If it's an existing debt, call API to delete it
+    if (isExistingDebt) {
+      deleteDebt(id);
+    }
+
+    // Always remove from local state
     set((s) => ({
       data: { ...s.data, debts: s.data.debts.filter((d) => d.id !== id) },
       errors: {
@@ -159,9 +178,10 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
           Object.entries(s.errors.debts ?? {}).filter(([k]) => k !== id)
         ),
       },
-    })),
+    }));
+  },
 
-  updateDebt: (id, k, v) =>
+  updateDebt: (id, k, v) => {
     set((s) => {
       const debts = s.data.debts.map((d) =>
         d.id === id ? { ...d, [k]: v } : d
@@ -174,11 +194,15 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
         debtsErrors[id] = "";
       }
 
+      // Don't call API automatically - only update local state
+      // API calls will happen on "Next" button click
+
       return {
         data: { ...s.data, debts },
         errors: { ...s.errors, debts: debtsErrors },
       };
-    }),
+    });
+  },
 
   clearDebtError: (id) =>
     set((s) => ({
@@ -241,6 +265,60 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     for (const [id] of currentMap) {
       if (!originalMap.has(id)) {
         // New expense was added
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+  hasDebtsChanged: () => {
+    const { data, originalData } = get();
+
+    // Get only existing debts (not temp ones) for comparison
+    const currentExistingDebts = data.debts.filter(
+      (debt) => debt.id && !debt.id.startsWith("temp-")
+    );
+    const originalExistingDebts = originalData.debts.filter(
+      (debt) => debt.id && !debt.id.startsWith("temp-")
+    );
+
+    // Check if any new debts were added
+    const hasNewDebts = data.debts.some(
+      (debt) => !debt.id || debt.id.startsWith("temp-")
+    );
+    if (hasNewDebts) {
+      return true;
+    }
+
+    // Compare existing debts arrays
+    if (currentExistingDebts.length !== originalExistingDebts.length) {
+      return true;
+    }
+
+    // Create maps for easier comparison
+    const currentMap = new Map(
+      currentExistingDebts.map((debt) => [debt.id, debt])
+    );
+    const originalMap = new Map(
+      originalExistingDebts.map((debt) => [debt.id, debt])
+    );
+
+    // Check if all original debts still exist and are unchanged
+    for (const [id, originalDebt] of originalMap) {
+      const currentDebt = currentMap.get(id);
+
+      if (!currentDebt) {
+        // Debt was deleted
+        return true;
+      }
+
+      if (
+        currentDebt.description !== originalDebt.description ||
+        currentDebt.totalDebt !== originalDebt.totalDebt ||
+        currentDebt.interest !== originalDebt.interest
+      ) {
+        // Debt was modified
         return true;
       }
     }
