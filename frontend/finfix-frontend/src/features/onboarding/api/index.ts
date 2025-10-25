@@ -3,7 +3,7 @@ import {
   ReqUserCurrency,
   ReqCreateUserExpense,
   ReqUserIncomes,
-  ReqDeleteUserExpense,
+  ReqCreateDebt,
 } from "../model/types";
 
 export const createUserOnboardingCurrency = async (
@@ -75,6 +75,16 @@ export const fetchSummary = async (id: string) => {
     return summary.data;
   } catch (err) {
     console.error("Failed to fetch onboarding summary:", err);
+    throw err;
+  }
+};
+
+export const createDebts = async (payload: ReqCreateDebt[], uid: string) => {
+  try {
+    const response = await api.post(`api/onboarding/debts/uid?=${uid}`, payload);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update debts:", err);
     throw err;
   }
 };

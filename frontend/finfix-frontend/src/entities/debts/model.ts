@@ -1,8 +1,6 @@
 export type Debt = {
-  id: string;
-  debtType: "credit_card" | "bank_loan" | "mortgage" | "car" | "other";
+  id?: string;
   description: string;
-  totalDebt: string; 
-  monthlyPayment: string;
-  interestRateMonthly: string; // в %, строкой "2.5"
+  totalDebt: string;
+  interest: string;
 };

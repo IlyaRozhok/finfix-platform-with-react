@@ -16,11 +16,8 @@ export const OnboardingDebts = () => {
     step: OnboardingStep.BANK_DEBT,
   };
 
-  const monthlyTotal = useMemo(() => {
-    return data.debts.reduce(
-      (sum, d) => sum + (Number(d.monthlyPayment) || 0),
-      0
-    );
+  const total = useMemo(() => {
+    return data.debts.reduce((sum, d) => sum + (Number(d.totalDebt) || 0), 0);
   }, [data.debts]);
 
   return (
@@ -42,9 +39,9 @@ export const OnboardingDebts = () => {
               + Add debt
             </Button>
             <div className="text-sm text-slate-300 text-right">
-              Est. monthly total:
+              Total estimation:
               <span className="ml-2 font-semibold">
-                {monthlyTotal.toFixed(2)} {data.baseCurrency}
+                {total.toFixed(2)} {data.baseCurrency}
               </span>
             </div>
           </div>

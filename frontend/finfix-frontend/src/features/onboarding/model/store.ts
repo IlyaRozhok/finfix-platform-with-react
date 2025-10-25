@@ -5,12 +5,9 @@ import { Debt } from "@/entities/debts/model";
 import { createUserOnboardingCurrency } from "../api";
 
 const mkDebt = (): Debt => ({
-  id: crypto.randomUUID(),
-  debtType: "credit_card",
   description: "",
   totalDebt: "",
-  monthlyPayment: "",
-  interestRateMonthly: "",
+  interest: "",
 });
 
 const mkRow = (categoryId?: string): ReqUserExpense => ({
@@ -21,20 +18,11 @@ const mkRow = (categoryId?: string): ReqUserExpense => ({
   amount: "",
 });
 
-const isEmptyDebt = (d: Debt) =>
-  !d.description && !d.totalDebt && !d.monthlyPayment && !d.interestRateMonthly;
+const isEmptyDebt = (d: Debt) => !d.description && !d.totalDebt;
 
 const isValidDebt = (d: Debt) => {
   const totalOk = Number(d.totalDebt) > 0;
-  const monthOk = Number(d.monthlyPayment) > 0;
-  const rateOk = Number(d.interestRateMonthly) > 0;
-
-  switch (d.debtType) {
-    case "credit_card":
-      return totalOk && monthOk && rateOk;
-    default:
-      return totalOk && monthOk;
-  }
+  return Boolean(totalOk);
 };
 
 type OnboardingState = {
@@ -184,11 +172,6 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
 
       if (isEmptyDebt(row) || isValidDebt(row)) {
         debtsErrors[id] = "";
-      } else {
-        debtsErrors[id] =
-          row.debtType === "credit_card"
-            ? "Enter total, monthly and % per month"
-            : "Enter total and monthly";
       }
 
       return {
@@ -206,16 +189,6 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     const { debts } = get().data;
     const errs: Record<string, string> = {};
     console.log("[validateDebts] debts=", debts); // <-- лог 1
-    for (const d of debts) {
-      const valid = isValidDebt(d);
-      if (!valid) {
-        errs[d.id] =
-          d.debtType === "credit_card"
-            ? "Enter total, monthly and % per month"
-            : "Enter total and monthly";
-      }
-      console.log("[validateDebts] row", d.id, { valid, err: errs[d.id] }); // <-- лог 2
-    }
     set((s) => ({ errors: { ...s.errors, debts: errs } }));
     console.log("[validateDebts] errs=", errs); // <-- лог 3
     return Object.keys(errs).length === 0;
@@ -226,14 +199,7 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
       if (!row) return s;
 
       const debtsErrors = { ...(s.errors.debts ?? {}) };
-      if (isEmptyDebt(row) || isValidDebt(row)) {
-        debtsErrors[id] = "";
-      } else {
-        debtsErrors[id] =
-          row.debtType === "credit_card"
-            ? "Enter total, monthly and % per month"
-            : "Enter total and monthly";
-      }
+
       return { ...s, errors: { ...s.errors, debts: debtsErrors } };
     }),
 

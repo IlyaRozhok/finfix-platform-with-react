@@ -28,7 +28,7 @@ export class Debt {
   @JoinColumn({ name: "user_id" })
   user: User;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", default: "" })
   description: string;
 
   @Column({
@@ -36,6 +36,7 @@ export class Debt {
     type: "enum",
     enum: DebtType,
     enumName: "debt_type",
+    default: DebtType.CREDIT_CARD,
   })
   debtType: DebtType;
 
@@ -52,19 +53,19 @@ export class Debt {
   monthlyPayment?: string | null; // если фикс платёж известен (loan)
 
   @Column({
-    name: "interest_rate_monthly",
+    name: "interest",
     type: "numeric",
     precision: 6,
     scale: 3,
     nullable: true,
   })
-  interestRateMonthly?: string | null; // например 0.037 для 3.7%/мес
+  interest?: string | null; // например 0.037 для 3.7%/мес
 
   @Column({ name: "grace_period_days", type: "int", nullable: true })
   gracePeriodDays?: number | null; // например 62 для карты
 
   @Index()
-  @Column({ name: "start_date", type: "date" })
+  @Column({ name: "start_date", type: "date", default: () => "CURRENT_DATE" })
   startDate: string;
 
   @Column({ name: "statement_day", type: "smallint", nullable: true })

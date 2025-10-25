@@ -31,18 +31,17 @@ export type ReqUserIncomes = {
   incomes: string;
 };
 
-export type ReqUserExpense = {
-  id: string;
+export type ReqCreateUserExpense = {
+  id?: string;
   userId: string;
   categoryId: string;
   amount: number | string;
   description?: string;
 };
 
-export type ReqCreateUserExpense = {
+export type ReqCreateDebt = {
   id?: string;
-  userId: string;
-  categoryId: string;
-  amount: number | string;
+  totalDebt: string;
+  interest: string;
   description?: string;
 };

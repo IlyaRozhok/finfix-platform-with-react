@@ -1,10 +1,10 @@
-version: "3.8"
+
 
 services:
   postgres:
     image: postgres:15-alpine
     container_name: finfix-postgres
-    env_file: '.env' #TODO REMOVE
+    env_file: ".env" #TODO REMOVE
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-app}
       POSTGRES_USER: ${POSTGRES_USER:-app}

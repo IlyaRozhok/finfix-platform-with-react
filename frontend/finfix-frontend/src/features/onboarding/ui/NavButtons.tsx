@@ -3,22 +3,38 @@ import { useNavigate } from "react-router-dom";
 import { getOnboardingPath } from "../model/steps";
 import {
   OnboardingStep,
-  ReqUserExpense,
+  ReqCreateDebt,
   ReqCreateUserExpense,
 } from "../model/types";
 import { useOnboarding } from "../model/store";
-import { createUserExpenses, createUserOnboardingIncomes } from "../api";
+import {
+  createDebts,
+  createUserExpenses,
+  createUserOnboardingIncomes,
+} from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 const prepareExpensesForApi = (
-  expenses: ReqUserExpense[]
+  expenses: ReqCreateUserExpense[]
 ): ReqCreateUserExpense[] => {
   return expenses.map((expense) => {
-    // Include the ID if it exists (for updates) or omit it (for new records)
     const { id, ...rest } = expense;
     return {
       ...rest,
-      ...(id && { id }), // Only include id if it exists
+      ...(id && { id }),
+    };
+  });
+};
+
+const prepareDebtsForApi = (
+  expenses: ReqCreateDebt[],
+  uid: string
+): ReqCreateDebt[] => {
+  return expenses.map((expense) => {
+    const { id, ...rest } = expense;
+    return {
+      ...rest,
+      ...(id && { id }),
     };
   });
 };
@@ -71,12 +87,8 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
 
       // Only send request if expenses have changed
       if (hasExpensesChanged() && user?.id) {
-        console.log("u", user);
-        console.log("d", data);
-        const cleanedExpenses = prepareExpensesForApi(data.expenses);
-        createUserExpenses(cleanedExpenses);
-      } else {
-        console.log("Expenses unchanged, skipping API call");
+        const expensesPayload = prepareExpensesForApi(data.expenses);
+        createUserExpenses(expensesPayload);
       }
     }
 
@@ -84,6 +96,9 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
       const ok = validateDebts();
       if (!ok) return;
     }
+    const debtsPayload = prepareDebtsForApi(data.debts, user?.id as string);
+    createDebts(debtsPayload, user?.id as string);
+    console.log(debtsPayload);
     navigate(getOnboardingPath({ step, type: "next" }));
   };
 
