@@ -12,7 +12,7 @@ export const ConfirmationModal: React.FC<ConfirmationModal> = ({
   cancel,
 }) => {
   return (
-    <div className="absolue left-0 w-full h-full">
+    <div className="left-0 w-full h-full">
       <h1 className="text-black text-2sm mb-3 text-center">{title}</h1>
       <div className="flex justify-between items-center">
         <Button onClick={action}>Confirm</Button>

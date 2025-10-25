@@ -19,5 +19,6 @@ export const ENDPOINTS = {
     CURRENCIES: "currencies",
     INCOMES: "incomes",
     EXPENSES: "expenses",
+    DEBTS: "debts",
   },
 };
