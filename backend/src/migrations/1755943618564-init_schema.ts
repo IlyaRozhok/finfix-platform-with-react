@@ -15,6 +15,7 @@ export class InitSchema1755943618564 implements MigrationInterface {
         "user_name" varchar(150) NOT NULL,
         "avatar_url" text,
         "is_onboarded" boolean NOT NULL DEFAULT false,
+        "incomes" integer NOT NULL DEFAULT 0,
         "currency" char(3) NOT NULL DEFAULT 'UAH',
         "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),

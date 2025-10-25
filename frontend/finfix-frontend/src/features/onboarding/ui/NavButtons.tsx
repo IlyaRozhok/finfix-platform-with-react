@@ -5,6 +5,7 @@ import {
   OnboardingStep,
   ReqCreateDebt,
   ReqCreateUserExpense,
+  ReqUserExpense,
 } from "../model/types";
 import { useOnboarding } from "../model/store";
 import {
@@ -15,7 +16,7 @@ import {
 import { useAuth } from "@/app/providers/AuthProvider";
 
 const prepareExpensesForApi = (
-  expenses: ReqCreateUserExpense[]
+  expenses: ReqUserExpense[]
 ): ReqCreateUserExpense[] => {
   return expenses.map((expense) => {
     const { id, ...rest } = expense;
@@ -26,10 +27,7 @@ const prepareExpensesForApi = (
   });
 };
 
-const prepareDebtsForApi = (
-  expenses: ReqCreateDebt[],
-  uid: string
-): ReqCreateDebt[] => {
+const prepareDebtsForApi = (expenses: ReqCreateDebt[]): ReqCreateDebt[] => {
   return expenses.map((expense) => {
     const { id, ...rest } = expense;
     return {
@@ -96,7 +94,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
       const ok = validateDebts();
       if (!ok) return;
     }
-    const debtsPayload = prepareDebtsForApi(data.debts, user?.id as string);
+    const debtsPayload = prepareDebtsForApi(data.debts);
     createDebts(debtsPayload, user?.id as string);
     console.log(debtsPayload);
     navigate(getOnboardingPath({ step, type: "next" }));

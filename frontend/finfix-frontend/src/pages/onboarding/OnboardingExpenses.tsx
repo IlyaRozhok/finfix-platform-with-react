@@ -28,12 +28,16 @@ export const OnboardingExpenses = () => {
   >();
 
   const getCategories = async () => {
-    const categories = await fetchCategories();
-    if (categories.length) {
-      const formattedCategories = categories?.map((category) => {
-        return { id: category.id, label: category.name };
-      });
-      setCategories(formattedCategories);
+    try {
+      const categories = await fetchCategories();
+      if (categories.length) {
+        const formattedCategories = categories?.map((category) => {
+          return { id: category.id, label: category.name };
+        });
+        setCategories(formattedCategories);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
     }
   };
   useEffect(() => {

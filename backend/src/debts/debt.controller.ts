@@ -16,7 +16,7 @@ export class DebtsController {
 
   @Post(ENDPOINTS.ONBOARDING.DEBTS)
   async createExpense(@Body() dto: CreateDebtDto[]) {
-    const expenses = await this.DebtsService.updateDebts(dto);
+    const expenses = await this.DebtsService.createDebts(dto);
     return expenses;
   }
 }

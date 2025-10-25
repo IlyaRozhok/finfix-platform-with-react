@@ -23,40 +23,24 @@ export class DebtsService {
     });
     return debts;
   }
-
-  async updateDebts(dto: CreateDebtDto[]): Promise<Debt[]> {
+  // :Promise<Debt[]>
+  async createDebts(dto: CreateDebtDto[]) {
     if (!dto.length) {
       throw new BadRequestException("Payload did not provided");
     }
+    const debts = dto.map((d) =>
+      this.DebtsRepository.create({
+        //@ts-ignore
+        userId: d.userId as any,
+        description: d.description ?? null,
+        interest: Number(d.interest),
+        totalDebt: Number(d.totalDebt),
+        debtType: "credit_card",
+        monthlyPayment: (Number(d.totalDebt) * Number(d.interest)) / 100,
+        isClosed: false,
+      })
+    );
 
-    const userId = dto[0]?.userId;
-    if (!userId) {
-      throw new BadRequestException("User ID is required");
-    }
-
-    const results: Debt[] = [];
-
-    for (const debtDto of dto) {
-      if (debtDto.id) {
-        const existingDebt = await this.DebtsRepository.findOne({
-          where: { id: debtDto.id, userId },
-        });
-
-        if (existingDebt) {
-          existingDebt.interest = debtDto.interest;
-          existingDebt.totalDebt = debtDto.totalDebt;
-          existingDebt.description = debtDto.description || "";
-          results.push(await this.DebtsRepository.save(existingDebt));
-        } else {
-          const newDebt = this.DebtsRepository.create(debtDto);
-          results.push(await this.DebtsRepository.save(newDebt));
-        }
-      } else {
-        const newDebt = this.DebtsRepository.create(debtDto);
-        results.push(await this.DebtsRepository.save(newDebt));
-      }
-    }
-
-    return results;
+    return await this.DebtsRepository.save(debts);
   }
 }
