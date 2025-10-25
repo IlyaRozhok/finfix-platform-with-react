@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { RecurringExpensesService } from "./recurring-expenses.service";
 import { RecurringExpense } from "./recurring-expense.entity";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
@@ -19,5 +19,12 @@ export class RecurringExpensesController {
   async getOnboardingExpenses(@Param("uid") uid: string) {
     const expenses = await this.recurringExpensesService.getExpenses(uid);
     return expenses;
+  }
+
+  @Delete(`${ENDPOINTS.ONBOARDING.EXPENSES}/:expenseId`)
+  async deleteExpense(@Param("expenseId") expenseId: string) {
+    const expense =
+      await this.recurringExpensesService.deleteExpense(expenseId);
+    return expense;
   }
 }

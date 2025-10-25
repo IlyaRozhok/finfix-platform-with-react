@@ -17,8 +17,39 @@ export class RecurringExpensesService {
     if (!dto.length) {
       throw new BadRequestException("Payload did not provided");
     }
-    const expenses = this.ReccuringExpensesRepository.create(dto);
-    return await this.ReccuringExpensesRepository.save(expenses);
+
+    const userId = dto[0]?.userId;
+    if (!userId) {
+      throw new BadRequestException("User ID is required");
+    }
+
+    const results: RecurringExpense[] = [];
+
+    for (const expenseDto of dto) {
+      if (expenseDto.id) {
+        const existingExpense = await this.ReccuringExpensesRepository.findOne({
+          where: { id: expenseDto.id, userId },
+        });
+
+        if (existingExpense) {
+          existingExpense.categoryId = expenseDto.categoryId;
+          existingExpense.amount = expenseDto.amount;
+          existingExpense.description = expenseDto.description || "";
+          results.push(
+            await this.ReccuringExpensesRepository.save(existingExpense)
+          );
+        } else {
+          const newExpense =
+            this.ReccuringExpensesRepository.create(expenseDto);
+          results.push(await this.ReccuringExpensesRepository.save(newExpense));
+        }
+      } else {
+        const newExpense = this.ReccuringExpensesRepository.create(expenseDto);
+        results.push(await this.ReccuringExpensesRepository.save(newExpense));
+      }
+    }
+
+    return results;
   }
 
   async getExpenses(uid: string) {
@@ -31,6 +62,17 @@ export class RecurringExpensesService {
         userId: uid,
       },
     });
+
+    return expenses;
+  }
+
+  async deleteExpense(expenseId: string) {
+    console.log("id", expenseId);
+    const expenses = await this.ReccuringExpensesRepository.delete({
+      id: expenseId,
+    });
+
+    console.log("exp", expenses);
 
     return expenses;
   }

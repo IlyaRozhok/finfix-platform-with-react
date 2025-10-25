@@ -7,6 +7,10 @@ import {
 } from "class-validator";
 
 export class CreateRecurringExpenseDto {
+  @IsOptional()
+  @IsUUID()
+  id?: string;
+
   @IsUUID() userId: string;
 
   @IsUUID()

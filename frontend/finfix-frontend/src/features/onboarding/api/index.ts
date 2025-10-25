@@ -3,6 +3,7 @@ import {
   ReqUserCurrency,
   ReqCreateUserExpense,
   ReqUserIncomes,
+  ReqDeleteUserExpense,
 } from "../model/types";
 
 export const createUserOnboardingCurrency = async (
@@ -39,6 +40,17 @@ export const createUserExpenses = async (payload: ReqCreateUserExpense[]) => {
   try {
     const response = await api.post("api/onboarding/expenses", payload);
     return response.data;
+  } catch (err) {
+    console.error("Failed to update expenses:", err);
+    throw err;
+  }
+};
+
+export const deleteExpense = async (id: string) => {
+  try {
+    const expense = await api.delete(`/api/onboarding/expenses/${id}`);
+    alert("Expense sucessfully deleted");
+    return expense.data;
   } catch (err) {
     console.error("Failed to update expenses:", err);
     throw err;

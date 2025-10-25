@@ -6,6 +6,7 @@ import { useOnboarding } from "../model/store";
 import { ListboxFloating } from "@/shared/ui";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { renderBtn } from "../lib";
+import { deleteExpense } from "../api";
 
 interface Props {
   row: Row;
@@ -18,8 +19,13 @@ const numberRe = /^-?\d*(\.\d*)?$/;
 export function ExpenseRow(props: Props) {
   const { categories, row } = props;
 
-  const { updateExpense, removeExpense, errors, clearExpenseError } =
-    useOnboarding();
+  const {
+    updateExpense,
+    removeExpense,
+    errors,
+    clearExpenseError,
+    originalData,
+  } = useOnboarding();
   const { user } = useAuth();
   const rowError = errors.expenses?.[row.id];
 
@@ -28,7 +34,26 @@ export function ExpenseRow(props: Props) {
     categories.find((cat) => cat.id === row.categoryId)?.label ||
     row.categoryId;
 
-  console.log(row);
+  // Check if this expense has been modified
+  const originalExpense = originalData.expenses.find(
+    (exp) => exp.id === row.id
+  );
+  const isModified =
+    originalExpense &&
+    (originalExpense.categoryId !== row.categoryId ||
+      originalExpense.amount !== row.amount ||
+      originalExpense.description !== row.description);
+
+
+  const removeExpenseHandler = (id: string) => {
+
+    {
+      if (window.confirm("Are you sure you want to delete this expense?")) {
+        removeExpense(id);
+        deleteExpense(id)
+      }
+    }
+  };
   return (
     <div
       className={clsx(
@@ -65,7 +90,12 @@ export function ExpenseRow(props: Props) {
               user?.id as string
             )
           }
-          className="h-11 min-w-0"
+          className={clsx(
+            "h-11 min-w-0",
+            isModified &&
+              originalExpense?.description !== row.description &&
+              "ring-2 ring-blue-400/50"
+          )}
           containerClassName="h-11"
         />
       </div>
@@ -87,7 +117,12 @@ export function ExpenseRow(props: Props) {
               clearExpenseError(row.id);
             }
           }}
-          className="h-11 text-right"
+          className={clsx(
+            "h-11 text-right",
+            isModified &&
+              originalExpense?.amount !== row.amount &&
+              "ring-2 ring-blue-400/50"
+          )}
           containerClassName="h-11"
           error={rowError}
         />
@@ -112,8 +147,9 @@ export function ExpenseRow(props: Props) {
       <div className="order-5 md:order-none flex justify-start">
         <button
           aria-label="Remove expense"
-          onClick={() => removeExpense(row.id)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 hover:bg-white/15"
+          onClick={() => removeExpenseHandler(row.id)}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 hover:bg-white/15 transition-colors"
+          title="Delete expense"
         >
           <TrashIcon className="h-5 w-5 text-slate-300" />
         </button>

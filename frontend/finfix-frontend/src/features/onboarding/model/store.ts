@@ -32,13 +32,14 @@ const isValidDebt = (d: Debt) => {
   switch (d.debtType) {
     case "credit_card":
       return totalOk && monthOk && rateOk;
-    default: // bank_loan | mortgage | car | other
+    default:
       return totalOk && monthOk;
   }
 };
 
 type OnboardingState = {
   data: OnboardingData;
+  originalData: OnboardingData;
   errors: {
     incomes: string;
     expenses?: Record<string, string>;
@@ -65,10 +66,17 @@ type OnboardingState = {
   validateDebts: () => boolean;
   clearDebtError: (id: string) => void;
   validateDebtRow: (id: string) => void;
+  hasExpensesChanged: () => boolean;
 };
 
 export const useOnboarding = create<OnboardingState>((set, get) => ({
   data: {
+    baseCurrency: "UAH",
+    incomes: "",
+    expenses: [],
+    debts: [],
+  },
+  originalData: {
     baseCurrency: "UAH",
     incomes: "",
     expenses: [],
@@ -104,6 +112,7 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
   setExpenses: (expenses) =>
     set((s) => ({
       data: { ...s.data, expenses },
+      originalData: { ...s.originalData, expenses },
     })),
 
   removeExpense: (id) =>
@@ -227,4 +236,49 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
       }
       return { ...s, errors: { ...s.errors, debts: debtsErrors } };
     }),
+
+  hasExpensesChanged: () => {
+    const { data, originalData } = get();
+
+    // Compare expenses arrays
+    if (data.expenses.length !== originalData.expenses.length) {
+      return true;
+    }
+
+    // Create maps for easier comparison
+    const currentMap = new Map(data.expenses.map((exp) => [exp.id, exp]));
+    const originalMap = new Map(
+      originalData.expenses.map((exp) => [exp.id, exp])
+    );
+
+    // Check if all original expenses still exist and are unchanged
+    for (const [id, originalExp] of originalMap) {
+      const currentExp = currentMap.get(id);
+
+      if (!currentExp) {
+        // Expense was deleted
+        return true;
+      }
+
+      if (
+        currentExp.userId !== originalExp.userId ||
+        currentExp.categoryId !== originalExp.categoryId ||
+        currentExp.amount !== originalExp.amount ||
+        currentExp.description !== originalExp.description
+      ) {
+        // Expense was modified
+        return true;
+      }
+    }
+
+    // Check if any new expenses were added
+    for (const [id] of currentMap) {
+      if (!originalMap.has(id)) {
+        // New expense was added
+        return true;
+      }
+    }
+
+    return false;
+  },
 }));

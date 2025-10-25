@@ -14,9 +14,12 @@ const prepareExpensesForApi = (
   expenses: ReqUserExpense[]
 ): ReqCreateUserExpense[] => {
   return expenses.map((expense) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // Include the ID if it exists (for updates) or omit it (for new records)
     const { id, ...rest } = expense;
-    return rest;
+    return {
+      ...rest,
+      ...(id && { id }), // Only include id if it exists
+    };
   });
 };
 
@@ -43,8 +46,13 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { data, setIncomesError, validateExpenses, validateDebts } =
-    useOnboarding();
+  const {
+    data,
+    setIncomesError,
+    validateExpenses,
+    validateDebts,
+    hasExpensesChanged,
+  } = useOnboarding();
   const handleNext = () => {
     if (step === OnboardingStep.INCOMES) {
       if (!data.incomes) {
@@ -61,11 +69,14 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
       const ok = validateExpenses();
       if (!ok) return;
 
-      if (user?.id) {
+      // Only send request if expenses have changed
+      if (hasExpensesChanged() && user?.id) {
         console.log("u", user);
         console.log("d", data);
         const cleanedExpenses = prepareExpensesForApi(data.expenses);
         createUserExpenses(cleanedExpenses);
+      } else {
+        console.log("Expenses unchanged, skipping API call");
       }
     }
 

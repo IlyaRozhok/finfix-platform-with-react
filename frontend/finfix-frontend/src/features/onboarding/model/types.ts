@@ -40,6 +40,7 @@ export type ReqUserExpense = {
 };
 
 export type ReqCreateUserExpense = {
+  id?: string;
   userId: string;
   categoryId: string;
   amount: number | string;
