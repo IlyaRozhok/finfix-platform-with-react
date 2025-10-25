@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from "@nestjs/common";
 
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { DebtsService } from "./debt.service";
@@ -18,5 +26,11 @@ export class DebtsController {
   async createExpense(@Body() dto: CreateDebtDto[]) {
     const expenses = await this.DebtsService.createDebts(dto);
     return expenses;
+  }
+
+  @Delete(`${ENDPOINTS.ONBOARDING.DEBTS}/:id`)
+  async deleteDebt(@Param("id") id: string) {
+    const debt = await this.DebtsService.deleteDebt(id);
+    return debt;
   }
 }

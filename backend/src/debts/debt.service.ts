@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { Debt } from "./debt.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -12,10 +16,9 @@ export class DebtsService {
   ) {}
 
   async getDebts(uid: string) {
-    console.log("uid", uid);
-    // if (!uid) {
-    //   throw new BadRequestException("User id not provided");
-    // }
+    if (!uid) {
+      throw new BadRequestException("User id not provided");
+    }
     const debts = await this.DebtsRepository.find({
       where: {
         userId: uid,
@@ -23,15 +26,15 @@ export class DebtsService {
     });
     return debts;
   }
-  // :Promise<Debt[]>
-  async createDebts(dto: CreateDebtDto[]) {
+
+  async createDebts(dto: CreateDebtDto[]): Promise<Debt[]> {
     if (!dto.length) {
       throw new BadRequestException("Payload did not provided");
     }
     const debts = dto.map((d) =>
       this.DebtsRepository.create({
         //@ts-ignore
-        userId: d.userId as any,
+        userId: d.userId,
         description: d.description ?? null,
         interest: Number(d.interest),
         totalDebt: Number(d.totalDebt),
@@ -42,5 +45,21 @@ export class DebtsService {
     );
 
     return await this.DebtsRepository.save(debts);
+  }
+
+  async deleteDebt(id: string) {
+    console.log("id", id);
+    if (!id) {
+      throw new BadRequestException("Debt id not provided");
+    }
+    const debt = await this.DebtsRepository.findBy({ id });
+
+    if (!debt) {
+      throw new NotFoundException(`Debt with id ${id} not found`);
+    }
+
+    await this.DebtsRepository.remove(debt);
+
+    return debt;
   }
 }
