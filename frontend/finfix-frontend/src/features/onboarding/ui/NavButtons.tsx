@@ -14,7 +14,6 @@ import {
   createUserExpenses,
   createUserOnboardingIncomes,
   updateDebt,
-  deleteDebt,
 } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -41,7 +40,6 @@ const prepareNewDebtsForApi = (
       return {
         ...rest,
         userId: userId,
-        // Don't include id for new debts
       };
     });
 };
@@ -93,7 +91,6 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
       const ok = validateExpenses();
       if (!ok) return;
 
-      // Only send request if expenses have changed
       if (hasExpensesChanged() && user?.id) {
         const expensesPayload = prepareExpensesForApi(data.expenses);
         createUserExpenses(expensesPayload);
@@ -104,15 +101,12 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
       const ok = validateDebts();
       if (!ok) return;
 
-      // Only send request if debts have changed
       if (hasDebtsChanged() && user?.id) {
-        // Create new debts (only those with temp- prefix)
         const newDebtsPayload = prepareNewDebtsForApi(data.debts, user.id);
         if (newDebtsPayload.length > 0) {
           createDebts(newDebtsPayload, user.id);
         }
 
-        // Update existing debts individually
         const existingDebts = data.debts.filter(
           (debt) => debt.id && !debt.id.startsWith("temp-")
         );

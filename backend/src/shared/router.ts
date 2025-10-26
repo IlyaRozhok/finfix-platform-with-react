@@ -20,5 +20,6 @@ export const ENDPOINTS = {
     INCOMES: "incomes",
     EXPENSES: "expenses",
     DEBTS: "debts",
+    INSTALLMENTS: "installments",
   },
 };

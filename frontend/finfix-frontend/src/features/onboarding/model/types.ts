@@ -1,11 +1,20 @@
 import { Debt } from "@/entities/debts/model";
 
+export type Installment = {
+  id: string;
+  description: string;
+  startDate: string;
+  totalAmount: string;
+  totalPayments: string;
+};
+
 export enum OnboardingStep {
   WELCOME = "Welcome",
   CURRENCY = "Currency",
   INCOMES = "Incomes",
   EXPENSES = "Expenses",
   BANK_DEBT = "debts",
+  INSTALLMENTS = "installments",
 }
 
 export type OnboardingStepsCfg = {
@@ -19,6 +28,7 @@ export type OnboardingData = {
   incomes: string;
   expenses: ReqUserExpense[];
   debts: Debt[];
+  installments: Installment[];
 };
 
 export type ReqUserCurrency = {
@@ -53,4 +63,13 @@ export type ReqCreateDebt = {
   totalDebt: string;
   interest: string;
   description?: string;
+};
+
+export type ReqCreateInstallment = {
+  id?: string;
+  userId: string;
+  totalAmount: string;
+  totalPayments: string;
+  description: string;
+  startDate: string;
 };
