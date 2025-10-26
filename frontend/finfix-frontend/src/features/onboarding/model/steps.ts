@@ -10,6 +10,11 @@ export const ONBOARDING_STEPS: OnboardingStepsCfg[] = [
   { id: OnboardingStep.INCOMES, path: "incomes", title: "Monthly incomes" },
   { id: OnboardingStep.EXPENSES, path: "expenses", title: "Monthly expenses" },
   { id: OnboardingStep.BANK_DEBT, path: "debts", title: "Debts" },
+  {
+    id: OnboardingStep.INSTALLMENTS,
+    path: "installments",
+    title: "Installments",
+  },
 ];
 
 export const getOnboardingPath = (props: GetOnboardingPathProps) => {

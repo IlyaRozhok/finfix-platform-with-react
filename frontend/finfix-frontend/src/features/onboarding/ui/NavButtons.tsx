@@ -6,6 +6,8 @@ import {
   ReqCreateDebt,
   ReqCreateUserExpense,
   ReqUserExpense,
+  ReqCreateInstallment,
+  Installment,
 } from "../model/types";
 import { Debt } from "@entities/debts/model";
 import { useOnboarding } from "../model/store";
@@ -14,6 +16,8 @@ import {
   createUserExpenses,
   createUserOnboardingIncomes,
   updateDebt,
+  createInstallments,
+  updateInstallment,
 } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -36,10 +40,28 @@ const prepareNewDebtsForApi = (
   return debts
     .filter((debt) => !debt.id || debt.id.startsWith("temp-")) // Only include new debts
     .map((debt) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...rest } = debt;
       return {
         ...rest,
         userId: userId,
+      };
+    });
+};
+
+const prepareNewInstallmentsForApi = (
+  installments: Installment[],
+  userId: string
+): ReqCreateInstallment[] => {
+  return installments
+    .filter((inst) => !inst.id || inst.id.startsWith("temp-"))
+    .map((inst) => {
+      return {
+        userId,
+        description: inst.description,
+        startDate: inst.startDate,
+        totalAmount: inst.totalAmount,
+        totalPayments: inst.totalPayments,
       };
     });
 };
@@ -74,6 +96,8 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
     validateDebts,
     hasExpensesChanged,
     hasDebtsChanged,
+    validateInstallments,
+    hasInstallmentsChanged,
   } = useOnboarding();
   const handleNext = () => {
     if (step === OnboardingStep.INCOMES) {
@@ -118,6 +142,38 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
             description: debt.description || "",
           };
           updateDebt(debt.id!, debtPayload);
+        }
+      }
+    }
+
+    if (step === OnboardingStep.INSTALLMENTS) {
+      const ok = validateInstallments();
+      if (!ok) return;
+
+      // Only process if there are installments and changes were made
+      if (hasInstallmentsChanged() && user?.id && data.installments) {
+        // Create new installments
+        const newInstallmentsPayload = prepareNewInstallmentsForApi(
+          data.installments,
+          user.id
+        );
+        if (newInstallmentsPayload.length > 0) {
+          createInstallments(newInstallmentsPayload);
+        }
+
+        // Update existing installments
+        const existingInstallments = data.installments.filter(
+          (inst) => inst.id && !inst.id.startsWith("temp-")
+        );
+        for (const inst of existingInstallments) {
+          const installmentPayload = {
+            userId: user.id,
+            description: inst.description,
+            startDate: inst.startDate,
+            totalAmount: inst.totalAmount,
+            totalPayments: inst.totalPayments,
+          };
+          updateInstallment(inst.id!, installmentPayload);
         }
       }
     }

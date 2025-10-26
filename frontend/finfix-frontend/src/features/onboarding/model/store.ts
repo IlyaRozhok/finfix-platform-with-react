@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { OnboardingData } from "./types";
+import { OnboardingData, Installment } from "./types";
 import { ReqUserExpense } from "@/features/onboarding/model/types";
 import { Debt } from "@/entities/debts/model";
 import { createUserOnboardingCurrency, deleteDebt } from "../api";
@@ -17,6 +17,14 @@ const mkRow = (categoryId?: string): ReqUserExpense => ({
   categoryId: categoryId || "",
   description: "",
   amount: "",
+});
+
+const mkInstallment = (): Installment => ({
+  id: `temp-${crypto.randomUUID()}`,
+  description: "",
+  startDate: "",
+  totalAmount: "",
+  totalPayments: "",
 });
 
 const isEmptyDebt = (d: Debt) => !d.description && !d.totalDebt;
@@ -58,6 +66,18 @@ type OnboardingState = {
   validateDebtRow: (id: string) => void;
   hasExpensesChanged: () => boolean;
   hasDebtsChanged: () => boolean;
+  // Installments
+  addInstallment: () => void;
+  setInstallments: (installments: Installment[]) => void;
+  removeInstallment: (id: string) => void;
+  updateInstallment: <K extends keyof Installment>(
+    id: string,
+    k: K,
+    v: Installment[K]
+  ) => void;
+  validateInstallments: () => boolean;
+  clearInstallmentError: (id: string) => void;
+  hasInstallmentsChanged: () => boolean;
 };
 
 export const useOnboarding = create<OnboardingState>((set, get) => ({
@@ -66,14 +86,16 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     incomes: "",
     expenses: [],
     debts: [],
+    installments: [],
   },
   originalData: {
     baseCurrency: "UAH",
     incomes: "",
     expenses: [],
     debts: [],
+    installments: [],
   },
-  errors: { incomes: "", expenses: {}, debts: {} },
+  errors: { incomes: "", expenses: {}, debts: {}, installments: {} },
 
   setCurrency: async (userId, currency) => {
     try {
@@ -321,6 +343,112 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
         // Debt was modified
         return true;
       }
+    }
+
+    return false;
+  },
+
+  addInstallment: () =>
+    set((s) => ({
+      data: {
+        ...s.data,
+        installments: [...(s.data.installments || []), mkInstallment()],
+      },
+    })),
+
+  setInstallments: (installments) =>
+    set((s) => ({
+      data: { ...s.data, installments },
+      originalData: { ...s.originalData, installments },
+    })),
+
+  removeInstallment: (id) =>
+    set((s) => ({
+      data: {
+        ...s.data,
+        installments: (s.data.installments || []).filter(
+          (inst) => inst.id !== id
+        ),
+      },
+      errors: {
+        ...s.errors,
+        installments: Object.fromEntries(
+          Object.entries(s.errors.installments ?? {}).filter(([k]) => k !== id)
+        ),
+      },
+    })),
+
+  updateInstallment: (id, k, v) =>
+    set((s) => ({
+      data: {
+        ...s.data,
+        installments: (s.data.installments || []).map((inst) =>
+          inst.id === id ? { ...inst, [k]: v } : inst
+        ),
+      },
+    })),
+
+  validateInstallments: () => {
+    const { installments } = get().data;
+    const errs: Record<string, string> = {};
+    (installments || []).forEach((inst) => {
+      if (!inst.description) {
+        errs[inst.id] = "Description is required";
+      } else if (!inst.startDate) {
+        errs[inst.id] = "Start date is required";
+      } else if (!inst.totalAmount || Number(inst.totalAmount) <= 0) {
+        errs[inst.id] = "Enter a positive total amount";
+      } else if (!inst.totalPayments || Number(inst.totalPayments) <= 0) {
+        errs[inst.id] = "Enter a positive number of payments";
+      }
+    });
+    set((s) => ({ errors: { ...s.errors, installments: errs } }));
+    return Object.keys(errs).length === 0;
+  },
+
+  clearInstallmentError: (id) =>
+    set((s) => ({
+      errors: {
+        ...s.errors,
+        installments: { ...(s.errors.installments ?? {}), [id]: "" },
+      },
+    })),
+
+  hasInstallmentsChanged: () => {
+    const { data, originalData } = get();
+
+    const currentInstallments = data.installments || [];
+    const originalInstallments = originalData.installments || [];
+
+    if (currentInstallments.length !== originalInstallments.length) {
+      return true;
+    }
+
+    const currentMap = new Map(
+      currentInstallments.map((inst) => [inst.id, inst])
+    );
+    const originalMap = new Map(
+      originalInstallments.map((inst) => [inst.id, inst])
+    );
+
+    for (const [id, originalInst] of originalMap) {
+      const currentInst = currentMap.get(id);
+      if (!currentInst) return true;
+      if (
+        currentInst.description !== originalInst.description ||
+        currentInst.startDate !== originalInst.startDate ||
+        currentInst.totalAmount !== originalInst.totalAmount ||
+        currentInst.totalPayments !== originalInst.totalPayments
+      ) {
+        return true;
+      }
+    }
+
+    const hasNewInstallments = currentInstallments.some(
+      (inst) => !inst.id || inst.id.startsWith("temp-")
+    );
+    if (hasNewInstallments) {
+      return true;
     }
 
     return false;

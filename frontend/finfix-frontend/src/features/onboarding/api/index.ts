@@ -4,6 +4,8 @@ import {
   ReqCreateUserExpense,
   ReqUserIncomes,
   ReqCreateDebt,
+  ReqCreateInstallment,
+  Installment,
 } from "../model/types";
 
 export const createUserOnboardingCurrency = async (
@@ -116,6 +118,54 @@ export const deleteDebt = async (id: string) => {
     return debt.data;
   } catch (err) {
     console.error("Failed to update debt:", err);
+    throw err;
+  }
+};
+
+export const fetchInstallments = async (
+  uid: string
+): Promise<Installment[]> => {
+  try {
+    const response = await api.get(`api/onboarding/installments/${uid}`);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch installments:", err);
+    throw err;
+  }
+};
+
+export const createInstallments = async (payload: ReqCreateInstallment[]) => {
+  try {
+    const response = await api.post(`api/onboarding/installments`, payload);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to create installments:", err);
+    throw err;
+  }
+};
+
+export const updateInstallment = async (
+  id: string,
+  payload: ReqCreateInstallment
+) => {
+  try {
+    const response = await api.put(
+      `/api/onboarding/installments/${id}`,
+      payload
+    );
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update installment:", err);
+    throw err;
+  }
+};
+
+export const deleteInstallment = async (id: string) => {
+  try {
+    const installment = await api.delete(`/api/onboarding/installments/${id}`);
+    return installment.data;
+  } catch (err) {
+    console.error("Failed to delete installment:", err);
     throw err;
   }
 };

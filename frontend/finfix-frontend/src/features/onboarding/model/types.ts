@@ -28,7 +28,7 @@ export type OnboardingData = {
   incomes: string;
   expenses: ReqUserExpense[];
   debts: Debt[];
-  installments: Installment[];
+  installments?: Installment[];
 };
 
 export type ReqUserCurrency = {
