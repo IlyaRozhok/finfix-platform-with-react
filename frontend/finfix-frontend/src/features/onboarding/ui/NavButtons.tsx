@@ -20,6 +20,7 @@ import {
   updateInstallment,
 } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { newInstallmentPayload } from "../lib/newInstallmentPayload";
 
 const prepareExpensesForApi = (
   expenses: ReqUserExpense[]
@@ -158,20 +159,14 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
         console.log("payload", newInstallmentsPayload);
         console.log("data", data);
 
-        const payload = data.installments.map((i) => {
-          return {
-            userId: user?.id,
-            description: i.description,
-            startDate: i.startDate,
-            totalAmount: i.totalAmount,
-            totalPayments: i.totalPayments,
-          };
-        });
+        const payload = newInstallmentPayload(
+          data.installments,
+          user?.id as string
+        );
 
         createInstallments(payload);
       }
-      // Always navigate to dashboard after installments (optional step)
-      // navigate("/dashboard", { replace: true });
+
       return;
     }
     // navigate(getOnboardingPath({ step, type: "next" }));
