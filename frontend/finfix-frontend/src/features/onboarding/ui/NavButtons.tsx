@@ -3,13 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { getOnboardingPath } from "../model/steps";
 import {
   OnboardingStep,
-  ReqCreateDebt,
   ReqCreateUserExpense,
   ReqUserExpense,
-  ReqCreateInstallment,
-  Installment,
 } from "../model/types";
-import { Debt } from "@entities/debts/model";
 import { useOnboarding } from "../model/store";
 import {
   createDebts,
@@ -17,10 +13,10 @@ import {
   createUserOnboardingIncomes,
   updateDebt,
   createInstallments,
-  updateInstallment,
 } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { newInstallmentPayload } from "../lib/newInstallmentPayload";
+import { prepareNewDebtsForApi } from "../lib/prepareNewDebtsForApi";
 
 const prepareExpensesForApi = (
   expenses: ReqUserExpense[]
@@ -32,39 +28,6 @@ const prepareExpensesForApi = (
       ...(id && { id }),
     };
   });
-};
-
-const prepareNewDebtsForApi = (
-  debts: Debt[],
-  userId: string
-): ReqCreateDebt[] => {
-  return debts
-    .filter((debt) => !debt.id) // Only include new debts
-    .map((debt) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id, ...rest } = debt;
-      return {
-        ...rest,
-        userId: userId,
-      };
-    });
-};
-
-const prepareNewInstallmentsForApi = (
-  installments: Installment[],
-  userId: string
-): ReqCreateInstallment[] => {
-  return installments
-    .filter((inst) => !inst.id)
-    .map((inst) => {
-      return {
-        userId,
-        description: inst.description,
-        startDate: inst.startDate,
-        totalAmount: inst.totalAmount,
-        totalPayments: inst.totalPayments,
-      };
-    });
 };
 
 interface OnboardingNextButtonProps {
@@ -98,7 +61,6 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
     hasExpensesChanged,
     hasDebtsChanged,
     validateInstallments,
-    hasInstallmentsChanged,
   } = useOnboarding();
   const handleNext = () => {
     if (step === OnboardingStep.INCOMES) {
@@ -146,30 +108,20 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
     }
 
     if (step === OnboardingStep.INSTALLMENTS) {
-      // Only validate if there are installments
       if (data.installments && data.installments.length > 0) {
         const ok = validateInstallments();
         if (!ok) return;
-
-        const newInstallmentsPayload = prepareNewInstallmentsForApi(
-          data.installments,
-          user?.id as string
-        );
-
-        console.log("payload", newInstallmentsPayload);
-        console.log("data", data);
 
         const payload = newInstallmentPayload(
           data.installments,
           user?.id as string
         );
-
         createInstallments(payload);
       }
 
       return;
     }
-    // navigate(getOnboardingPath({ step, type: "next" }));
+    navigate(getOnboardingPath({ step, type: "next" }));
   };
 
   return (
