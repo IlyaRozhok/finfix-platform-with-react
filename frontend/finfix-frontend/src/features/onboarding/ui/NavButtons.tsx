@@ -38,7 +38,7 @@ const prepareNewDebtsForApi = (
   userId: string
 ): ReqCreateDebt[] => {
   return debts
-    .filter((debt) => !debt.id || debt.id.startsWith("temp-")) // Only include new debts
+    .filter((debt) => !debt.id) // Only include new debts
     .map((debt) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...rest } = debt;
@@ -54,7 +54,7 @@ const prepareNewInstallmentsForApi = (
   userId: string
 ): ReqCreateInstallment[] => {
   return installments
-    .filter((inst) => !inst.id || inst.id.startsWith("temp-"))
+    .filter((inst) => !inst.id)
     .map((inst) => {
       return {
         userId,
@@ -131,9 +131,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
           createDebts(newDebtsPayload, user.id);
         }
 
-        const existingDebts = data.debts.filter(
-          (debt) => debt.id && !debt.id.startsWith("temp-")
-        );
+        const existingDebts = data.debts.filter((debt) => debt.id);
         for (const debt of existingDebts) {
           const debtPayload = {
             userId: user.id,
@@ -147,37 +145,36 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
     }
 
     if (step === OnboardingStep.INSTALLMENTS) {
-      const ok = validateInstallments();
-      if (!ok) return;
+      // Only validate if there are installments
+      if (data.installments && data.installments.length > 0) {
+        const ok = validateInstallments();
+        if (!ok) return;
 
-      // Only process if there are installments and changes were made
-      if (hasInstallmentsChanged() && user?.id && data.installments) {
-        // Create new installments
         const newInstallmentsPayload = prepareNewInstallmentsForApi(
           data.installments,
-          user.id
+          user?.id as string
         );
-        if (newInstallmentsPayload.length > 0) {
-          createInstallments(newInstallmentsPayload);
-        }
 
-        // Update existing installments
-        const existingInstallments = data.installments.filter(
-          (inst) => inst.id && !inst.id.startsWith("temp-")
-        );
-        for (const inst of existingInstallments) {
-          const installmentPayload = {
-            userId: user.id,
-            description: inst.description,
-            startDate: inst.startDate,
-            totalAmount: inst.totalAmount,
-            totalPayments: inst.totalPayments,
+        console.log("payload", newInstallmentsPayload);
+        console.log("data", data);
+
+        const payload = data.installments.map((i) => {
+          return {
+            userId: user?.id,
+            description: i.description,
+            startDate: i.startDate,
+            totalAmount: i.totalAmount,
+            totalPayments: i.totalPayments,
           };
-          updateInstallment(inst.id!, installmentPayload);
-        }
+        });
+
+        createInstallments(payload);
       }
+      // Always navigate to dashboard after installments (optional step)
+      // navigate("/dashboard", { replace: true });
+      return;
     }
-    navigate(getOnboardingPath({ step, type: "next" }));
+    // navigate(getOnboardingPath({ step, type: "next" }));
   };
 
   return (

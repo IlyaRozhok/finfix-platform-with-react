@@ -9,6 +9,8 @@ interface OnboardingSummary {
   incomes: number | null;
   isOnboarded: boolean;
   expenses: unknown[];
+  debts?: unknown[];
+  installments?: unknown[];
 }
 
 export const OnboardingWrapper: React.FC = () => {
@@ -23,19 +25,25 @@ export const OnboardingWrapper: React.FC = () => {
         return "";
       }
 
-      if (!summary.incomes) {
-        return "/";
-      }
-
       if (!summary.currency) {
         return "/currency";
+      }
+
+      if (!summary.incomes) {
+        return "/incomes";
       }
 
       if (!summary.expenses || summary.expenses.length === 0) {
         return "/expenses";
       }
 
-      return "/debts";
+      // Check if we have debts data, if not go to debts
+      if (!summary.debts) {
+        return "/debts";
+      }
+
+      // If all data is complete, go to installments
+      return "/installments";
     },
     [navigate]
   );

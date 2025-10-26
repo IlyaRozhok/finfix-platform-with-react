@@ -5,7 +5,6 @@ import { Debt } from "@/entities/debts/model";
 import { createUserOnboardingCurrency, deleteDebt } from "../api";
 
 const mkDebt = (): Debt => ({
-  id: `temp-${crypto.randomUUID()}`,
   description: "",
   totalDebt: "",
   interest: "",
@@ -20,7 +19,7 @@ const mkRow = (categoryId?: string): ReqUserExpense => ({
 });
 
 const mkInstallment = (): Installment => ({
-  id: `temp-${crypto.randomUUID()}`,
+  id: crypto.randomUUID(),
   description: "",
   startDate: "",
   totalAmount: "",
@@ -41,6 +40,7 @@ type OnboardingState = {
     incomes: string;
     expenses?: Record<string, string>;
     debts?: Record<string, string>;
+    installments?: Record<string, string>;
   };
   setCurrency: (userId: string, currency: string) => Promise<void>;
   setIncomes: (amount: string) => void;
@@ -184,7 +184,7 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
   removeDebt: (id) => {
     // Check if this debt exists on server (has a real ID, not a temporary one)
     const debt = get().data.debts.find((d) => d.id === id);
-    const isExistingDebt = debt && debt.id && !debt.id.startsWith("temp-");
+    const isExistingDebt = debt && debt.id;
 
     // If it's an existing debt, call API to delete it
     if (isExistingDebt) {
@@ -298,17 +298,11 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     const { data, originalData } = get();
 
     // Get only existing debts (not temp ones) for comparison
-    const currentExistingDebts = data.debts.filter(
-      (debt) => debt.id && !debt.id.startsWith("temp-")
-    );
-    const originalExistingDebts = originalData.debts.filter(
-      (debt) => debt.id && !debt.id.startsWith("temp-")
-    );
+    const currentExistingDebts = data.debts.filter((debt) => debt.id);
+    const originalExistingDebts = originalData.debts.filter((debt) => debt.id);
 
     // Check if any new debts were added
-    const hasNewDebts = data.debts.some(
-      (debt) => !debt.id || debt.id.startsWith("temp-")
-    );
+    const hasNewDebts = data.debts.some((debt) => !debt.id);
     if (hasNewDebts) {
       return true;
     }
@@ -392,6 +386,7 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     const { installments } = get().data;
     const errs: Record<string, string> = {};
     (installments || []).forEach((inst) => {
+      if (!inst.id) return;
       if (!inst.description) {
         errs[inst.id] = "Description is required";
       } else if (!inst.startDate) {
@@ -444,9 +439,7 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
       }
     }
 
-    const hasNewInstallments = currentInstallments.some(
-      (inst) => !inst.id || inst.id.startsWith("temp-")
-    );
+    const hasNewInstallments = currentInstallments.some((inst) => !inst.id);
     if (hasNewInstallments) {
       return true;
     }

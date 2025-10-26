@@ -1,7 +1,7 @@
 import { Debt } from "@/entities/debts/model";
 
 export type Installment = {
-  id: string;
+  id?: string;
   description: string;
   startDate: string;
   totalAmount: string;
