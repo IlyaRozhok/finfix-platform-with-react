@@ -67,6 +67,10 @@ export class InstallmentsService {
       return entity;
     });
 
+
+    
     return await this.installmentRepository.save(entities);
+
+  
   }
 }

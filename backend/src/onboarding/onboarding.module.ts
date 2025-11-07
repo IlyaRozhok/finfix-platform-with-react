@@ -40,4 +40,4 @@ import { DebtsService } from "@/debts/debt.service";
   ],
   exports: [OnboardingService],
 })
-export class CategoriesModule {}
+export class OnboadingModule {}

@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
-import { CategoriesModule } from "./onboarding/onboarding.module";
+import { OnboadingModule } from "./onboarding/onboarding.module";
 import { DebtsModule } from "./debts/debts.module";
 import { RecurringExpensesModule } from "./recurring-expenses/recurring-expenses.module";
 import { InstallmentsModule } from "./installments/installments.module";
@@ -32,7 +32,7 @@ import { envFileMap } from "./shared/envFileMap";
     }),
     AuthModule,
     UsersModule,
-    CategoriesModule,
+    OnboadingModule,
     DebtsModule,
     RecurringExpensesModule,
     InstallmentsModule,
