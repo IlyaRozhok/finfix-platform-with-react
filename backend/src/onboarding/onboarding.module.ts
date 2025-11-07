@@ -6,15 +6,12 @@ import { Category } from "./onboarding.entity";
 import { UsersModule } from "@/users/users.module";
 import { User } from "@/users/user.entity";
 import { UsersService } from "@/users/users.service";
-import { RecurringExpensesService } from "@/recurring-expenses/recurring-expenses.service";
 import { RecurringExpensesModule } from "@/recurring-expenses/recurring-expenses.module";
 import { RecurringExpense } from "@/recurring-expenses/recurring-expense.entity";
 import { InstallmentsModule } from "@/installments/installments.module";
 import { Installment } from "@/installments/installment.entity";
-import { InstallmentsService } from "@/installments/installments.service";
 import { Debt } from "@/debts/debt.entity";
 import { DebtsModule } from "@/debts/debts.module";
-import { DebtsService } from "@/debts/debt.service";
 
 @Module({
   imports: [
@@ -31,13 +28,7 @@ import { DebtsService } from "@/debts/debt.service";
     DebtsModule,
   ],
   controllers: [OnboardingController],
-  providers: [
-    OnboardingService,
-    UsersService,
-    RecurringExpensesService,
-    InstallmentsService,
-    DebtsService,
-  ],
+  providers: [OnboardingService, UsersService],
   exports: [OnboardingService],
 })
 export class OnboadingModule {}
