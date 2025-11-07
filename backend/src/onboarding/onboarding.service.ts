@@ -47,6 +47,18 @@ export class OnboardingService {
       installmnets,
       debts,
     };
+
+    const isOnboardingCompleted =
+      resData.currency &&
+      resData.incomes > 0 &&
+      resData.debts?.length > 0 &&
+      resData.expenses?.length > 0 &&
+      resData.installmnets?.length > 0;
+
+    if (isOnboardingCompleted) {
+      this.usersService.passOnboarding(uid);
+    }
+
     return resData;
   }
 }
