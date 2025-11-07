@@ -46,8 +46,8 @@ export class Installment {
   @Column({ name: "total_payments", type: "int" })
   totalPayments: number;
 
-  @Column({ name: "status", type: "varchar", default: false })
-  status: boolean;
+  @Column({ name: "status", type: "varchar", length: 50, default: "active" })
+  status: string;
 
   @CreateDateColumn({ name: "created_at", type: "timestamptz" })
   createdAt: Date;

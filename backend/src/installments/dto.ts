@@ -33,9 +33,6 @@ export class CreateInstallmentDto {
   totalPayments: number;
 
   @IsString()
-  status: string;
-
-  @IsString()
   @IsNotEmpty()
   description: string;
 }

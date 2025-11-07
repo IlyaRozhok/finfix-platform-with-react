@@ -81,10 +81,11 @@ export class InitSchema1755943618564 implements MigrationInterface {
         "user_id" uuid NOT NULL,
         "description" text NOT NULL,
         "start_date" date NOT NULL,
+        "end_date" date NOT NULL,
         "total_amount" numeric(14,2) NOT NULL,
         "monthly_payment" numeric(14,2) NOT NULL,
         "total_payments" integer NOT NULL,
-        "is_closed" boolean NOT NULL DEFAULT false,
+        "status" varchar(50) NOT NULL DEFAULT 'active',
         "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
         CONSTRAINT "PK_c74e44aa06bdebef2af0a93da1b" PRIMARY KEY ("id")

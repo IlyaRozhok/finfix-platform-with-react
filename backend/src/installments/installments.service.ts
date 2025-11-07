@@ -12,7 +12,9 @@ export class InstallmentsService {
     private readonly installmentRepository: Repository<Installment>
   ) {}
 
-  async createInstallment(dtos: CreateInstallmentDto[]) {
+  async createInstallment(
+    dtos: CreateInstallmentDto[]
+  ): Promise<Installment[]> {
     if (!Array.isArray(dtos) || dtos.length === 0) {
       throw new BadRequestException("Payload must be a non-empty array");
     }
@@ -27,32 +29,31 @@ export class InstallmentsService {
         Number(d.totalAmount) / Number(d.totalPayments)
       );
       const monthlyInteres = (Number(d.totalAmount) / 100) * interestRate;
-      console.log("m interes", monthlyInteres);
       const totalInteres = monthlyInteres * d.totalPayments;
 
-      const start = parseISO(d.startDate); // 2024-03-18T00:00:00.000Z
-      if (isNaN(start.getTime()))
-        throw new BadRequestException("Invalid startDate");
+      const start = parseISO(d.startDate);
+      if (isNaN(start.getTime())) {
+        throw new BadRequestException(
+          "Invalid startDate format. Expected ISO format: 2024-03-18T00:00:00.000Z"
+        );
+      }
       const end = addMonths(start, Number(d.totalPayments));
       const startDateSQL = format(start, "yyyy-MM-dd");
       const endDateSQL = format(end, "yyyy-MM-dd");
-      //@ts-ignore
-      const entities = this.installmentRepository.create({
-        //@ts-ignore
+
+      const entity = this.installmentRepository.create({
+        ...(d.id && { id: d.id }),
         userId: d.userId,
         startDate: startDateSQL,
         endDate: endDateSQL,
-        totalAmount: d.totalAmount + totalInteres,
+        totalAmount: Number(d.totalAmount) + totalInteres,
         totalPayments: d.totalPayments,
         monthlyPayment: monthlyPayment + monthlyInteres,
-        status: d.status ?? "active",
-
         description: d.description.trim(),
       });
-      return entities;
+      return entity;
     });
 
-    console.log("SAVED", entities);
-    // return await this.installmentRepository.save(entities)
+    return await this.installmentRepository.save(entities);
   }
 }
