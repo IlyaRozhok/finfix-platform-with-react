@@ -7,19 +7,9 @@ import { useEffect, useMemo, useState } from "react";
 import { ExpenseRow } from "@/features/onboarding/";
 import { ReqUserExpense as Row } from "@/features/onboarding/model/types";
 import { fetchCategories } from "@/features/onboarding/api";
-import useOnboardingSummary from "@/features/onboarding/lib/useOnboardingSummary";
-
-interface BackendExpense {
-  id: string;
-  userId: string;
-  categoryId: string;
-  amount: string;
-  description: string;
-}
 
 export const OnboardingExpenses = () => {
-  const { data, addExpense, updateExpense, setExpenses } = useOnboarding();
-  const { expenses: summaryExpenses } = useOnboardingSummary();
+  const { data, addExpense, updateExpense } = useOnboarding();
   const [categories, setCategories] = useState<
     {
       id: string;
@@ -37,33 +27,12 @@ export const OnboardingExpenses = () => {
         setCategories(formattedCategories);
       }
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     }
   };
   useEffect(() => {
     getCategories();
   }, []);
-
-  // Prefill expenses from summary data
-  useEffect(() => {
-    if (
-      summaryExpenses &&
-      summaryExpenses.length > 0 &&
-      data.expenses.length === 0
-    ) {
-      // Transform backend data to frontend format
-      const transformedExpenses = summaryExpenses.map(
-        (expense: BackendExpense) => ({
-          id: expense.id,
-          userId: expense.userId,
-          categoryId: expense.categoryId,
-          amount: expense.amount,
-          description: expense.description || "",
-        })
-      );
-      setExpenses(transformedExpenses);
-    }
-  }, [summaryExpenses, data.expenses.length, setExpenses]);
 
   useEffect(() => {
     if (categories && categories.length > 0) {

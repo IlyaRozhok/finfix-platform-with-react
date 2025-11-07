@@ -1,12 +1,9 @@
 import {
   Controller,
   Get,
-  Put,
-  Delete,
-  Body,
   Param,
-  UseGuards,
   NotFoundException,
+  Post,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -34,6 +31,12 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException("User not found");
     }
+    return user;
+  }
+
+  @Post()
+  async passOnboarding(@Param("uid") uid: string) {
+    const user = await this.usersService.passOnboarding(uid);
     return user;
   }
 }

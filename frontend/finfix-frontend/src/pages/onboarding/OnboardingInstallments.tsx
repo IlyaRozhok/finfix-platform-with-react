@@ -1,55 +1,13 @@
 import { OnboardingStep, Installment } from "@/features/onboarding/model/types";
 import { OnboardingFrame } from "@/widgets/onboarding";
 import { Button } from "@/shared/ui";
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { InstallmentRow } from "@/features/onboarding/ui/InstallmentRow";
 import { useOnboarding } from "@/features/onboarding/model/store";
-import { fetchInstallments } from "@/features/onboarding/api";
-import { useAuth } from "@/app/providers/AuthProvider";
 
 export const OnboardingInstallments = () => {
-  const {
-    data,
-    addInstallment,
-    updateInstallment,
-    removeInstallment,
-    setInstallments,
-  } = useOnboarding();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    const loadInstallments = async () => {
-      const currentInstallments = data.installments || [];
-      if (user?.id && currentInstallments.length === 0) {
-        try {
-          const backendInstallments = await fetchInstallments(user.id);
-          if (backendInstallments && backendInstallments.length > 0) {
-            const transformedInstallments: Installment[] =
-              backendInstallments.map(
-                (inst: {
-                  id: string;
-                  description: string;
-                  startDate: string;
-                  totalAmount: number;
-                  totalPayments: number;
-                }) => ({
-                  id: inst.id,
-                  description: inst.description || "",
-                  startDate: inst.startDate,
-                  totalAmount: String(inst.totalAmount),
-                  totalPayments: String(inst.totalPayments),
-                })
-              );
-            setInstallments(transformedInstallments);
-          }
-        } catch (error) {
-          console.error("Failed to fetch installments:", error);
-        }
-      }
-    };
-
-    loadInstallments();
-  }, [user?.id, data.installments, setInstallments]);
+  const { data, addInstallment, updateInstallment, removeInstallment } =
+    useOnboarding();
 
   const handleUpdate = (id: string, key: string, value: string) => {
     updateInstallment(id, key as keyof Installment, value);

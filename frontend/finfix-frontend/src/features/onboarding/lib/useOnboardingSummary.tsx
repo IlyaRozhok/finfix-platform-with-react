@@ -10,27 +10,57 @@ interface BackendExpense {
   description: string;
 }
 
+interface BackendInstallment {
+  id: string;
+  userId: string;
+  description: string;
+  startDate: string;
+  totalAmount: number;
+  totalPayments: number;
+  monthlyPayment: number;
+  status: string;
+}
+
+interface BackendDebt {
+  id: string;
+  userId: string;
+  description: string;
+  totalDebt: string;
+  interest: string;
+}
+
 interface ISummary {
   isOnboarded: boolean;
-  incomes: string;
+  incomes: number | string;
+  currency: string;
   expenses: BackendExpense[];
+  installmnets?: BackendInstallment[];
+  installments?: BackendInstallment[];
+  debts?: BackendDebt[];
 }
+
 export default function useOnboardingSummary() {
   const [summary, setSummary] = useState<ISummary>();
+  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
   const getSummary = async (id: string) => {
-    const summary = await fetchSummary(id);
-    setSummary(summary);
+    try {
+      setLoading(true);
+      const summary = await fetchSummary(id);
+      setSummary(summary);
+    } catch (error) {
+      console.error("Failed to fetch summary:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     if (user?.id) {
       getSummary(user?.id);
-    } else {
-      throw new Error("User id did not provided");
     }
   }, [user?.id]);
 
-  return { ...summary };
+  return { ...summary, loading };
 }

@@ -61,4 +61,13 @@ export class UsersService {
     user.incomes = incomes;
     return await this.usersRepository.save(user);
   }
+
+  async passOnboarding(id: string, incomes: number): Promise<User> {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+    user.isOnboarded = true;
+    return await this.usersRepository.save(user);
+  }
 }
