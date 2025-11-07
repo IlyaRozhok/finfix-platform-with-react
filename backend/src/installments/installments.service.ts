@@ -12,6 +12,19 @@ export class InstallmentsService {
     private readonly installmentRepository: Repository<Installment>
   ) {}
 
+  async getInstallments(uid: string): Promise<Installment[]> {
+    if (!uid) {
+      throw new BadRequestException("User id not provided");
+    }
+    const installments = await this.installmentRepository.find({
+      where: {
+        userId: uid,
+      },
+    });
+
+    return installments;
+  }
+
   async createInstallment(
     dtos: CreateInstallmentDto[]
   ): Promise<Installment[]> {

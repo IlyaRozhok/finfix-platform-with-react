@@ -5,6 +5,8 @@ import { Category, CategoryKind } from "./onboarding.entity";
 import { User } from "@/users/user.entity";
 import { UsersService } from "@/users/users.service";
 import { RecurringExpensesService } from "@/recurring-expenses/recurring-expenses.service";
+import { InstallmentsService } from "@/installments/installments.service";
+import { DebtsService } from "@/debts/debt.service";
 
 @Injectable()
 export class OnboardingService {
@@ -12,34 +14,10 @@ export class OnboardingService {
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
     private readonly usersService: UsersService,
-    private readonly expenseService: RecurringExpensesService
+    private readonly expenseService: RecurringExpensesService,
+    private readonly installmentsService: InstallmentsService,
+    private readonly debtsService: DebtsService
   ) {}
-
-  // async findOnboardingCategories(uid: string) {
-  //   return await this.categoryRepository.find({
-  //     select: { id: true, name: true },
-  //     where: {
-  //       // kind: CategoryKind.EXPENSE,
-  //       userId: uid,
-  //     },
-  //     order: {
-  //       name: "ASC",
-  //     },
-  //   });
-  // }
-
-  // async findOnboardingCurrencies(uid: string) {
-  //   return await this.categoryRepository.find({
-  //     select: { id: true, name: true },
-  //     where: {
-  //       kind: CategoryKind.EXPENSE,
-  //       userId: uid,
-  //     },
-  //     order: {
-  //       name: "ASC",
-  //     },
-  //   });
-  // }
 
   async setCategories(dto: Category[]) {
     const categories = this.categoryRepository.create(dto);
@@ -59,11 +37,15 @@ export class OnboardingService {
     }
 
     const expenses = await this.expenseService.getExpenses(uid);
+    const installmnets = await this.installmentsService.getInstallments(uid);
+    const debts = await this.debtsService.getDebts(uid);
     const resData = {
       currency: user.currency,
       incomes: user.incomes,
       isOnboarded: user.isOnboarded,
       expenses,
+      installmnets,
+      debts,
     };
     return resData;
   }

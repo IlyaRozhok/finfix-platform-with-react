@@ -5,7 +5,6 @@ import {
   ReqUserIncomes,
   ReqCreateDebt,
   ReqCreateInstallment,
-  Installment,
 } from "../model/types";
 
 export const createUserOnboardingCurrency = async (
@@ -122,9 +121,7 @@ export const deleteDebt = async (id: string) => {
   }
 };
 
-export const fetchInstallments = async (
-  uid: string
-): Promise<Installment[]> => {
+export const fetchInstallments = async (uid: string) => {
   try {
     const response = await api.get(`api/onboarding/installments/${uid}`);
     return response.data;
