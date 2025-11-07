@@ -9,6 +9,7 @@ export class InstallmentsController {
 
   @Post(ENDPOINTS.ONBOARDING.INSTALLMENTS)
   async createInstallment(@Body() dtos: CreateInstallmentDto[]) {
+    console.log("dtos", dtos);
     const installments = await this.installmentsService.createInstallment(dtos);
     return installments;
   }

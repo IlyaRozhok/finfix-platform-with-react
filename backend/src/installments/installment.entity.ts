@@ -1,4 +1,5 @@
 import { User } from "@/users/user.entity";
+import { Type } from "class-transformer";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -29,17 +30,24 @@ export class Installment {
   @Column({ name: "start_date", type: "date" })
   startDate: string;
 
+  @Index()
+  @Column({ name: "end_date", type: "date" })
+  endDate: string;
+
+  @Type(() => Number)
   @Column({ name: "total_amount", type: "numeric", precision: 14, scale: 2 })
-  totalAmount: string;
+  totalAmount: number;
 
+  @Type(() => Number)
   @Column({ name: "monthly_payment", type: "numeric", precision: 14, scale: 2 })
-  monthlyPayment: string;
+  monthlyPayment: number;
 
+  @Type(() => Number)
   @Column({ name: "total_payments", type: "int" })
   totalPayments: number;
 
-  @Column({ name: "is_closed", type: "boolean", default: false })
-  isClosed: boolean;
+  @Column({ name: "status", type: "varchar", default: false })
+  status: boolean;
 
   @CreateDateColumn({ name: "created_at", type: "timestamptz" })
   createdAt: Date;

@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { Installment } from "./installment.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateInstallmentDto } from "./dto";
+import { addMonths, format, parseISO } from "date-fns";
 
 @Injectable()
 export class InstallmentsService {
@@ -21,19 +22,37 @@ export class InstallmentsService {
         throw new BadRequestException("totalPayments must be > 0");
       }
 
-      const monthlyPayment = Math.floor(d.totalAmount / d.totalPayments);
+      const interestRate = 1.9;
+      const monthlyPayment = Math.floor(
+        Number(d.totalAmount) / Number(d.totalPayments)
+      );
+      const monthlyInteres = (Number(d.totalAmount) / 100) * interestRate;
+      console.log("m interes", monthlyInteres);
+      const totalInteres = monthlyInteres * d.totalPayments;
 
-      return this.installmentRepository.create({
+      const start = parseISO(d.startDate); // 2024-03-18T00:00:00.000Z
+      if (isNaN(start.getTime()))
+        throw new BadRequestException("Invalid startDate");
+      const end = addMonths(start, Number(d.totalPayments));
+      const startDateSQL = format(start, "yyyy-MM-dd");
+      const endDateSQL = format(end, "yyyy-MM-dd");
+      //@ts-ignore
+      const entities = this.installmentRepository.create({
         //@ts-ignore
         userId: d.userId,
-        startDate: d.startDate,
-        totalAmount: d.totalAmount,
+        startDate: startDateSQL,
+        endDate: endDateSQL,
+        totalAmount: d.totalAmount + totalInteres,
         totalPayments: d.totalPayments,
-        monthlyPayment,
-        isClosed: d.isClosed ?? false,
+        monthlyPayment: monthlyPayment + monthlyInteres,
+        status: d.status ?? "active",
+
         description: d.description.trim(),
       });
+      return entities;
     });
-    console.log("entities", entities);
+
+    console.log("SAVED", entities);
+    // return await this.installmentRepository.save(entities)
   }
 }

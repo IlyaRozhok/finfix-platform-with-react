@@ -37,9 +37,6 @@ export class RecurringExpense {
   @Column({ type: "numeric", precision: 14, scale: 2 })
   amount: string;
 
-  @Column({ name: "end_date", type: "date", nullable: true })
-  endDate?: string | null;
-
   @CreateDateColumn({ name: "created_at", type: "timestamptz" })
   createdAt: Date;
 

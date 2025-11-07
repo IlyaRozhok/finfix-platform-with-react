@@ -18,6 +18,7 @@ export class CreateInstallmentDto {
   @IsUUID()
   userId: string;
 
+  @IsNotEmpty()
   @IsDateString()
   startDate: string;
 
@@ -31,8 +32,8 @@ export class CreateInstallmentDto {
   @Min(1)
   totalPayments: number;
 
-  @IsBoolean()
-  isClosed: boolean;
+  @IsString()
+  status: string;
 
   @IsString()
   @IsNotEmpty()
