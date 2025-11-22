@@ -44,8 +44,8 @@ export function ExpenseCategoriesChart({
   );
 
   return (
-    <div className="bg-white p-6 rounded-lg border shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-lg">
+      <h3 className="text-lg font-semibold text-white mb-4">
         Top Expense Categories
       </h3>
       <div className="h-80">
@@ -57,7 +57,7 @@ export function ExpenseCategoriesChart({
               cy="50%"
               labelLine={false}
               label={({ name, percent }) =>
-                `${name} ${(percent * 100).toFixed(0)}%`
+                `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
               }
               outerRadius={80}
               fill="#8884d8"

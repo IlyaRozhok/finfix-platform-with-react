@@ -33,7 +33,7 @@ export function DashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Loading dashboard...</div>
+        <div className="text-white/70">Loading dashboard...</div>
       </div>
     );
   }
@@ -41,7 +41,7 @@ export function DashboardPage() {
   if (error || !stats) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-red-500">{error || "Failed to load data"}</div>
+        <div className="text-red-300">{error || "Failed to load data"}</div>
       </div>
     );
   }
@@ -53,39 +53,35 @@ export function DashboardPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+        <p className="mt-2 text-white/80">
           Welcome back, {user?.userName ?? user?.email}
         </p>
       </div>
 
       {/* Monthly Overview Widgets */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Monthly Overview</h2>
+        <h2 className="text-xl font-semibold text-white mb-4">Monthly Overview</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <OverviewWidget
             title="Total Income"
             value={stats.incomes}
             icon={<ArrowTrendingUpIcon className="h-8 w-8" />}
-            color="green"
           />
           <OverviewWidget
             title="Total Expenses"
             value={totalExpenses}
             icon={<CurrencyDollarIcon className="h-8 w-8" />}
-            color="red"
           />
           <OverviewWidget
             title="Net Worth"
             value={stats.monthlyNetworth}
             icon={<BanknotesIcon className="h-8 w-8" />}
-            color="blue"
           />
           <OverviewWidget
             title="Monthly Obligations"
             value={stats.monthlyObligations}
             icon={<BanknotesIcon className="h-8 w-8" />}
-            color="yellow"
           />
         </div>
       </div>

@@ -5,7 +5,7 @@ import { DashboardHeader } from "@/widgets/header/DashboardHeader";
 
 export default function DashboardLayout() {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <DashboardSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <DashboardHeader />
