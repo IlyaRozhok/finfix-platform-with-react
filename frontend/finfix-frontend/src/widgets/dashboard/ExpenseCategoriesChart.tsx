@@ -27,17 +27,18 @@ const COLORS = [
 export function ExpenseCategoriesChart({
   expenses,
 }: ExpenseCategoriesChartProps) {
-  // Group expenses by category and sum amounts
+  // Group expenses by category name and sum amounts
   const categoryTotals = expenses.reduce((acc, expense) => {
     const amount = parseFloat(expense.amount);
-    acc[expense.categoryId] = (acc[expense.categoryId] || 0) + amount;
+    const categoryName = expense.category.name;
+    acc[categoryName] = (acc[categoryName] || 0) + amount;
     return acc;
   }, {} as Record<string, number>);
 
   console.log(categoryTotals);
   const data = Object.entries(categoryTotals).map(
-    ([categoryId, total], index) => ({
-      name: `Category ${categoryId.slice(0, 8)}...`, // Truncate for display
+    ([categoryName, total], index) => ({
+      name: categoryName,
       value: total,
       color: COLORS[index % COLORS.length],
     })
