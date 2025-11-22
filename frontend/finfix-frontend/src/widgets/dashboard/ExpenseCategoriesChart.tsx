@@ -1,5 +1,12 @@
 import React from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from "recharts";
 import { Expense } from "@/features/dashboard/model/types";
 
 interface ExpenseCategoriesChartProps {
@@ -17,7 +24,9 @@ const COLORS = [
   "#F97316", // orange
 ];
 
-export function ExpenseCategoriesChart({ expenses }: ExpenseCategoriesChartProps) {
+export function ExpenseCategoriesChart({
+  expenses,
+}: ExpenseCategoriesChartProps) {
   // Group expenses by category and sum amounts
   const categoryTotals = expenses.reduce((acc, expense) => {
     const amount = parseFloat(expense.amount);
@@ -25,15 +34,20 @@ export function ExpenseCategoriesChart({ expenses }: ExpenseCategoriesChartProps
     return acc;
   }, {} as Record<string, number>);
 
-  const data = Object.entries(categoryTotals).map(([categoryId, total], index) => ({
-    name: `Category ${categoryId.slice(0, 8)}...`, // Truncate for display
-    value: total,
-    color: COLORS[index % COLORS.length],
-  }));
+  console.log(categoryTotals);
+  const data = Object.entries(categoryTotals).map(
+    ([categoryId, total], index) => ({
+      name: `Category ${categoryId.slice(0, 8)}...`, // Truncate for display
+      value: total,
+      color: COLORS[index % COLORS.length],
+    })
+  );
 
   return (
     <div className="bg-white p-6 rounded-lg border shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Expense Categories</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        Top Expense Categories
+      </h3>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -42,7 +56,9 @@ export function ExpenseCategoriesChart({ expenses }: ExpenseCategoriesChartProps
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              label={({ name, percent }) =>
+                `${name} ${(percent * 100).toFixed(0)}%`
+              }
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
@@ -51,7 +67,9 @@ export function ExpenseCategoriesChart({ expenses }: ExpenseCategoriesChartProps
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip formatter={(value) => [value.toLocaleString(), "Amount"]} />
+            <Tooltip
+              formatter={(value) => [value.toLocaleString(), "Amount"]}
+            />
             <Legend />
           </PieChart>
         </ResponsiveContainer>
@@ -59,4 +77,3 @@ export function ExpenseCategoriesChart({ expenses }: ExpenseCategoriesChartProps
     </div>
   );
 }
-

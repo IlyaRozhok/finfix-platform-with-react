@@ -5,6 +5,7 @@ import {
   RequireGuest,
   RequireOnboarded,
 } from "@/app/guards/guard";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 import OnboardingLayout from "../layouts/OnboardingLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -18,6 +19,25 @@ import {
   OnboardingDebts,
   OnboardingInstallments,
 } from "@/pages/onboarding";
+
+// Component for root redirect that considers user auth status
+function RootRedirect() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="grid h-screen place-items-center">
+        <div className="animate-pulse text-sm text-neutral-500">Loading…</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Navigate to={user.isOnboarded ? "/dashboard" : "/onboarding"} replace />;
+}
 
 export function AppRouter() {
   return (
@@ -67,7 +87,7 @@ export function AppRouter() {
         <Route path="settings" element={<div className="text-center py-20"><h2 className="text-2xl font-semibold text-gray-900">Settings</h2><p className="text-gray-600 mt-2">Coming soon...</p></div>} />
       </Route>
 
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<RootRedirect />} />
       {/* Don't redirect API paths */}
       <Route path="/api/*" element={null} />
       <Route path="*" element={<Navigate to="/" replace />} />
