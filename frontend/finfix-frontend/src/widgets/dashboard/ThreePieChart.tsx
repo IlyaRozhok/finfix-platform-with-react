@@ -1,7 +1,7 @@
-import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
-import { Expense } from '@/features/dashboard/model/types';
+import React, { useRef, useMemo } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import { Expense } from "@/features/dashboard/model/types";
 
 interface ThreePieChartProps {
   expenses: Expense[];
@@ -23,12 +23,12 @@ function PieSlice({
   startAngle,
   endAngle,
   color,
-  radius = 2.5,
-  height = 0.4,
+  radius = 3.9,
+  height = 0.5,
   name,
   value,
   total,
-  delay = 0
+  delay = 0,
 }: {
   startAngle: number;
   endAngle: number;
@@ -74,7 +74,7 @@ function PieSlice({
       bevelSegments: 8,
       steps: 1,
       bevelSize: 0.05,
-      bevelThickness: 0.05
+      bevelThickness: 0.05,
     };
 
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
@@ -92,14 +92,16 @@ function PieSlice({
           emissive={new THREE.Color(color).multiplyScalar(0.1)}
         />
       </mesh>
-
     </group>
   );
 }
 
-
 // Main 3D Pie Chart component
-function PieChart3D({ data }: { data: Array<{ name: string; value: number; color: string }> }) {
+function PieChart3D({
+  data,
+}: {
+  data: Array<{ name: string; value: number; color: string }>;
+}) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
   let currentAngle = 0;
 
@@ -150,7 +152,10 @@ export function ThreePieChart({ expenses }: ThreePieChartProps) {
     .sort(([, a], [, b]) => b - a) // Sort by value descending
     .slice(0, 8) // Take top 8 categories
     .map(([categoryName, total], index) => ({
-      name: categoryName.length > 15 ? categoryName.substring(0, 15) + '...' : categoryName,
+      name:
+        categoryName.length > 15
+          ? categoryName.substring(0, 15) + "..."
+          : categoryName,
       value: total,
       color: COLORS[index % COLORS.length],
     }));
@@ -164,10 +169,10 @@ export function ThreePieChart({ expenses }: ThreePieChartProps) {
   }
 
   return (
-    <div className="w-full h-64">
+    <div className="w-full h-80">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 60 }}
-        style={{ background: 'transparent' }}
+        style={{ background: "transparent" }}
       >
         <PieChart3D data={data} />
       </Canvas>

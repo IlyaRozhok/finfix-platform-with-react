@@ -67,7 +67,7 @@ export function ExpenseCategoriesChart({
                 </div>
                 <div className="text-right ml-2">
                   <div className="text-sm font-bold text-primary-background">
-                    ${total.toLocaleString()}
+                    {total.toLocaleString()}
                   </div>
                   <div className="text-xs text-disable">{percentage}%</div>
                 </div>
@@ -77,7 +77,7 @@ export function ExpenseCategoriesChart({
           <div className="mt-3 pt-3 border-t border-white/20">
             <div className="text-center">
               <div className="text-sm font-bold text-primary-background">
-                Total: ${totalExpenses.toLocaleString()}
+                Total: {totalExpenses.toLocaleString()}
               </div>
             </div>
           </div>
