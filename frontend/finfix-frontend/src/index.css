@@ -28,9 +28,15 @@
 }
 
 @theme {
+  /* Legacy colors */
   --color-deep-blue: #021024;
   --color-primary-blue: #003459;
   --color-light-blue: #adebff;
+
+  /* New color palette */
+  --color-background: #1F2937;
+  --color-secondary: #F9FAFB;
+  --color-disable: #4B5563;
 }
 
 /* Тонкий, «воздушный» скролл для выпадашек */

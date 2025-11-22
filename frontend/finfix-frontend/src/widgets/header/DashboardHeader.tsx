@@ -1,22 +1,51 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "@/app/providers/AuthProvider";
 import LogoutButton from "@/features/auth/logout/LogoutButton";
 import { CloseButton } from "@/shared/ui";
 
+const getPageTitle = (pathname: string): string => {
+  const pathMap: Record<string, string> = {
+    "/dashboard": "Dashboard",
+    "/dashboard/transactions": "Transactions",
+    "/dashboard/debts": "Debts",
+    "/dashboard/installments": "Installments",
+    "/dashboard/expenses": "Expenses",
+    "/dashboard/settings": "Settings",
+  };
+
+  return pathMap[pathname] || "Dashboard";
+};
+
 export const DashboardHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useAuth();
+  const location = useLocation();
+  const pageTitle = getPageTitle(location.pathname);
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-between">
+    <header
+      className="h-16 px-6 flex items-center justify-between"
+      style={{
+        backgroundColor: "#01030A",
+        borderBottom: "1px solid rgba(255,255,255,0.1)",
+      }}
+    >
       <div className="flex items-center space-x-4">
-        <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
+        <h1 className="text-xl font-semibold text-white">{pageTitle}</h1>
       </div>
 
       <div className="relative">
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors"
+          className="flex items-center space-x-2 p-2 rounded-full transition-colors"
+          style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")
+          }
         >
           {user?.avatarUrl ? (
             <img
@@ -30,12 +59,19 @@ export const DashboardHeader: React.FC = () => {
             </div>
           )}
           {!isMenuOpen && (
-            <span className="text-sm text-gray-700">{user?.userName}</span>
+            <span className="text-sm text-white/80">{user?.userName}</span>
           )}
         </button>
 
         {isMenuOpen && (
-          <div className="absolute right-0 top-12 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50">
+          <div
+            className="absolute right-0 top-12 w-64 rounded-lg shadow-lg p-4 z-50"
+            style={{
+              backgroundColor: "rgba(1, 3, 10, 0.95)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              backdropFilter: "blur(10px)",
+            }}
+          >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 {user?.avatarUrl ? (
@@ -50,13 +86,18 @@ export const DashboardHeader: React.FC = () => {
                   </div>
                 )}
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{user?.userName}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
+                  <p className="text-sm font-medium text-white">
+                    {user?.userName}
+                  </p>
+                  <p className="text-xs text-white/60">{user?.email}</p>
                 </div>
               </div>
               <CloseButton handleClose={() => setIsMenuOpen(false)} />
             </div>
-            <div className="border-t border-gray-200 pt-4">
+            <div
+              className="pt-4"
+              style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
+            >
               <LogoutButton />
             </div>
           </div>

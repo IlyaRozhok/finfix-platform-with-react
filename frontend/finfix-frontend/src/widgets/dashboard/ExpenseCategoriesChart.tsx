@@ -45,7 +45,7 @@ export function ExpenseCategoriesChart({
 
   return (
     <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-lg">
-      <h3 className="text-lg font-semibold text-white mb-4">
+      <h3 className="text-lg font-semibold text-primary-background mb-4">
         Top Expense Categories
       </h3>
       <div className="h-80">

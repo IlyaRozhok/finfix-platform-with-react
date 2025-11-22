@@ -5,7 +5,11 @@ import { DashboardStats } from "@/features/dashboard/model/types";
 import { OverviewWidget } from "@/widgets/dashboard/OverviewWidget";
 import { ExpenseCategoriesChart } from "@/widgets/dashboard/ExpenseCategoriesChart";
 import { InstallmentsWidget } from "@/widgets/dashboard/InstallmentsWidget";
-import { CurrencyDollarIcon, ArrowTrendingUpIcon, BanknotesIcon } from "@heroicons/react/24/outline";
+import {
+  CurrencyDollarIcon,
+  ArrowTrendingUpIcon,
+  BanknotesIcon,
+} from "@heroicons/react/24/outline";
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -47,21 +51,25 @@ export function DashboardPage() {
   }
 
   // Calculate total expenses
-  const totalExpenses = stats.expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
+  const totalExpenses = stats.expenses.reduce(
+    (sum, expense) => sum + parseFloat(expense.amount),
+    0
+  );
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-        <p className="mt-2 text-white/80">
+        <h1 className="text-3xl font-bold">
+          {" "}
           Welcome back, {user?.userName ?? user?.email}
-        </p>
+        </h1>
+        <p className="mt-1">Here you can see your financial overview</p>
       </div>
 
       {/* Monthly Overview Widgets */}
       <div>
-        <h2 className="text-xl font-semibold text-white mb-4">Monthly Overview</h2>
+        <h2 className="text-xl font-semibold mb-4">Monthly Overview</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <OverviewWidget
             title="Total Income"
