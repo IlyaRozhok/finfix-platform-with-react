@@ -4,6 +4,9 @@ import { UsersService } from "@/users/users.service";
 import { DebtsService } from "@/debts/debt.service";
 import { RecurringExpensesService } from "@/recurring-expenses/recurring-expenses.service";
 import { InstallmentsService } from "@/installments/installments.service";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Category } from "@/onboarding/onboarding.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class StatsService {
@@ -24,7 +27,6 @@ export class StatsService {
     const installments = await this.installmentsService.getInstallments(
       dto.uid
     );
-
     const totalMonthlyInstallments = installments.reduce((acc, i) => {
       acc += Number(i.monthlyPayment);
       return acc;

@@ -60,6 +60,7 @@ export class RecurringExpensesService {
       where: {
         userId: uid,
       },
+      relations: ["category"],
     });
 
     return expenses;

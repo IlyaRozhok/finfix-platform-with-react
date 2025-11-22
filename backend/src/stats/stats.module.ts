@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { StatsService } from "./stats.service";
 import { StatsController } from "./stats.controller";
-import { UsersService } from "@/users/users.service";
 import { UsersModule } from "@/users/users.module";
 import { DebtsModule } from "@/debts/debts.module";
 import { RecurringExpensesModule } from "@/recurring-expenses/recurring-expenses.module";
