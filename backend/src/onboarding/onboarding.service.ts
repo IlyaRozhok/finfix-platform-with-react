@@ -55,10 +55,6 @@ export class OnboardingService {
       resData.expenses?.length > 0 &&
       resData.installmnets?.length > 0;
 
-    if (isOnboardingCompleted) {
-      this.usersService.passOnboarding(uid);
-    }
-
     return resData;
   }
 }

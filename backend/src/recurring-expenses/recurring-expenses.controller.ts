@@ -1,8 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
 import { RecurringExpensesService } from "./recurring-expenses.service";
 import { RecurringExpense } from "./recurring-expense.entity";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
+import { ApiTags } from "@nestjs/swagger";
 
+@UseGuards(JwtAuthGuard)
+@ApiTags("Expenses")
 @Controller(ROUTE_SEGMENTS.ONBOARDING)
 export class RecurringExpensesController {
   constructor(

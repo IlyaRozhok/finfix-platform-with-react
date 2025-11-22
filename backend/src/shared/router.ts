@@ -3,6 +3,7 @@ import { CATCH_WATERMARK } from "@nestjs/common/constants";
 export const ROUTE_SEGMENTS = {
   AUTH: "auth",
   ONBOARDING: "onboarding",
+  STATS: "stats",
 };
 
 export const ENDPOINTS = {
@@ -21,5 +22,8 @@ export const ENDPOINTS = {
     EXPENSES: "expenses",
     DEBTS: "debts",
     INSTALLMENTS: "installments",
+  },
+  STATS: {
+    OVERVIEW: "overview",
   },
 };

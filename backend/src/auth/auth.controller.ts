@@ -21,7 +21,7 @@ import { cookieBaseFromEnv } from "./helpers/cookieBaseFromEnv";
 import { randomBytes } from "crypto";
 import { GoogleAuthGuard } from "./guards/google-auth-guard";
 
-@ApiTags(ROUTE_SEGMENTS.AUTH)
+@ApiTags("Auth")
 @Controller(ROUTE_SEGMENTS.AUTH)
 export class AuthController {
   constructor(

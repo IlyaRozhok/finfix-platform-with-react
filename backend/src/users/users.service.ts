@@ -62,7 +62,7 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async passOnboarding(uid: string): Promise<User> {
+  async completeOnboarding(uid: string): Promise<User> {
     const user = await this.findById(uid);
     if (!user) {
       throw new NotFoundException("User not found");

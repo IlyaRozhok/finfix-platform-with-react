@@ -166,3 +166,13 @@ export const deleteInstallment = async (id: string) => {
     throw err;
   }
 };
+
+export const completeOnboarding = async () => {
+  try {
+    const response = await api.post("api/users/complete-onboarding");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to complete onboarding:", err);
+    throw err;
+  }
+};

@@ -13,6 +13,7 @@ import {
   createUserOnboardingIncomes,
   updateDebt,
   createInstallments,
+  completeOnboarding,
 } from "../api";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { newInstallmentPayload } from "../lib/newInstallmentPayload";
@@ -52,7 +53,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
   step,
 }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, refresh } = useAuth();
   const {
     data,
     setIncomesError,
@@ -87,7 +88,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
     if (step === OnboardingStep.BANK_DEBT) {
       const ok = validateDebts();
       if (!ok) return;
-
+      console.log("user", user);
       if (hasDebtsChanged() && user?.id) {
         const newDebtsPayload = prepareNewDebtsForApi(data.debts, user.id);
         if (newDebtsPayload.length > 0) {
@@ -102,7 +103,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
             interest: debt.interest,
             description: debt.description || "",
           };
-          updateDebt(debt.id!, debtPayload);
+          updateDebt(user.id, debtPayload);
         }
       }
     }
@@ -119,14 +120,28 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
         createInstallments(payload);
       }
 
+      // Complete onboarding and redirect to dashboard
+      completeOnboarding()
+        .then(() => {
+          // Refresh user data to update isOnboarded status
+          refresh().then(() => {
+            navigate("/dashboard", { replace: true });
+          });
+        })
+        .catch((error) => {
+          console.error("Failed to complete onboarding:", error);
+        });
+
       return;
     }
     navigate(getOnboardingPath({ step, type: "next" }));
   };
 
+  const buttonText = step === OnboardingStep.INSTALLMENTS ? "Complete" : "Next";
+
   return (
     <Button variant="primary" onClick={handleNext}>
-      Next
+      {buttonText}
     </Button>
   );
 };

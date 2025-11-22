@@ -6,27 +6,34 @@ import {
   Param,
   Post,
   Put,
-  Query,
+  Req,
+  UseGuards,
 } from "@nestjs/common";
 
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { DebtsService } from "./debt.service";
 import { CreateDebtDto } from "./dto";
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
+import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 
+@UseGuards(JwtAuthGuard)
+@ApiTags("Debts")
 @Controller(ROUTE_SEGMENTS.ONBOARDING)
 export class DebtsController {
   constructor(private readonly DebtsService: DebtsService) {}
 
   @Get(`${ENDPOINTS.ONBOARDING.DEBTS}/:uid`)
   async getOnboardingDebts(@Param("uid") uid: string) {
-    const expenses = await this.DebtsService.getDebts(uid);
-    return expenses;
+    const debts = await this.DebtsService.getDebts(uid);
+    return debts;
   }
 
+  @ApiOperation({ summary: "Create debts" })
+  @ApiBody({ type: [CreateDebtDto] })
   @Post(ENDPOINTS.ONBOARDING.DEBTS)
-  async createExpense(@Body() dto: CreateDebtDto[]) {
-    const expenses = await this.DebtsService.createDebts(dto);
-    return expenses;
+  async createDebt(@Body() dto: CreateDebtDto[]) {
+    const debts = await this.DebtsService.createDebts(dto);
+    return debts;
   }
 
   @Put(`${ENDPOINTS.ONBOARDING.DEBTS}/:id`)
@@ -36,7 +43,7 @@ export class DebtsController {
   }
 
   @Delete(`${ENDPOINTS.ONBOARDING.DEBTS}/:id`)
-  async deleteDebt(@Param("id") id: string) {
+  async deleteDebt(@Req() id: string) {
     const debt = await this.DebtsService.deleteDebt(id);
     return debt;
   }

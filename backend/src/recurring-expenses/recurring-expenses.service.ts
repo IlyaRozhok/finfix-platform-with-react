@@ -66,12 +66,9 @@ export class RecurringExpensesService {
   }
 
   async deleteExpense(expenseId: string) {
-    console.log("id", expenseId);
     const expenses = await this.ReccuringExpensesRepository.delete({
       id: expenseId,
     });
-
-    console.log("exp", expenses);
 
     return expenses;
   }

@@ -72,7 +72,6 @@ export class DebtsService {
   }
 
   async deleteDebt(id: string) {
-    console.log("id", id);
     if (!id) {
       throw new BadRequestException("Debt id not provided");
     }

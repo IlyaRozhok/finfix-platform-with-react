@@ -4,6 +4,8 @@ import {
   Param,
   NotFoundException,
   Post,
+  UseGuards,
+  Req,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -34,9 +36,17 @@ export class UsersController {
     return user;
   }
 
-  @Post()
-  async passOnboarding(@Param("uid") uid: string) {
-    const user = await this.usersService.passOnboarding(uid);
+  @Post("complete-onboarding")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Complete user onboarding" })
+  @ApiResponse({
+    status: 200,
+    description: "Onboarding completed successfully",
+  })
+  async completeOnboarding(@Req() req) {
+    const uid = req.user.sub;
+    const user = await this.usersService.completeOnboarding(uid);
     return user;
   }
 }

@@ -9,6 +9,8 @@ import { RecurringExpensesModule } from "./recurring-expenses/recurring-expenses
 import { InstallmentsModule } from "./installments/installments.module";
 import { TransactionsModule } from "./transactions/transactions.module";
 import { envFileMap } from "./shared/envFileMap";
+import { StatsModule } from "./stats/stats.module";
+import { LivenessController } from "./liveness.controller";
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { envFileMap } from "./shared/envFileMap";
     RecurringExpensesModule,
     InstallmentsModule,
     TransactionsModule,
+    StatsModule,
   ],
+  controllers: [LivenessController],
 })
 export class AppModule {}

@@ -1,21 +1,15 @@
-import {
-  Controller,
-  Get,
-  UseGuards,
-  Query,
-  Post,
-  Body,
-  Param,
-} from "@nestjs/common";
+import { Controller, Get, UseGuards, Query, Post, Body } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { ROUTE_SEGMENTS, ENDPOINTS } from "../shared/router";
-import { categories } from "@/shared/consts";
 
 import { UsersService } from "../users/users.service";
 import { UpdateCurrencyDto, UpdateIncomesDto } from "./dto";
 import { Category } from "./onboarding.entity";
 import { OnboardingService } from "./onboarding.service";
+import { ApiTags } from "@nestjs/swagger";
 
+@UseGuards(JwtAuthGuard)
+@ApiTags("Onboarding")
 @Controller(ROUTE_SEGMENTS.ONBOARDING)
 export class OnboardingController {
   constructor(

@@ -1,8 +1,12 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { InstallmentsService } from "./installments.service";
 import { CreateInstallmentDto } from "./dto";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
+import { ApiTags } from "@nestjs/swagger";
 
+@UseGuards(JwtAuthGuard)
+@ApiTags("Installments")
 @Controller(ROUTE_SEGMENTS.ONBOARDING)
 export class InstallmentsController {
   constructor(private readonly installmentsService: InstallmentsService) {}

@@ -19,26 +19,27 @@ export const OnboardingWrapper: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const determineNextStep = useCallback(
-    (summary: OnboardingSummary): string => {
+    (summary: OnboardingSummary): string | null => {
       if (summary.isOnboarded) {
         navigate("/dashboard", { replace: true });
-        return "";
+        return null;
       }
 
-      if (!summary.currency) {
-        return "/currency";
+      // For new users who haven't set incomes yet, don't redirect - show welcome page
+      const hasCompletedIncomes = summary.incomes && summary.incomes > 0;
+      
+      // If user hasn't started onboarding (no incomes), show welcome page
+      if (!hasCompletedIncomes) {
+        return null; // null means don't redirect, show welcome
       }
 
-      if (!summary.incomes) {
-        return "/incomes";
-      }
-
+      // Once incomes are set, continue with the normal flow
       if (!summary.expenses || summary.expenses.length === 0) {
         return "/expenses";
       }
 
       // Check if we have debts data, if not go to debts
-      if (!summary.debts) {
+      if (!summary.debts || summary.debts.length === 0) {
         return "/debts";
       }
 
@@ -57,7 +58,14 @@ export const OnboardingWrapper: React.FC = () => {
     try {
       const summaryData = await fetchSummary(user.id);
       const nextStep = determineNextStep(summaryData);
-      navigate(`/onboarding${nextStep}`, { replace: true });
+      
+      // Only redirect if there's a next step (user has started onboarding)
+      if (nextStep) {
+        navigate(`/onboarding${nextStep}`, { replace: true });
+      } else {
+        // User hasn't started onboarding, show welcome page
+        setLoading(false);
+      }
     } catch (error) {
       console.error("Failed to load onboarding summary:", error);
       setLoading(false);
@@ -68,9 +76,6 @@ export const OnboardingWrapper: React.FC = () => {
     loadOnboardingSummary();
   }, [user?.id, navigate, determineNextStep]);
 
-  if (loading) {
-    return <OnboardingWelcome />;
-  }
-
+  // Show welcome page for new users
   return <OnboardingWelcome />;
 };

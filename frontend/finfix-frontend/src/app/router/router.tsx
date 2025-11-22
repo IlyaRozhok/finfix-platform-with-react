@@ -7,6 +7,7 @@ import {
 } from "@/app/guards/guard";
 
 import OnboardingLayout from "../layouts/OnboardingLayout";
+import DashboardLayout from "../layouts/DashboardLayout";
 import { OnboardingWrapper } from "../layouts/OnboardingWrapper";
 import { LoginPage } from "@/pages/login/LoginPage";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
@@ -53,13 +54,22 @@ export function AppRouter() {
         element={
           <RequireAuth>
             <RequireOnboarded>
-              <DashboardPage />
+              <DashboardLayout />
             </RequireOnboarded>
           </RequireAuth>
         }
-      />
+      >
+        <Route index element={<DashboardPage />} />
+        <Route path="transactions" element={<div className="text-center py-20"><h2 className="text-2xl font-semibold text-gray-900">Transactions</h2><p className="text-gray-600 mt-2">Coming soon...</p></div>} />
+        <Route path="debts" element={<div className="text-center py-20"><h2 className="text-2xl font-semibold text-gray-900">Debts</h2><p className="text-gray-600 mt-2">Coming soon...</p></div>} />
+        <Route path="installments" element={<div className="text-center py-20"><h2 className="text-2xl font-semibold text-gray-900">Installments</h2><p className="text-gray-600 mt-2">Coming soon...</p></div>} />
+        <Route path="expenses" element={<div className="text-center py-20"><h2 className="text-2xl font-semibold text-gray-900">Expenses</h2><p className="text-gray-600 mt-2">Coming soon...</p></div>} />
+        <Route path="settings" element={<div className="text-center py-20"><h2 className="text-2xl font-semibold text-gray-900">Settings</h2><p className="text-gray-600 mt-2">Coming soon...</p></div>} />
+      </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      {/* Don't redirect API paths */}
+      <Route path="/api/*" element={null} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
