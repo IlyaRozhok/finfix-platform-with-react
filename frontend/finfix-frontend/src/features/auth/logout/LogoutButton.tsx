@@ -10,8 +10,8 @@ export const LogoutButton = () => {
     <>
       {!openModal && (
         <div className="grid">
-          <Button onClick={() => setOpenModal(true)} variant="ghost">
-            Log out
+          <Button onClick={() => setOpenModal(true)} variant="primary">
+            Log Out
           </Button>
         </div>
       )}

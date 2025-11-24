@@ -23,7 +23,7 @@ function PieSlice({
   startAngle,
   endAngle,
   color,
-  radius = 3.9,
+  radius = 3.4,
   height = 0.5,
   name,
   value,

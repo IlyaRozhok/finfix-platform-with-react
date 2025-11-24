@@ -15,7 +15,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
 
   let styles =
     variant === "primary"
-      ? "bg-black text-white hover:bg-white hover:text-black active:bg-black"
+      ? "bg-white/90 text-black hover:bg-white hover:text-black active:bg-black"
       : "bg-neutral-400 hover:text-black hover:bg-neutral-300";
 
   if (variant === "black-blur") {
