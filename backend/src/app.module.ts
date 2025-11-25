@@ -11,6 +11,7 @@ import { TransactionsModule } from "./transactions/transactions.module";
 import { envFileMap } from "./shared/envFileMap";
 import { StatsModule } from "./stats/stats.module";
 import { LivenessController } from "./liveness.controller";
+import { IncomesModule } from "./incomes/incomes.module";
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { LivenessController } from "./liveness.controller";
           password: configService.getOrThrow<string>("PG_PASSWORD"),
           database: configService.getOrThrow<string>("PG_DBNAME"),
           entities: [__dirname + "/**/*.entity{.ts,.js}"],
-          synchronize: true,
+          synchronize: false,
           autoLoadEntities: true,
         };
       },
@@ -43,6 +44,7 @@ import { LivenessController } from "./liveness.controller";
     InstallmentsModule,
     TransactionsModule,
     StatsModule,
+    IncomesModule,
   ],
   controllers: [LivenessController],
 })

@@ -9,8 +9,8 @@ import {
   Index,
 } from "typeorm";
 
-import { User } from "@/users/user.entity";
-import { Category } from "@/onboarding/onboarding.entity";
+import { User } from "@/entities/user.entity";
+import { Category } from "@/entities/onboarding.entity";
 
 @Entity("recurring_expense")
 export class RecurringExpense {

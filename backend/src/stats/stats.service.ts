@@ -5,7 +5,7 @@ import { DebtsService } from "@/debts/debt.service";
 import { RecurringExpensesService } from "@/recurring-expenses/recurring-expenses.service";
 import { InstallmentsService } from "@/installments/installments.service";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Category } from "@/onboarding/onboarding.entity";
+import { Category } from "@/entities/onboarding.entity";
 import { Repository } from "typeorm";
 
 @Injectable()

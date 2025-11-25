@@ -8,12 +8,12 @@ import {
   UpdateDateColumn,
   Index,
 } from "typeorm";
-import { Category } from "../onboarding/onboarding.entity";
-import { Installment } from "../installments/installment.entity";
-import { Debt } from "../debts/debt.entity";
-import { User } from "@/users/user.entity";
-import { TransactionType } from "./types";
+import { Category } from "../entities/onboarding.entity";
+import { Installment } from "../entities/installment.entity";
+import { Debt } from "../entities/debt.entity";
+import { User } from "@/entities/user.entity";
 import { DecimalTransformer } from "@/shared/decimal.transformer";
+import { TransactionType } from "@/transactions/types";
 
 @Entity("transactions")
 export class Transaction {

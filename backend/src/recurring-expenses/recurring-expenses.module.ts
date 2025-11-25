@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { RecurringExpensesService } from "./recurring-expenses.service";
 import { RecurringExpensesController } from "./recurring-expenses.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { RecurringExpense } from "./recurring-expense.entity";
+import { RecurringExpense } from "../entities/recurring-expense.entity";
 
 @Module({
   imports: [TypeOrmModule.forFeature([RecurringExpense])],

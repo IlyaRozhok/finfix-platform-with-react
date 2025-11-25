@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateRecurringExpenseDto } from "./dto";
-import { RecurringExpense } from "./recurring-expense.entity";
+import { RecurringExpense } from "../entities/recurring-expense.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 

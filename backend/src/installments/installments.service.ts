@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
-import { Installment } from "./installment.entity";
+import { Installment } from "../entities/installment.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateInstallmentDto } from "./dto";
 import { addMonths, format, parseISO } from "date-fns";
@@ -67,10 +67,6 @@ export class InstallmentsService {
       return entity;
     });
 
-
-    
     return await this.installmentRepository.save(entities);
-
-  
   }
 }

@@ -1,4 +1,4 @@
-import { Debt } from "@/debts/debt.entity";
+import { Debt } from "@/entities/debt.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsUUID } from "class-validator";
 

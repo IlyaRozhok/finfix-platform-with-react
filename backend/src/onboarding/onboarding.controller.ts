@@ -4,7 +4,7 @@ import { ROUTE_SEGMENTS, ENDPOINTS } from "../shared/router";
 
 import { UsersService } from "../users/users.service";
 import { UpdateCurrencyDto, UpdateIncomesDto } from "./dto";
-import { Category } from "./onboarding.entity";
+import { Category } from "../entities/onboarding.entity";
 import { OnboardingService } from "./onboarding.service";
 import { ApiTags } from "@nestjs/swagger";
 

@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { RecurringExpensesService } from "./recurring-expenses.service";
-import { RecurringExpense } from "./recurring-expense.entity";
+import { RecurringExpense } from "../entities/recurring-expense.entity";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { ApiTags } from "@nestjs/swagger";

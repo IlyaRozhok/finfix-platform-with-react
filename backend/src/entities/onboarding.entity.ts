@@ -1,4 +1,4 @@
-import { User } from "@/users/user.entity";
+import { User } from "@/entities/user.entity";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -21,7 +21,11 @@ export class Category {
 
   @Column({ name: "user_id", type: "uuid", nullable: true })
   userId: string;
+
   @Index()
   @Column({ length: 64 })
   name: string;
+
+  @Column({ name: "icon", nullable: true, type: "varchar", length: 32 })
+  icon: string;
 }
