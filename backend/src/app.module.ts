@@ -20,17 +20,20 @@ import { LivenessController } from "./liveness.controller";
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: "postgres",
-        host: configService.get<string>("POSTGRES_HOST") ?? "localhost",
-        port: parseInt(configService.get<string>("POSTGRES_PORT")),
-        username: configService.get<string>("POSTGRES_USER"),
-        password: configService.get<string>("POSTGRES_PASSWORD"),
-        database: configService.get<string>("POSTGRES_DB"),
-        entities: [__dirname + "/**/*.entity{.ts,.js}"],
-        synchronize: true,
-        autoLoadEntities: true,
-      }),
+      useFactory: (configService: ConfigService) => {
+        console.log;
+        return {
+          type: "postgres",
+          host: configService.getOrThrow<string>("PG_HOST"),
+          port: parseInt(configService.getOrThrow<string>("PG_PORT")),
+          username: configService.getOrThrow<string>("PG_USER"),
+          password: configService.getOrThrow<string>("PG_PASSWORD"),
+          database: configService.getOrThrow<string>("PG_DBNAME"),
+          entities: [__dirname + "/**/*.entity{.ts,.js}"],
+          synchronize: true,
+          autoLoadEntities: true,
+        };
+      },
     }),
     AuthModule,
     UsersModule,

@@ -22,8 +22,9 @@ import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 export class DebtsController {
   constructor(private readonly DebtsService: DebtsService) {}
 
-  @Get(`${ENDPOINTS.ONBOARDING.DEBTS}/:uid`)
-  async getOnboardingDebts(@Param("uid") uid: string) {
+  @Get(`${ENDPOINTS.ONBOARDING.DEBTS}`)
+  async getOnboardingDebts(@Req() req) {
+    const uid = req.user.sub;
     const debts = await this.DebtsService.getDebts(uid);
     return debts;
   }

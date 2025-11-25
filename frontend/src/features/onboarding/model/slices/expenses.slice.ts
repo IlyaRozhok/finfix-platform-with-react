@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { ReqUserExpense } from "../../model/types";
+import { ReqUserExpense } from "../types";
 import { mkExpenseRow } from "../../lib/factories";
 import { validateExpenses } from "../../lib/validators";
 import { hasExpensesChanged } from "../../lib/diff";
@@ -34,7 +34,10 @@ export const createExpensesSlice: StateCreator<
 
   addExpense: (categoryId) =>
     set((s) => ({
-      data: { ...s.data, expenses: [...s.data.expenses, mkExpenseRow(categoryId)] },
+      data: {
+        ...s.data,
+        expenses: [...s.data.expenses, mkExpenseRow(categoryId)],
+      },
     })),
 
   setExpenses: (expenses) =>
@@ -90,4 +93,3 @@ export const createExpensesSlice: StateCreator<
     return hasExpensesChanged(data.expenses, originalData.expenses);
   },
 });
-

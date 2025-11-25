@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { Installment } from "../../model/types";
+import { Installment } from "../types";
 import { mkInstallment } from "../../lib/factories";
 import { validateInstallments } from "../../lib/validators";
 import { hasInstallmentsChanged } from "../../lib/diff";
@@ -88,7 +88,9 @@ export const createInstallmentsSlice: StateCreator<
 
   hasInstallmentsChanged: () => {
     const { data, originalData } = get();
-    return hasInstallmentsChanged(data.installments || [], originalData.installments || []);
+    return hasInstallmentsChanged(
+      data.installments || [],
+      originalData.installments || []
+    );
   },
 });
-

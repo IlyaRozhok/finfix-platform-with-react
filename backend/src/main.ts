@@ -21,14 +21,14 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    }),
+    })
   );
   app.useGlobalInterceptors(new CsrfInterceptor());
 
   const config = new DocumentBuilder()
     .setTitle("FinFix API")
     .setDescription("Financial Management Platform API")
-    .setVersion("1.0")
+    .setVersion("0.1")
     .addApiKey({ type: "apiKey", in: "header", name: "x-csrf-token" }, "csrf")
     .build();
 

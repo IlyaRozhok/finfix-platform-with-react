@@ -7,6 +7,7 @@ import { useState } from "react";
 export const OnboardingUserMenu = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { user } = useAuth();
+  console.log(user?.avatarUr);
   return (
     <>
       <div className="flex items-center justify-center gap-2">
@@ -15,9 +16,15 @@ export const OnboardingUserMenu = () => {
           className="size-8 rounded-full bg-neutral-200 overflow-hidden cursor-pointer"
         >
           {user?.avatarUrl ? (
-            <img src={user?.avatarUrl} alt="avatar" />
+            <img
+              src={user?.avatarUrl}
+              alt="avatar"
+              className="w-full h-full object-contain"
+            />
           ) : (
-            <img src={user?.avatarUrl} alt="avatar" />
+            <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
+              {user?.userName?.charAt(0)?.toUpperCase() || "U"}
+            </div>
           )}
         </div>
       </div>
