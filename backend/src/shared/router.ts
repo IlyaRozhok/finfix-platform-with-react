@@ -4,7 +4,6 @@ export const ROUTE_SEGMENTS = {
   AUTH: "auth",
   ONBOARDING: "onboarding",
   STATS: "stats",
-  INCOMES: "incomes",
 };
 
 export const ENDPOINTS = {
@@ -26,6 +25,7 @@ export const ENDPOINTS = {
   },
   STATS: {
     OVERVIEW: "overview",
-    INCOMES: "incomes",
+    REGULAR_INCOMES: "regular_incomes",
+    EVENT_INCOMES: "event_incomes",
   },
 };

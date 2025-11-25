@@ -2,7 +2,7 @@ import { Type } from "class-transformer";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("regular_incomes")
-export class Incomes {
+export class RegularIncomes {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -10,8 +10,8 @@ export class Incomes {
   userId: string;
 
   @Type(() => Number)
-  @Column({ name: "incomes", type: "int", nullable: false })
-  incomes: string;
+  @Column({ name: "amount", type: "int", nullable: false })
+  amount: string;
 
   @Column({ name: "description", type: "varchar", length: 50 })
   description: string;
