@@ -5,6 +5,7 @@ export const ROUTE_SEGMENTS = {
   ONBOARDING: "onboarding",
   STATS: "stats",
   INSTALLMENTS: "installments",
+  INCOMES: "incomes",
 };
 
 export const ENDPOINTS = {
@@ -32,5 +33,11 @@ export const ENDPOINTS = {
     OVERVIEW: "overview",
     REGULAR_INCOMES: "regular_incomes",
     EVENT_INCOMES: "event_incomes",
+  },
+  INCOMES: {
+    FIND_REGULAR: "regular/find",
+    FIND_EVENT: "event/find",
+    FIND_ALL: "all/find",
+    REGULAR_CREATE: "regular/create"
   },
 };

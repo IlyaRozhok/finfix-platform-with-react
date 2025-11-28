@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { fetchUserExpenses } from "@/features/expenses/api";
 import { Expense } from "@/features/expenses/model/types";
 import { CategoryIcon } from "@/features/expenses/ui/CategoryIcon";
-import { SparklesIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 
 export function ExpensesPage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -101,7 +101,6 @@ export function ExpensesPage() {
                 </p>
               </div>
               <div className="text-2xl text-primary-background/80">
-                <SparklesIcon className="h-8 w-8" />
               </div>
             </div>
           </div>
@@ -113,15 +112,8 @@ export function ExpensesPage() {
         {expenses.length === 0 ? (
           <div className="min-h-[300px] flex items-center justify-center">
             <div className="text-center max-w-md mx-auto p-8">
-              {/* Icon */}
-              <div className="flex justify-center mb-4">
-                <div className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                  <SparklesIcon className="h-8 w-8 text-primary-background/70" />
-                </div>
-              </div>
-
               {/* Title */}
-              <h3 className="text-xl font-semibold text-primary-background mb-2">
+              <h3 className="text-xl font-semibold text-primary-background mb-3">
                 No expenses yet
               </h3>
 

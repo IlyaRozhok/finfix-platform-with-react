@@ -7,6 +7,7 @@ import {
   CurrencyDollarIcon,
   HomeIcon,
   ReceiptRefundIcon,
+  BanknotesIcon,
   CogIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -16,6 +17,7 @@ import logo from "../../assets/money-tree.png";
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon },
   { name: "Transactions", href: "/dashboard/transactions", icon: ChartBarIcon },
+  { name: "Incomes", href: "/dashboard/incomes", icon: BanknotesIcon },
   { name: "Debts", href: "/dashboard/debts", icon: CreditCardIcon },
   {
     name: "Installments",

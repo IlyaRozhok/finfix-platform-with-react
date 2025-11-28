@@ -3,7 +3,7 @@ import { Installment } from "../model/types";
 
 export const fetchUserInstallments = async (): Promise<Installment[]> => {
   try {
-    const response = await api.get("api/onboarding/installments");
+    const response = await api.get("api/installments/get");
     return response.data;
   } catch (err) {
     console.error("Failed to fetch user installments:", err);

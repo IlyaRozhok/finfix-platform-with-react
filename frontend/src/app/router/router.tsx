@@ -15,6 +15,7 @@ import { DashboardPage } from "@/pages/dashboard/DashboardPage";
 import { DebtsPage } from "@/pages/dashboard/DebtsPage";
 import { ExpensesPage } from "@/pages/dashboard/ExpensesPage";
 import { InstallmentsPage } from "@/pages/dashboard/InstallmentsPage";
+import { IncomesPage } from "@/pages/dashboard/IncomesPage";
 import {
   OnboardingCurrency,
   OnboardingIncomes,
@@ -85,6 +86,7 @@ export function AppRouter() {
         }
       >
         <Route index element={<DashboardPage />} />
+        <Route path="incomes" element={<IncomesPage />} />
         <Route
           path="transactions"
           element={

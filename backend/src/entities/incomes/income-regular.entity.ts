@@ -11,7 +11,7 @@ export class RegularIncomes {
 
   @Type(() => Number)
   @Column({ name: "amount", type: "int", nullable: false })
-  amount: string;
+  amount: number;
 
   @Column({ name: "description", type: "varchar", length: 50 })
   description: string;

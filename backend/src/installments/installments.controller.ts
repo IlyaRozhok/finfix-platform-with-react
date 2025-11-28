@@ -26,7 +26,7 @@ export class InstallmentsController {
     return installments;
   }
 
-  @Get(`${ENDPOINTS.INSTALLMENTS.GET}/:uid`)
+  @Get(ENDPOINTS.INSTALLMENTS.GET)
   async getInstallments(@Req() req) {
     const uid = req.user.sub;
     const installments = await this.installmentsService.getInstallments(uid);

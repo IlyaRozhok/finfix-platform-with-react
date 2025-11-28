@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchUserDebts } from "@/features/debts/api";
 import { Debt } from "@/entities/debts/model";
-import { SparklesIcon } from "@heroicons/react/24/outline";
 
 export function DebtsPage() {
   const [debts, setDebts] = useState<Debt[]>([]);
@@ -50,19 +49,12 @@ export function DebtsPage() {
       </div>
 
       {/* Debts Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg overflow-hidden">
         {debts.length === 0 ? (
           <div className="min-h-[300px] flex items-center justify-center">
             <div className="text-center max-w-md mx-auto p-8">
-              {/* Icon */}
-              <div className="flex justify-center mb-4">
-                <div className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                  <SparklesIcon className="h-8 w-8 text-primary-background/70" />
-                </div>
-              </div>
-
               {/* Title */}
-              <h3 className="text-xl font-semibold text-primary-background mb-2">
+              <h3 className="text-xl font-semibold text-primary-background mb-3">
                 No debts yet
               </h3>
 
@@ -75,8 +67,8 @@ export function DebtsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-white/10">
+              <thead className="bg-white/5 backdrop-blur-sm">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Description
@@ -98,9 +90,12 @@ export function DebtsPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-transparent divide-y divide-white/10">
                 {debts.map((debt) => (
-                  <tr key={debt.id} className="hover:bg-gray-50">
+                  <tr
+                    key={debt.id}
+                    className="hover:bg-white/5 transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {debt.description}
                     </td>

@@ -14,7 +14,7 @@ export class EventIncomes {
   @Column({ name: "description", type: "varchar", length: 50 })
   description: string;
 
-  @Column({ type: "date" })
+  @Column({ type: "timestamptz" })
   date: string;
 
   @Column({ type: "timestamptz", default: () => "NOW()" })
