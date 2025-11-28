@@ -35,20 +35,15 @@ export function DashboardSidebar() {
   return (
     <div
       className={clsx(
-        "flex h-full flex-col transition-all duration-300",
+        "flex h-full flex-col transition-all duration-300 bg-white/10 backdrop-blur-xl border-r border-white/20 shadow-2xl",
         isCollapsed ? "w-16" : "w-64"
       )}
-      style={{
-        backgroundColor: "#F9FAFB",
-        borderRight: "1px solid rgba(0,0,0,0.1)",
-      }}
     >
       <div
         className={clsx(
-          "flex items-center transition-all duration-300",
+          "flex items-center transition-all duration-300 border-b border-white/20",
           isCollapsed ? "h-16 justify-center px-0" : "h-16 px-6"
         )}
-        style={{ borderBottom: "1px solid rgba(0,0,0,0.1)" }}
       >
         {!isCollapsed && (
           <h2 className="text-xl font-semibold text-primary-background flex items-center gap-1">
@@ -59,16 +54,9 @@ export function DashboardSidebar() {
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={clsx(
-            "flex items-center justify-center w-8 h-8 rounded-md transition-colors",
+            "flex items-center justify-center w-8 h-8 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-200",
             isCollapsed ? "ml-0" : "ml-auto"
           )}
-          style={{ backgroundColor: "rgba(0,0,0,0.1)", color: "#1F2937" }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor = "rgba(0,0,0,0.2)")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor = "rgba(0,0,0,0.1)")
-          }
         >
           {isCollapsed ? (
             <ChevronRightIcon className="h-4 w-4 text-primary-background" />
@@ -98,23 +86,12 @@ export function DashboardSidebar() {
                   ? isActive
                   : isDashboardActive;
                 return clsx(
-                  "group flex items-center text-sm font-medium rounded-md transition-colors",
+                  "group flex items-center text-sm font-medium rounded-xl transition-all duration-200",
                   isCollapsed ? "px-2 py-3 justify-center" : "px-3 py-2",
                   isItemActive
-                    ? "text-primary-background border-r-2"
-                    : "text-disable hover:text-primary-background hover:bg-gray-100"
+                    ? "text-primary-background bg-white/20 border-r-2 border-white/30"
+                    : "text-primary-background/70 hover:text-primary-background hover:bg-white/10"
                 );
-              }}
-              style={({ isActive }) => {
-                const isItemActive = shouldUseNavLinkActive
-                  ? isActive
-                  : isDashboardActive;
-                return isItemActive
-                  ? {
-                      borderRightColor: "#1F2937",
-                      backgroundColor: "rgba(31, 41, 55, 0.1)",
-                    }
-                  : {};
               }}
               title={isCollapsed ? item.name : undefined}
             >
@@ -124,16 +101,27 @@ export function DashboardSidebar() {
                   : isDashboardActive;
                 return (
                   <>
-                    <item.icon
-                      className={clsx(
-                        "h-5 w-5 flex-shrink-0",
+                    <div className={clsx(
+                      "flex items-center justify-center",
+                      isCollapsed ? "" : "mr-3"
+                    )}>
+                      <div className={clsx(
+                        "p-1.5 rounded-lg transition-all duration-200",
                         isItemActive
-                          ? "text-primary-background"
-                          : "text-disable group-hover:text-primary-background",
-                        isCollapsed ? "" : "mr-3"
-                      )}
-                      aria-hidden="true"
-                    />
+                          ? "bg-white/20"
+                          : "group-hover:bg-white/10"
+                      )}>
+                        <item.icon
+                          className={clsx(
+                            "h-4 w-4 flex-shrink-0",
+                            isItemActive
+                              ? "text-primary-background"
+                              : "text-primary-background/70 group-hover:text-primary-background"
+                          )}
+                          aria-hidden="true"
+                        />
+                      </div>
+                    </div>
                     {!isCollapsed && item.name}
                   </>
                 );

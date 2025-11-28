@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "@/shared/ui/Button";
-import { createRegularIncome } from "@/features/incomes/api";
+import { DatePicker } from "@/shared/ui/DatePicker";
+import { createRegularIncome, createEventIncome } from "@/features/incomes/api";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface IncomeFormData {
@@ -44,6 +45,13 @@ export function IncomeForm({
         await createRegularIncome({
           amount: parseFloat(formData.amount),
           description: formData.description,
+        });
+      } else if (type === "event") {
+        // Convert amount to number and date to proper format
+        await createEventIncome({
+          amount: parseFloat(formData.amount),
+          description: formData.description,
+          date: formData.date || "",
         });
       }
 
@@ -127,12 +135,10 @@ export function IncomeForm({
                 <label className="block text-sm font-semibold text-primary-background/90 mb-2 tracking-wide">
                   Date
                 </label>
-                <input
-                  type="date"
-                  value={formData.date || ""}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-primary-background focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all duration-200"
-                  required
+                <DatePicker
+                  value={formData.date}
+                  onChange={(date) => setFormData({ ...formData, date })}
+                  placeholder="Select event date"
                 />
               </div>
             )}

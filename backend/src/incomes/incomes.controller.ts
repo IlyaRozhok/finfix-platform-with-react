@@ -5,6 +5,7 @@ import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import {
   AllIncomesResDto,
+  CreateEventIncomeDto,
   CreateRegularIncomeDto,
   CreateRegularIncomeResDto,
   EventIncomeResDto,
@@ -51,6 +52,24 @@ export class IncomesController {
       await this.incomesService.createRegularIncomes(userId, dto);
 
     return plainToInstance(CreateRegularIncomeResDto, createdRegularIncomes, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  @ApiOperation({ summary: "Create event income" })
+  @Post(ENDPOINTS.INCOMES.EVENT_CREATE)
+  async createEventIncome(
+    @Req() req,
+    @Body() dto: CreateEventIncomeDto
+  ): Promise<EventIncomeResDto> {
+    const userId = req.user.sub;
+
+    const createdEventIncome = await this.incomesService.createEventIncome(
+      userId,
+      dto
+    );
+
+    return plainToInstance(EventIncomeResDto, createdEventIncome, {
       excludeExtraneousValues: true,
     });
   }

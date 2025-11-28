@@ -20,3 +20,16 @@ export const createRegularIncome = async (data: { amount: number; description: s
     throw err;
   }
 };
+
+export const createEventIncome = async (data: { amount: number; description: string; date: string }) => {
+  try {
+    const response = await api.post("api/incomes/event/create", {
+      ...data,
+      date: new Date(data.date), // Convert string to Date object
+    });
+    return response.data;
+  } catch (err) {
+    console.error("Failed to create event income:", err);
+    throw err;
+  }
+};

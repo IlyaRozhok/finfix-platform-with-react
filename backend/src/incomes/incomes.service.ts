@@ -3,7 +3,7 @@ import { EventIncomes } from "@/entities/incomes/income-event.entity";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateRegularIncomeDto } from "./dto/dto";
+import { CreateEventIncomeDto, CreateRegularIncomeDto } from "./dto/dto";
 
 @Injectable()
 export class IncomesService {
@@ -51,5 +51,19 @@ export class IncomesService {
     ]);
 
     return { regular, events };
+  }
+
+  async createEventIncome(
+    userId: string,
+    dto: CreateEventIncomeDto
+  ): Promise<EventIncomes> {
+    const income = this.eventIncomesRepository.create({
+      userId,
+      amount: dto.amount,
+      description: dto.description,
+      date: dto.date, // уже Date
+    });
+
+    return await this.eventIncomesRepository.save(income);
   }
 }
