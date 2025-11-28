@@ -66,4 +66,10 @@ export class IncomesService {
 
     return await this.eventIncomesRepository.save(income);
   }
+
+  async findOneRegularIncome(userId) {
+    const income = await this.regularIncomesRepository.findOne({
+      where: userId,
+    });
+  }
 }

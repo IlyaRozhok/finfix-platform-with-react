@@ -10,7 +10,6 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from "@heroicons/react/24/outline";
-import { clsx } from "clsx";
 
 export function IncomesPage() {
   const [incomes, setIncomes] = useState<AllIncomes>({
@@ -21,6 +20,8 @@ export function IncomesPage() {
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formType, setFormType] = useState<"regular" | "event">("regular");
+  const [regularExpanded, setRegularExpanded] = useState(true);
+  const [eventExpanded, setEventExpanded] = useState(true);
 
   // Calculate summary statistics
   const summaryStats = useMemo(() => {
@@ -156,147 +157,177 @@ export function IncomesPage() {
       {/* Regular Incomes Section */}
       <div className="space-y-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-primary-background">
-            Regular Incomes ({summaryStats.regularCount})
-          </h2>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setRegularExpanded(!regularExpanded)}
+              className="p-1 rounded-lg hover:bg-white/10 transition-colors group"
+            >
+              {regularExpanded ? (
+                <ChevronUpIcon className="h-5 w-5 text-primary-background/70 group-hover:text-primary-background" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-primary-background/70 group-hover:text-primary-background" />
+              )}
+            </button>
+            <h2 className="text-xl font-semibold text-primary-background">
+              Regular Incomes ({summaryStats.regularCount})
+            </h2>
+          </div>
           <Button variant="glass-primary" onClick={() => openForm("regular")}>
             Add Regular Income
           </Button>
         </div>
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg overflow-hidden">
-          {incomes.regular.length === 0 ? (
-            <div className="min-h-[200px] flex items-center justify-center">
-              <div className="text-center max-w-md mx-auto p-8">
-                <h3 className="text-lg font-semibold text-primary-background mb-2">
-                  No regular incomes yet
-                </h3>
-                <p className="text-sm text-disable leading-relaxed">
-                  Your regular income sources will appear here once you add
-                  some.
-                </p>
+
+        {regularExpanded && (
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg overflow-hidden">
+            {incomes.regular.length === 0 ? (
+              <div className="min-h-[200px] flex items-center justify-center">
+                <div className="text-center max-w-md mx-auto p-8">
+                  <h3 className="text-lg font-semibold text-primary-background mb-2">
+                    No regular incomes yet
+                  </h3>
+                  <p className="text-sm text-disable leading-relaxed">
+                    Your regular income sources will appear here once you add
+                    some.
+                  </p>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-white/10">
-                <thead className="bg-white/5 backdrop-blur-sm">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Description
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Added
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-transparent divide-y divide-white/10">
-                  {incomes.regular.map((income) => (
-                    <tr
-                      key={income.id}
-                      className="hover:bg-white/5 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {income.description}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-semibold text-gray-900">
-                          ${income.amount.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-500">per month</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(income.createdAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          }
-                        )}
-                      </td>
+            ) : (
+              <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                <table className="min-w-full divide-y divide-white/10">
+                  <thead className="bg-white/5 backdrop-blur-sm">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Description
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Amount
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Added
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                  </thead>
+                  <tbody className="bg-transparent divide-y divide-white/10">
+                    {incomes.regular.map((income) => (
+                      <tr
+                        key={income.id}
+                        className="hover:bg-white/5 transition-colors"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {income.description}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-semibold text-gray-900">
+                            ${income.amount.toLocaleString()}
+                          </div>
+                          <div className="text-xs text-gray-500">per month</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(income.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            }
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Event Incomes Section */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-primary-background">
-            Event Incomes ({summaryStats.eventCount})
-          </h2>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setEventExpanded(!eventExpanded)}
+              className="p-1 rounded-lg hover:bg-white/10 transition-colors group"
+            >
+              {eventExpanded ? (
+                <ChevronUpIcon className="h-5 w-5 text-primary-background/70 group-hover:text-primary-background" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-primary-background/70 group-hover:text-primary-background" />
+              )}
+            </button>
+            <h2 className="text-xl font-semibold text-primary-background">
+              Event Incomes ({summaryStats.eventCount})
+            </h2>
+          </div>
           <Button variant="glass-secondary" onClick={() => openForm("event")}>
             Add Event Income
           </Button>
         </div>
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg overflow-hidden">
-          {incomes.events.length === 0 ? (
-            <div className="min-h-[200px] flex items-center justify-center">
-              <div className="text-center max-w-md mx-auto p-8">
-                <h3 className="text-lg font-semibold text-primary-background mb-2">
-                  No event incomes yet
-                </h3>
-                <p className="text-sm text-disable leading-relaxed">
-                  Your one-time income events will appear here once you add
-                  some.
-                </p>
+
+        {eventExpanded && (
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg overflow-hidden">
+            {incomes.events.length === 0 ? (
+              <div className="min-h-[200px] flex items-center justify-center">
+                <div className="text-center max-w-md mx-auto p-8">
+                  <h3 className="text-lg font-semibold text-primary-background mb-2">
+                    No event incomes yet
+                  </h3>
+                  <p className="text-sm text-disable leading-relaxed">
+                    Your one-time income events will appear here once you add
+                    some.
+                  </p>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-white/10">
-                <thead className="bg-white/5 backdrop-blur-sm">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Description
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-transparent divide-y divide-white/10">
-                  {incomes.events.map((income) => (
-                    <tr
-                      key={income.id}
-                      className="hover:bg-white/5 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {income.description}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-semibold text-gray-900">
-                          ${income.amount.toLocaleString()}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(income.date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </td>
+            ) : (
+              <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                <table className="min-w-full divide-y divide-white/10">
+                  <thead className="bg-white/5 backdrop-blur-sm">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Description
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Amount
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                  </thead>
+                  <tbody className="bg-transparent divide-y divide-white/10">
+                    {incomes.events.map((income) => (
+                      <tr
+                        key={income.id}
+                        className="hover:bg-white/5 transition-colors"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {income.description}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-semibold text-gray-900">
+                            ${income.amount.toLocaleString()}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(income.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Income Form Modal */}

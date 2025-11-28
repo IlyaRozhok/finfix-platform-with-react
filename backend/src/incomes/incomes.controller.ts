@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { IncomesService } from "./incomes.service";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import {
-  AllIncomesResDto,
   CreateEventIncomeDto,
   CreateRegularIncomeDto,
   CreateRegularIncomeResDto,
@@ -83,7 +82,6 @@ export class IncomesController {
       excludeExtraneousValues: true,
     });
   }
-
   @ApiOperation({ summary: "Get all incomes" })
   @Get(ENDPOINTS.INCOMES.FIND_ALL)
   async getAllIncomes(@Req() req) {
@@ -101,5 +99,12 @@ export class IncomesController {
     });
 
     return { regular: regularDto, events: eventsDto };
+  }
+
+  @Delete()
+  async deleteRegularIncome(@Req() req) {
+    const uid = req.user.sub;
+
+    
   }
 }

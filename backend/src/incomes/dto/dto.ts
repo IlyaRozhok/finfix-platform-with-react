@@ -79,17 +79,6 @@ export class EventIncomeResDto {
   date: Date;
 }
 
-@Exclude()
-export class AllIncomesResDto {
-  @Expose()
-  @ApiProperty({ type: CreateRegularIncomeResDto, isArray: true })
-  regular: CreateRegularIncomeResDto[];
-
-  @Expose()
-  @ApiProperty({ type: EventIncomeResDto, isArray: true })
-  events: EventIncomeResDto[];
-}
-
 export class CreateEventIncomeDto {
   @IsInt()
   @Type(() => Number)
