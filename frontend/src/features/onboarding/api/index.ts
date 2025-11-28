@@ -80,9 +80,9 @@ export const fetchSummary = async (id: string) => {
   }
 };
 
-export const fetchDebts = async (uid: string): Promise<ReqCreateDebt[]> => {
+export const fetchDebts = async (): Promise<ReqCreateDebt[]> => {
   try {
-    const response = await api.get(`api/onboarding/debts/${uid}`);
+    const response = await api.get(`api/onboarding/debts`);
     return response.data;
   } catch (err) {
     console.error("Failed to fetch debts:", err);

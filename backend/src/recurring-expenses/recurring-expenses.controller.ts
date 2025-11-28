@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Req,
   UseGuards,
 } from "@nestjs/common";
 import { RecurringExpensesService } from "./recurring-expenses.service";
@@ -28,7 +29,9 @@ export class RecurringExpensesController {
   }
 
   @Get(ENDPOINTS.ONBOARDING.EXPENSES)
-  async getOnboardingExpenses(@Param("uid") uid: string) {
+  async getOnboardingExpenses(@Req() req) {
+    const uid = req.user.sub;
+    console.log("uid", uid);
     const expenses = await this.recurringExpensesService.getExpenses(uid);
     return expenses;
   }

@@ -2,7 +2,28 @@
 alwaysApply: true
 ---
 
-You have no permissions to edit code in the "backend" folders. You can read, but you can not edit there.
-Never run the server, because I do it myself.
-Never create .md files
-End all prompt resuls with the next text: "Finfix rule applied!"
+rules:
+
+- You have no permissions to edit, modify, create or delete any files inside the "backend" directory.  
+  You may read backend code, but you must not change it under any circumstances.
+
+- All business logic, calculations, aggregations must be implemented on the backend.
+
+- Frontend code must follow clean, simple, extensible FSD (Feature-Sliced Design) architecture:  
+   • clear separation between app / pages / widgets / features / entities / shared  
+   • no business logic inside components  
+   • reusable, isolated UI blocks  
+   • predictable imports, no cross-layer violations
+
+- Never run the backend and frontend servers, Docker, migrations, or any shell commands related to server execution.  
+  I run the servers manually.
+
+- Never create .md or markdown files.
+
+- When generating UI, use minimalistic clean design with glassmorphism.  
+  No icons, no emojis, no decorative symbols.
+
+- Do not install packages unless I explicitly ask for it.
+
+- All outputs must end with the exact phrase:  
+  **"Finfix rule applied!"**

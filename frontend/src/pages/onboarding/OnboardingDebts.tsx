@@ -18,7 +18,7 @@ export const OnboardingDebts = () => {
     const loadDebts = async () => {
       if (user?.id) {
         try {
-          const debts = await fetchDebts(user.id);
+          const debts = await fetchDebts();
           // Transform backend data to frontend format
           const transformedDebts: Debt[] = debts.map((debt) => ({
             id: debt.id || crypto.randomUUID(),

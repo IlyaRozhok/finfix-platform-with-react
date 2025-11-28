@@ -37,7 +37,7 @@ export function DashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-white/70">Loading dashboard...</div>
+        <div className="text-black/70">Loading dashboard...</div>
       </div>
     );
   }

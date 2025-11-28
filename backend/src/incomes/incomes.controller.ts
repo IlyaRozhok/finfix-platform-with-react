@@ -3,7 +3,7 @@ import { IncomesService } from "./incomes.service";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { ResRegularIncomesDto } from "./dto";
+import { ResRegularIncomesDto } from "./dto/regular-income.dto";
 
 @UseGuards(JwtAuthGuard)
 @ApiTags("Incomes")

@@ -53,6 +53,7 @@ export class RecurringExpensesService {
   }
 
   async getExpenses(uid: string) {
+    console.log("uid", uid);
     if (!uid) {
       throw new BadRequestException("User id not provided");
     }
