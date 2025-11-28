@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "@/shared/ui/Button";
 import { DatePicker } from "@/shared/ui/DatePicker";
+import { useToast } from "@/shared/ui";
 import { createRegularIncome, createEventIncome } from "@/features/incomes/api";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -28,6 +29,7 @@ export function IncomeForm({
   initialData,
   isEditing = false
 }: IncomeFormProps) {
+  const { addToast } = useToast();
   const [formData, setFormData] = useState<IncomeFormData>(
     initialData || {
       description: "",
@@ -46,6 +48,7 @@ export function IncomeForm({
           amount: parseFloat(formData.amount),
           description: formData.description,
         });
+        addToast("success", "Regular Income Added", `Successfully added $${formData.amount} monthly income`);
       } else if (type === "event") {
         // Convert amount to number and date to proper format
         await createEventIncome({
@@ -53,12 +56,13 @@ export function IncomeForm({
           description: formData.description,
           date: formData.date || "",
         });
+        addToast("success", "Event Income Added", `Successfully added $${formData.amount} one-time income`);
       }
 
       await onSubmit();
     } catch (error) {
       console.error("Failed to create income:", error);
-      // You might want to show an error message to the user here
+      addToast("error", "Failed to Add Income", "Please check your input and try again");
       return;
     }
 
