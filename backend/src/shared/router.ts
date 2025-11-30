@@ -38,7 +38,7 @@ export const ENDPOINTS = {
     FIND_REGULAR: "regular/find",
     FIND_EVENT: "event/find",
     FIND_ALL: "all/find",
-    REGULAR: "gegular/:id",
+    REGULAR: "regular/:id",
     EVENT: "event/:id",
     REGULAR_CREATE: "regular/create",
     EVENT_CREATE: "event/create",

@@ -33,3 +33,23 @@ export const createEventIncome = async (data: { amount: number; description: str
     throw err;
   }
 };
+
+export const deleteRegularIncome = async (id: string) => {
+  try {
+    const response = await api.delete(`api/incomes/regular/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to delete regular income:", err);
+    throw err;
+  }
+};
+
+export const deleteEventIncome = async (id: string) => {
+  try {
+    const response = await api.delete(`api/incomes/event/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to delete event income:", err);
+    throw err;
+  }
+};

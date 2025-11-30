@@ -4,18 +4,20 @@ import { Button } from "./Button";
 import { ExclamationTriangleIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 type ConfirmationModalProps = {
+  isOpen: boolean;
   title: string;
   action: () => void;
   cancel: () => void;
 };
 
 export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+  isOpen,
   title,
   action,
   cancel,
 }) => {
   return (
-    <Dialog open={true} onClose={cancel} className="relative z-50">
+    <Dialog open={isOpen} onClose={cancel} className="relative z-50">
       {/* Enhanced backdrop with better blur */}
       <div className="fixed inset-0 bg-black/30 backdrop-blur-xl" />
 
