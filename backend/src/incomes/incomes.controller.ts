@@ -6,6 +6,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -20,6 +21,7 @@ import {
   CreateRegularIncomeResDto,
   EventIncomeResDto,
   ResRegularIncomesDto,
+  UpdateRegularIncomeDto,
 } from "./dto/dto";
 import { plainToInstance } from "class-transformer";
 
@@ -48,7 +50,7 @@ export class IncomesController {
   @ApiResponse({
     status: 201,
     type: CreateRegularIncomeResDto,
-    description: "Regular regular income",
+    description: "Created regular income",
   })
   @ApiOperation({ summary: "Create regular income" })
   @Post(ENDPOINTS.INCOMES.REGULAR_CREATE)
@@ -62,6 +64,28 @@ export class IncomesController {
       await this.incomesService.createRegularIncomes(userId, dto);
 
     return plainToInstance(CreateRegularIncomeResDto, createdRegularIncomes, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  @ApiResponse({
+    status: 200,
+    type: UpdateRegularIncomeDto,
+    description: "Updated regular income",
+  })
+  @ApiOperation({ summary: "Update regular income" })
+  @Put(ENDPOINTS.INCOMES.REGULAR)
+  async updateRegularIncomes(
+    @Req() req,
+    @Param("id") id: string,
+    @Body() dto: UpdateRegularIncomeDto
+  ): Promise<UpdateRegularIncomeDto> {
+    const userId = req.user.sub;
+
+    const updatedRegularIncomes =
+      await this.incomesService.updateRegularIncomes(userId, id, dto);
+
+    return plainToInstance(UpdateRegularIncomeDto, updatedRegularIncomes, {
       excludeExtraneousValues: true,
     });
   }
@@ -86,7 +110,7 @@ export class IncomesController {
 
   @ApiOperation({ summary: "Get event incomes" })
   @Get(ENDPOINTS.INCOMES.FIND_EVENT)
-  async getEventrIncomes(@Req() req) {
+  async getEventIncomes(@Req() req) {
     const userId = req.user.sub;
     const eventIncomes = await this.incomesService.findEventIncomes(userId);
     return plainToInstance(ResRegularIncomesDto, eventIncomes, {

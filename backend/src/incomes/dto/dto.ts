@@ -1,10 +1,11 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { Exclude, Expose, Type } from "class-transformer";
 import {
   IsDate,
   IsDateString,
   IsInt,
   IsString,
+  IsUUID,
   MaxLength,
   Min,
 } from "class-validator";
@@ -105,3 +106,7 @@ export class CreateEventIncomeDto {
   })
   date: Date;
 }
+
+export class UpdateRegularIncomeDto extends PartialType(
+  CreateRegularIncomeDto
+) {}

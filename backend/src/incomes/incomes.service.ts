@@ -3,7 +3,11 @@ import { EventIncomes } from "@/entities/incomes/income-event.entity";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateEventIncomeDto, CreateRegularIncomeDto } from "./dto/dto";
+import {
+  CreateEventIncomeDto,
+  CreateRegularIncomeDto,
+  UpdateRegularIncomeDto,
+} from "./dto/dto";
 
 @Injectable()
 export class IncomesService {
@@ -67,10 +71,16 @@ export class IncomesService {
     return await this.eventIncomesRepository.save(income);
   }
 
-  async findOneRegularIncome(userId: string) {
-    await this.regularIncomesRepository.findOne({
-      where: { userId },
+  async findOneRegularIncome(userId: string, id: string) {
+    const income = await this.regularIncomesRepository.findOne({
+      where: { id, userId },
     });
+
+    if (!income) {
+      throw new NotFoundException("Regular income not found");
+    }
+
+    return income;
   }
 
   async deleteRegularIncome(userId: string, id: string) {
@@ -85,5 +95,17 @@ export class IncomesService {
     if (result.affected === 0) {
       throw new NotFoundException("Event income not found");
     }
+  }
+
+  async updateRegularIncomes(
+    userId: string,
+    id: string,
+    dto: UpdateRegularIncomeDto
+  ) {
+    const income = await this.findOneRegularIncome(userId, id);
+
+    Object.assign(income, dto);
+
+    return await this.regularIncomesRepository.save(income);
   }
 }
