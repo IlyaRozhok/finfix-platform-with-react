@@ -1,8 +1,19 @@
-import { Body, Controller, Delete, Get, Post, Req, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import { IncomesService } from "./incomes.service";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import {
   CreateEventIncomeDto,
   CreateRegularIncomeDto,
@@ -101,10 +112,21 @@ export class IncomesController {
     return { regular: regularDto, events: eventsDto };
   }
 
-  @Delete()
-  async deleteRegularIncome(@Req() req) {
-    const uid = req.user.sub;
+  @HttpCode(204)
+  @ApiOperation({ summary: "Delete regular income" })
+  @ApiParam({ name: "id", type: "string", description: "Income ID (uuid)" })
+  @Delete(ENDPOINTS.INCOMES.REGULAR)
+  async deleteRegularIncome(@Req() req, @Param("id") id: string) {
+    const userId = req.user.sub;
+    await this.incomesService.deleteRegularIncome(userId, id);
+  }
 
-    
+  @HttpCode(204)
+  @ApiOperation({ summary: "Delete event income" })
+  @ApiParam({ name: "id", type: "string", description: "Income ID (uuid)" })
+  @Delete(ENDPOINTS.INCOMES.EVENT)
+  async deleteEventIncome(@Req() req, @Param("id") id: string) {
+    const userId = req.user.sub;
+    await this.incomesService.deleteEventIncome(userId, id);
   }
 }
