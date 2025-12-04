@@ -13,7 +13,11 @@ import { EventIncomesService } from "./event-incomes.service";
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { plainToInstance } from "class-transformer";
-import { CreateEventIncomeDto, EventIncomeResDto } from "./dto";
+import {
+  CreateEventIncomeDto,
+  EventIncomeResDto,
+  UpdateEventIncomeDto,
+} from "./dto";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 
 @UseGuards(JwtAuthGuard)
@@ -42,7 +46,7 @@ export class EventIncomesController {
   @ApiResponse({
     status: 201,
     type: EventIncomeResDto,
-    description: "Created regular income",
+    description: "Created evennt income",
   })
   @ApiOperation({ summary: "Get event incomes" })
   @Get(ENDPOINTS.EVENT_INCOMES.GET)
@@ -52,6 +56,22 @@ export class EventIncomesController {
     return plainToInstance(EventIncomeResDto, eventIncomes, {
       excludeExtraneousValues: true,
     });
+  }
+
+  @ApiResponse({
+    status: 204,
+    type: UpdateEventIncomeDto,
+    description: "One event income fetched",
+  })
+  @ApiOperation({ summary: "Get one event income" })
+  @Get(ENDPOINTS.EVENT_INCOMES.BY_ID)
+  async findOne(
+    @Req() req,
+    @Param("id") id: string,
+    @Body() dto: UpdateEventIncomeDto
+  ) {
+    const userId = req.user.sub;
+    return await this.eventIncomesService.findOne(userId, id);
   }
 
   @HttpCode(204)

@@ -24,6 +24,21 @@ export class EventIncomesService {
     });
   }
 
+  async findOne(userId: string, id: string) {
+    const income = await this.eventIncomesRepository.find({
+      where: {
+        userId,
+        id,
+      },
+    });
+
+    if (!income) {
+      throw new NotFoundException("Event income not found");
+    }
+
+    return income;
+  }
+
   async create(
     userId: string,
     dto: CreateEventIncomeDto
