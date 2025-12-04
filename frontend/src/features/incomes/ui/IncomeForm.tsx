@@ -60,27 +60,9 @@ export function IncomeForm({
       }
 
       await onSubmit();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Failed to create income:", error);
-
-      // Extract error message from server response
-      let errorMessage = "Please check your input and try again";
-
-      if (error?.response?.data?.message) {
-        const serverMessage = error.response.data.message;
-
-        // Handle array of messages
-        if (Array.isArray(serverMessage)) {
-          // Format validation messages nicely
-          errorMessage = serverMessage
-            .map(msg => msg.charAt(0).toUpperCase() + msg.slice(1))
-            .join(", ");
-        } else if (typeof serverMessage === "string") {
-          errorMessage = serverMessage;
-        }
-      }
-
-      addToast("error", "Failed to Add Income", errorMessage);
+      addToast("error", "Failed to Add Income", "Please check your input and try again");
       return;
     }
 

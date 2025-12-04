@@ -1,20 +1,17 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { fetchAllIncomes, deleteRegularIncome, deleteEventIncome } from "@/features/incomes/api";
+import { fetchAllIncomes } from "@/features/incomes/api";
 import { AllIncomes } from "@/features/incomes/model/types";
 import { IncomeForm } from "@/features/incomes/ui/IncomeForm";
 import { Button } from "@/shared/ui/Button";
-import { ConfirmationModal, useToast } from "@/shared/ui";
 import {
   SparklesIcon,
   CurrencyDollarIcon,
   CalendarDaysIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  TrashIcon,
 } from "@heroicons/react/24/outline";
 
 export function IncomesPage() {
-  const { addToast } = useToast();
   const [incomes, setIncomes] = useState<AllIncomes>({
     regular: [],
     events: [],
@@ -25,12 +22,6 @@ export function IncomesPage() {
   const [formType, setFormType] = useState<"regular" | "event">("regular");
   const [regularExpanded, setRegularExpanded] = useState(true);
   const [eventExpanded, setEventExpanded] = useState(true);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [incomeToDelete, setIncomeToDelete] = useState<{
-    id: string;
-    description: string;
-    type: "regular" | "event";
-  } | null>(null);
 
   // Calculate summary statistics
   const summaryStats = useMemo(() => {
@@ -62,45 +53,6 @@ export function IncomesPage() {
       console.error("Failed to reload incomes:", err);
       throw err; // Re-throw so the form can handle the error
     }
-  };
-
-  const handleDeleteRegularIncome = (id: string, description: string) => {
-    setIncomeToDelete({ id, description, type: "regular" });
-    setDeleteModalOpen(true);
-  };
-
-  const handleDeleteEventIncome = (id: string, description: string) => {
-    setIncomeToDelete({ id, description, type: "event" });
-    setDeleteModalOpen(true);
-  };
-
-  const confirmDelete = async () => {
-    if (!incomeToDelete) return;
-
-    try {
-      if (incomeToDelete.type === "regular") {
-        await deleteRegularIncome(incomeToDelete.id);
-        addToast("success", "Income Deleted", "Regular income has been deleted successfully");
-      } else {
-        await deleteEventIncome(incomeToDelete.id);
-        addToast("success", "Income Deleted", "Event income has been deleted successfully");
-      }
-
-      // Reload incomes
-      const data = await fetchAllIncomes();
-      setIncomes(data);
-    } catch (err) {
-      console.error(`Failed to delete ${incomeToDelete.type} income:`, err);
-      addToast("error", "Delete Failed", `Failed to delete ${incomeToDelete.type} income. Please try again.`);
-    } finally {
-      setDeleteModalOpen(false);
-      setIncomeToDelete(null);
-    }
-  };
-
-  const cancelDelete = () => {
-    setDeleteModalOpen(false);
-    setIncomeToDelete(null);
   };
 
   const openForm = (type: "regular" | "event") => {
@@ -253,9 +205,6 @@ export function IncomesPage() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Added
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-transparent divide-y divide-white/10">
@@ -284,15 +233,6 @@ export function IncomesPage() {
                               year: "numeric",
                             }
                           )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right">
-                          <button
-                            onClick={() => handleDeleteRegularIncome(income.id, income.description)}
-                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete income"
-                          >
-                            <TrashIcon className="h-4 w-4" />
-                          </button>
                         </td>
                       </tr>
                     ))}
@@ -355,9 +295,6 @@ export function IncomesPage() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Date
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-transparent divide-y divide-white/10">
@@ -383,15 +320,6 @@ export function IncomesPage() {
                             year: "numeric",
                           })}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right">
-                          <button
-                            onClick={() => handleDeleteEventIncome(income.id, income.description)}
-                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete income"
-                          >
-                            <TrashIcon className="h-4 w-4" />
-                          </button>
-                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -408,14 +336,6 @@ export function IncomesPage() {
         onClose={() => setShowForm(false)}
         onSubmit={handleCreateIncome}
         type={formType}
-      />
-
-      {/* Delete Confirmation Modal */}
-      <ConfirmationModal
-        isOpen={deleteModalOpen}
-        title={`Are you sure you want to delete "${incomeToDelete?.description}"?`}
-        action={confirmDelete}
-        cancel={cancelDelete}
       />
     </div>
   );
