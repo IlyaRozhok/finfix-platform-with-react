@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { CreateEventIncomeDto } from "./dto";
+import { EventIncomeDto } from "./dto";
 import { EventIncomes } from "@/entities/incomes/income-event.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -39,10 +39,20 @@ export class EventIncomesService {
     return income;
   }
 
-  async create(
-    userId: string,
-    dto: CreateEventIncomeDto
-  ): Promise<EventIncomes> {
+  async update(userId: string, id: string, dto: EventIncomeDto) {
+    const income = await this.eventIncomesRepository.findOne({
+      where: {
+        userId,
+        id,
+      },
+    });
+
+    Object.assign(income, dto);
+
+    return await this.eventIncomesRepository.save(income);
+  }
+
+  async create(userId: string, dto: EventIncomeDto): Promise<EventIncomes> {
     const income = this.eventIncomesRepository.create({
       userId,
       amount: dto.amount,

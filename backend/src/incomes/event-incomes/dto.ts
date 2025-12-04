@@ -31,7 +31,7 @@ export class EventIncomeResDto {
   date: Date;
 }
 
-export class CreateEventIncomeDto {
+export class EventIncomeDto {
   @IsInt()
   @Type(() => Number)
   @Min(1, { message: "Quantity must be a positive integer." })
@@ -58,26 +58,3 @@ export class CreateEventIncomeDto {
   date: Date;
 }
 
-export class UpdateEventIncomeDto {
-  @IsUUID()
-  @ApiProperty({ example: "63ve3...", description: "id" })
-  id: string;
-
-  @IsInt()
-  @Type(() => Number)
-  @ApiProperty({ example: 10000 })
-  amount: number;
-
-  @IsString()
-  @MaxLength(50)
-  @ApiProperty({ example: "Upwork freelance", description: "Some description" })
-  description: string;
-
-  @IsDate()
-  @Type(() => Date)
-  @ApiProperty({
-    example: "2025-11-20T10:00:00.000Z",
-    description: "Date of income (ISO 8601)",
-  })
-  date: Date;
-}
