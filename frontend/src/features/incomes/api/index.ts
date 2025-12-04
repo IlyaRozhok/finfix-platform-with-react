@@ -11,6 +11,16 @@ export const fetchRegularIncomes = async () => {
   }
 };
 
+export const fetchRegularIncome = async (id: string) => {
+  try {
+    const response = await api.get(`api/incomes/regular/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch regular income:", err);
+    throw err;
+  }
+};
+
 export const fetchEventIncomes = async () => {
   try {
     const response = await api.get("api/incomes/event");

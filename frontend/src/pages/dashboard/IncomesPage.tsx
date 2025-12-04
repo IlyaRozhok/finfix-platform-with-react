@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { fetchAllIncomes } from "@/features/incomes/api";
+import { fetchAllIncomes, fetchRegularIncome } from "@/features/incomes/api";
 import { AllIncomes } from "@/features/incomes/model/types";
 import { IncomeForm } from "@/features/incomes/ui/IncomeForm";
 import { Button } from "@/shared/ui/Button";
@@ -58,16 +58,31 @@ export function IncomesPage() {
     }
   };
 
-  const openForm = (type: "regular" | "event", income?: any) => {
+  const openForm = async (type: "regular" | "event", income?: any) => {
     setFormType(type);
     if (income) {
       setIsEditing(true);
-      setEditingIncome(income);
+      if (type === "regular" && income.id) {
+        // Fetch fresh data for editing
+        try {
+          const freshIncome = await fetchRegularIncome(income.id);
+          setEditingIncome(freshIncome);
+          setShowForm(true);
+        } catch (err) {
+          console.error("Failed to fetch income for editing:", err);
+          // Fall back to cached data if fetch fails
+          setEditingIncome(income);
+          setShowForm(true);
+        }
+      } else {
+        setEditingIncome(income);
+        setShowForm(true);
+      }
     } else {
       setIsEditing(false);
       setEditingIncome(null);
+      setShowForm(true);
     }
-    setShowForm(true);
   };
 
   useEffect(() => {

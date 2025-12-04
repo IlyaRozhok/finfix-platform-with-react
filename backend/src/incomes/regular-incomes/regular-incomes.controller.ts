@@ -70,7 +70,7 @@ export class RegularIncomesController {
   }
 
   @ApiResponse({
-    status: 201,
+    status: 200,
     type: ResRegularIncomesDto,
     description: "Regular income fetched",
   })
@@ -79,6 +79,9 @@ export class RegularIncomesController {
   async getRegularIncome(@Req() req, @Param("id") id: string) {
     const uid = req.user.sub;
     const income = await this.regularIncomesService.findOne(uid, id);
+    return plainToInstance(ResRegularIncomesDto, income, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @ApiResponse({

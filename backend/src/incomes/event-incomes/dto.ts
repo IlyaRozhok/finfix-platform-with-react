@@ -1,6 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, Type } from "class-transformer";
-import { IsDate, IsInt, IsString, MaxLength, Min } from "class-validator";
+import {
+  IsDate,
+  IsInt,
+  IsString,
+  IsUUID,
+  MaxLength,
+  Min,
+} from "class-validator";
 
 @Exclude()
 export class EventIncomeResDto {
@@ -42,6 +49,30 @@ export class CreateEventIncomeDto {
     example: "2025-11-20T10:00:00.000Z",
     description: "Date of incomes",
   })
+  @IsDate()
+  @Type(() => Date)
+  @ApiProperty({
+    example: "2025-11-20T10:00:00.000Z",
+    description: "Date of income (ISO 8601)",
+  })
+  date: Date;
+}
+
+export class UpdateEventIncomeDto {
+  @IsUUID()
+  @ApiProperty({ example: "63ve3...", description: "id" })
+  id: string;
+
+  @IsInt()
+  @Type(() => Number)
+  @ApiProperty({ example: 10000 })
+  amount: number;
+
+  @IsString()
+  @MaxLength(50)
+  @ApiProperty({ example: "Upwork freelance", description: "Some description" })
+  description: string;
+
   @IsDate()
   @Type(() => Date)
   @ApiProperty({

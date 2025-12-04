@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "@/shared/ui/Button";
 import { DatePicker } from "@/shared/ui/DatePicker";
 import { useToast } from "@/shared/ui";
-import { createRegularIncome, createEventIncome, updateRegularIncome } from "@/features/incomes/api";
+import {
+  createRegularIncome,
+  createEventIncome,
+  updateRegularIncome,
+} from "@/features/incomes/api";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface IncomeFormData {
@@ -29,7 +33,7 @@ export function IncomeForm({
   type,
   initialData,
   isEditing = false,
-  incomeId
+  incomeId,
 }: IncomeFormProps) {
   const { addToast } = useToast();
   const [formData, setFormData] = useState<IncomeFormData>(
@@ -40,25 +44,38 @@ export function IncomeForm({
     }
   );
 
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       if (type === "regular") {
         if (isEditing && incomeId) {
-          // Update existing regular income
           await updateRegularIncome(incomeId, {
             amount: parseFloat(formData.amount),
             description: formData.description,
           });
-          addToast("success", "Regular Income Updated", `Successfully updated $${formData.amount} monthly income`);
+          addToast(
+            "success",
+            "Regular Income Updated",
+            `Successfully updated $${formData.amount} monthly income`
+          );
         } else {
           // Create new regular income
           await createRegularIncome({
             amount: parseFloat(formData.amount),
             description: formData.description,
           });
-          addToast("success", "Regular Income Added", `Successfully added $${formData.amount} monthly income`);
+          addToast(
+            "success",
+            "Regular Income Added",
+            `Successfully added $${formData.amount} monthly income`
+          );
         }
       } else if (type === "event") {
         // Convert amount to number and date to proper format
@@ -67,13 +84,21 @@ export function IncomeForm({
           description: formData.description,
           date: formData.date || "",
         });
-        addToast("success", "Event Income Added", `Successfully added $${formData.amount} one-time income`);
+        addToast(
+          "success",
+          "Event Income Added",
+          `Successfully added $${formData.amount} one-time income`
+        );
       }
-
+      onClose();
       await onSubmit();
     } catch (error) {
       console.error("Failed to create income:", error);
-      addToast("error", isEditing ? "Failed to Update Income" : "Failed to Add Income", "Please check your input and try again");
+      addToast(
+        "error",
+        isEditing ? "Failed to Update Income" : "Failed to Add Income",
+        "Please check your input and try again"
+      );
       return;
     }
 
@@ -82,7 +107,6 @@ export function IncomeForm({
       amount: "",
       ...(type === "event" && { date: "" }),
     });
-    onClose();
   };
 
   const handleClose = () => {
@@ -104,7 +128,8 @@ export function IncomeForm({
           {/* Header with glassmorphism close button */}
           <div className="flex items-center justify-between mb-8">
             <Dialog.Title className="text-2xl font-bold text-primary-background tracking-tight">
-              {isEditing ? "Edit" : "Add"} {type === "regular" ? "Regular" : "Event"} Income
+              {isEditing ? "Edit" : "Add"}{" "}
+              {type === "regular" ? "Regular" : "Event"} Income
             </Dialog.Title>
             <button
               onClick={handleClose}
@@ -122,7 +147,9 @@ export function IncomeForm({
               <input
                 type="text"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-primary-background placeholder-primary-background/50 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all duration-200"
                 placeholder="Enter income description"
                 required
@@ -136,7 +163,9 @@ export function IncomeForm({
               <input
                 type="number"
                 value={formData.amount}
-                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, amount: e.target.value })
+                }
                 className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-primary-background placeholder-primary-background/50 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all duration-200"
                 placeholder="0.00"
                 step="0.01"

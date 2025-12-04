@@ -4,7 +4,7 @@ alwaysApply: true
 
 rules:
 
-- You have no permissions to edit, modify, create or delete any files inside the "backend" directory.  
+- You have no permissions to edit, modify, create or delete any files inside the "backend" directory!!!  
   You may read backend code, but you must not change it under any circumstances.
 
 - All business logic, calculations, aggregations must be implemented on the backend.

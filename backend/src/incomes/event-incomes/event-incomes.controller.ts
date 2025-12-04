@@ -48,8 +48,6 @@ export class EventIncomesController {
   @Get(ENDPOINTS.EVENT_INCOMES.GET)
   async getEventIncomes(@Req() req) {
     const userId = req.user.sub;
-
-    console.log("userID", userId);
     const eventIncomes = await this.eventIncomesService.getAll(userId);
     return plainToInstance(EventIncomeResDto, eventIncomes, {
       excludeExtraneousValues: true,
