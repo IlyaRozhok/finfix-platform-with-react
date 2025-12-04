@@ -1,17 +1,29 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Req } from '@nestjs/common';
-import { EventIncomesService } from './event-incomes.service';
-import { ApiOperation, ApiParam } from '@nestjs/swagger';
-import { ENDPOINTS } from '@/shared/router';
-import { plainToInstance } from 'class-transformer';
-import { CreateEventIncomeDto, EventIncomeResDto } from './dto';
-import { ResRegularIncomesDto } from '../regular-incomes/dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
+import { EventIncomesService } from "./event-incomes.service";
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
+import { plainToInstance } from "class-transformer";
+import { CreateEventIncomeDto, EventIncomeResDto } from "./dto";
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 
-@Controller('event-incomes')
+@UseGuards(JwtAuthGuard)
+@ApiTags("Event Incomes")
+@Controller(ROUTE_SEGMENTS.INCOMES)
 export class EventIncomesController {
   constructor(private readonly eventIncomesService: EventIncomesService) {}
 
   @ApiOperation({ summary: "Create event income" })
-  @Post(ENDPOINTS.REGULAR_INCOMES.CREATE)
+  @Post(ENDPOINTS.EVENT_INCOMES.CREATE)
   async createEventIncome(
     @Req() req,
     @Body() dto: CreateEventIncomeDto
@@ -27,13 +39,19 @@ export class EventIncomesController {
       excludeExtraneousValues: true,
     });
   }
-
+  @ApiResponse({
+    status: 201,
+    type: EventIncomeResDto,
+    description: "Created regular income",
+  })
   @ApiOperation({ summary: "Get event incomes" })
-  @Get(ENDPOINTS.REGULAR_INCOMES.GET)
+  @Get(ENDPOINTS.EVENT_INCOMES.GET)
   async getEventIncomes(@Req() req) {
     const userId = req.user.sub;
+
+    console.log("userID", userId);
     const eventIncomes = await this.eventIncomesService.getAll(userId);
-    return plainToInstance(ResRegularIncomesDto, eventIncomes, {
+    return plainToInstance(EventIncomeResDto, eventIncomes, {
       excludeExtraneousValues: true,
     });
   }

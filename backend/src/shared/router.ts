@@ -31,18 +31,17 @@ export const ENDPOINTS = {
   },
   STATS: {
     OVERVIEW: "overview",
-    REGULAR_INCOMES: "regular_incomes",
-    EVENT_INCOMES: "event_incomes",
     INCOMES: "incomes",
   },
+
   REGULAR_INCOMES: {
-    GET: "regular-income",
-    BY_ID: "regular-income/:id",
-    CREATE: "regular-income/create",
+    GET: "regular",
+    BY_ID: "regular/:id",
+    CREATE: "regular/create",
   },
   EVENT_INCOMES: {
-    GET: "event-income",
-    BY_ID: "event-income/:id",
-    CREATE: "event-income/create",
+    GET: "event",
+    BY_ID: "event/:id",
+    CREATE: "event/create",
   },
 };

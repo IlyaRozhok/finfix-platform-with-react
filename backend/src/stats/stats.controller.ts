@@ -37,8 +37,7 @@ export class StatsController {
   async getAllIncomes(@Req() req) {
     const userId = req.user.sub;
 
-    const { regular, events } =
-      await this.statsService.findAllIncomes(userId);
+    const { regular, events } = await this.statsService.findAllIncomes(userId);
 
     const regularDto = plainToInstance(ResRegularIncomesDto, regular, {
       excludeExtraneousValues: true,

@@ -25,7 +25,7 @@ import {
 import { RegularIncomesService } from "./regular-incomes.service";
 
 @UseGuards(JwtAuthGuard)
-@ApiTags("Incomes")
+@ApiTags("Regular Incomes")
 @Controller(ROUTE_SEGMENTS.INCOMES)
 export class RegularIncomesController {
   constructor(private readonly regularIncomesService: RegularIncomesService) {}
@@ -70,8 +70,19 @@ export class RegularIncomesController {
   }
 
   @ApiResponse({
+    status: 201,
+    type: ResRegularIncomesDto,
+    description: "Regular income fetched",
+  })
+  @ApiOperation({ summary: "Get regular income" })
+  @Get(ENDPOINTS.REGULAR_INCOMES.BY_ID)
+  async getRegularIncome(@Req() req, @Param("id") id: string) {
+    const uid = req.user.sub;
+    const income = await this.regularIncomesService.findOne(uid, id);
+  }
+
+  @ApiResponse({
     status: 200,
-    type: UpdateRegularIncomeDto,
     description: "Updated regular income",
   })
   @ApiOperation({ summary: "Update regular income" })
