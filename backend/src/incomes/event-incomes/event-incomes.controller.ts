@@ -59,21 +59,25 @@ export class EventIncomesController {
   }
 
   @ApiResponse({
-    status: 204,
-    type: UpdateEventIncomeDto,
+    status: 201,
+    type: EventIncomeResDto,
     description: "One event income fetched",
   })
   @ApiOperation({ summary: "Get one event income" })
   @Get(ENDPOINTS.EVENT_INCOMES.BY_ID)
-  async findOne(
-    @Req() req,
-    @Param("id") id: string,
-    @Body() dto: UpdateEventIncomeDto
-  ) {
+  async findOne(@Req() req, @Param("id") id: string) {
     const userId = req.user.sub;
-    return await this.eventIncomesService.findOne(userId, id);
+    const income = await this.eventIncomesService.findOne(userId, id);
+    return plainToInstance(EventIncomeResDto, income, {
+      excludeExtraneousValues: true,
+    });
   }
 
+  @ApiResponse({
+    status: 204,
+    type: UpdateEventIncomeDto,
+    description: "One event income fetched",
+  })
   @HttpCode(204)
   @ApiOperation({ summary: "Delete event income" })
   @ApiParam({ name: "id", type: "string", description: "Income ID (uuid)" })
