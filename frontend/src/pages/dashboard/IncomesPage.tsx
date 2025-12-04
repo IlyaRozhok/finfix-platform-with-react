@@ -9,6 +9,7 @@ import {
   CalendarDaysIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  PencilIcon,
 } from "@heroicons/react/24/outline";
 
 export function IncomesPage() {
@@ -20,6 +21,8 @@ export function IncomesPage() {
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formType, setFormType] = useState<"regular" | "event">("regular");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIncome, setEditingIncome] = useState<any>(null);
   const [regularExpanded, setRegularExpanded] = useState(true);
   const [eventExpanded, setEventExpanded] = useState(true);
 
@@ -55,8 +58,15 @@ export function IncomesPage() {
     }
   };
 
-  const openForm = (type: "regular" | "event") => {
+  const openForm = (type: "regular" | "event", income?: any) => {
     setFormType(type);
+    if (income) {
+      setIsEditing(true);
+      setEditingIncome(income);
+    } else {
+      setIsEditing(false);
+      setEditingIncome(null);
+    }
     setShowForm(true);
   };
 
@@ -205,6 +215,9 @@ export function IncomesPage() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Added
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-transparent divide-y divide-white/10">
@@ -233,6 +246,15 @@ export function IncomesPage() {
                               year: "numeric",
                             }
                           )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button
+                            onClick={() => openForm("regular", income)}
+                            className="text-primary-background hover:text-primary-background/80 p-1 rounded-lg hover:bg-white/10 transition-all duration-200 group"
+                            title="Edit income"
+                          >
+                            <PencilIcon className="h-4 w-4" />
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -333,9 +355,19 @@ export function IncomesPage() {
       {/* Income Form Modal */}
       <IncomeForm
         isOpen={showForm}
-        onClose={() => setShowForm(false)}
+        onClose={() => {
+          setShowForm(false);
+          setIsEditing(false);
+          setEditingIncome(null);
+        }}
         onSubmit={handleCreateIncome}
         type={formType}
+        isEditing={isEditing}
+        incomeId={editingIncome?.id}
+        initialData={isEditing ? {
+          description: editingIncome?.description || "",
+          amount: editingIncome?.amount?.toString() || "",
+        } : undefined}
       />
     </div>
   );

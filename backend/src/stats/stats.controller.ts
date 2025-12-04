@@ -10,6 +10,9 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import { plainToInstance } from "class-transformer";
+import { ResRegularIncomesDto } from "@/incomes/regular-incomes/dto";
+import { EventIncomeResDto } from "@/incomes/event-incomes/dto";
 
 @UseGuards(JwtAuthGuard)
 @ApiTags("Statistics")
@@ -27,5 +30,24 @@ export class StatsController {
   async getOverview(@Req() req) {
     const uid = req.user.sub;
     return this.statsService.getOverview({ uid });
+  }
+
+  @ApiOperation({ summary: "Get all incomes" })
+  @Get(ENDPOINTS.STATS.INCOMES)
+  async getAllIncomes(@Req() req) {
+    const userId = req.user.sub;
+
+    const { regular, events } =
+      await this.statsService.findAllIncomes(userId);
+
+    const regularDto = plainToInstance(ResRegularIncomesDto, regular, {
+      excludeExtraneousValues: true,
+    });
+
+    const eventsDto = plainToInstance(EventIncomeResDto, events, {
+      excludeExtraneousValues: true,
+    });
+
+    return { regular: regularDto, events: eventsDto };
   }
 }

@@ -3,7 +3,7 @@ import { Dialog } from "@headlessui/react";
 import { Button } from "@/shared/ui/Button";
 import { DatePicker } from "@/shared/ui/DatePicker";
 import { useToast } from "@/shared/ui";
-import { createRegularIncome, createEventIncome } from "@/features/incomes/api";
+import { createRegularIncome, createEventIncome, updateRegularIncome } from "@/features/incomes/api";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface IncomeFormData {
@@ -19,6 +19,7 @@ interface IncomeFormProps {
   type: "regular" | "event";
   initialData?: IncomeFormData;
   isEditing?: boolean;
+  incomeId?: string;
 }
 
 export function IncomeForm({
@@ -27,7 +28,8 @@ export function IncomeForm({
   onSubmit,
   type,
   initialData,
-  isEditing = false
+  isEditing = false,
+  incomeId
 }: IncomeFormProps) {
   const { addToast } = useToast();
   const [formData, setFormData] = useState<IncomeFormData>(
@@ -43,12 +45,21 @@ export function IncomeForm({
 
     try {
       if (type === "regular") {
-        // Convert amount to number and send to API
-        await createRegularIncome({
-          amount: parseFloat(formData.amount),
-          description: formData.description,
-        });
-        addToast("success", "Regular Income Added", `Successfully added $${formData.amount} monthly income`);
+        if (isEditing && incomeId) {
+          // Update existing regular income
+          await updateRegularIncome(incomeId, {
+            amount: parseFloat(formData.amount),
+            description: formData.description,
+          });
+          addToast("success", "Regular Income Updated", `Successfully updated $${formData.amount} monthly income`);
+        } else {
+          // Create new regular income
+          await createRegularIncome({
+            amount: parseFloat(formData.amount),
+            description: formData.description,
+          });
+          addToast("success", "Regular Income Added", `Successfully added $${formData.amount} monthly income`);
+        }
       } else if (type === "event") {
         // Convert amount to number and date to proper format
         await createEventIncome({
@@ -62,7 +73,7 @@ export function IncomeForm({
       await onSubmit();
     } catch (error) {
       console.error("Failed to create income:", error);
-      addToast("error", "Failed to Add Income", "Please check your input and try again");
+      addToast("error", isEditing ? "Failed to Update Income" : "Failed to Add Income", "Please check your input and try again");
       return;
     }
 

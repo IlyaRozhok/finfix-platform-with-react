@@ -4,9 +4,8 @@ import { UsersService } from "@/users/users.service";
 import { DebtsService } from "@/debts/debt.service";
 import { RecurringExpensesService } from "@/recurring-expenses/recurring-expenses.service";
 import { InstallmentsService } from "@/installments/installments.service";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Category } from "@/entities/onboarding.entity";
-import { Repository } from "typeorm";
+import { EventIncomesService } from "@/incomes/event-incomes/event-incomes.service";
+import { RegularIncomesService } from "@/incomes/regular-incomes/regular-incomes.service";
 
 @Injectable()
 export class StatsService {
@@ -14,7 +13,9 @@ export class StatsService {
     private readonly usersService: UsersService,
     private readonly debtsService: DebtsService,
     private readonly expensesService: RecurringExpensesService,
-    private readonly installmentsService: InstallmentsService
+    private readonly installmentsService: InstallmentsService,
+    private readonly regularIncomesService: RegularIncomesService,
+    private readonly eventIncomesService: EventIncomesService
   ) {}
   async getOverview(dto: ReqOverviewDto) {
     const user = await this.usersService.findById(dto.uid);
@@ -55,5 +56,14 @@ export class StatsService {
       monthlyNetworth: Math.floor(monthlyNetworth),
       monthlyObligations,
     };
+  }
+
+  async findAllIncomes(userId: string) {
+    const [regular, events] = await Promise.all([
+      this.regularIncomesService.getAll(userId),
+      this.eventIncomesService.getAll(userId),
+    ]);
+
+    return { regular, events };
   }
 }

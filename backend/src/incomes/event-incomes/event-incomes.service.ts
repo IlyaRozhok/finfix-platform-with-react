@@ -1,0 +1,40 @@
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { CreateEventIncomeDto } from "./dto";
+import { EventIncomes } from "@/entities/incomes/income-event.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+
+@Injectable()
+export class EventIncomesService {
+  @InjectRepository(EventIncomes)
+  private readonly eventIncomesRepository: Repository<EventIncomes>;
+
+  async delete(userId: string, id: string) {
+    const result = await this.eventIncomesRepository.delete({ userId, id });
+    if (result.affected === 0) {
+      throw new NotFoundException("Event income not found");
+    }
+  }
+
+  async getAll(userId: string) {
+    return await this.eventIncomesRepository.find({
+      where: {
+        userId,
+      },
+    });
+  }
+
+  async create(
+    userId: string,
+    dto: CreateEventIncomeDto
+  ): Promise<EventIncomes> {
+    const income = this.eventIncomesRepository.create({
+      userId,
+      amount: dto.amount,
+      description: dto.description,
+      date: dto.date,
+    });
+
+    return await this.eventIncomesRepository.save(income);
+  }
+}

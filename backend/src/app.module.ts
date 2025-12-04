@@ -11,7 +11,8 @@ import { TransactionsModule } from "./transactions/transactions.module";
 import { envFileMap } from "./shared/envFileMap";
 import { StatsModule } from "./stats/stats.module";
 import { LivenessController } from "./liveness.controller";
-import { IncomesModule } from "./incomes/incomes.module";
+import { RegularIncomesModule } from "./incomes/regular-incomes/regular-incomes.module";
+import { EventIncomesModule } from "./incomes/event-incomes/event-incomes.module";
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import { IncomesModule } from "./incomes/incomes.module";
     InstallmentsModule,
     TransactionsModule,
     StatsModule,
-    IncomesModule,
+    RegularIncomesModule,
+    EventIncomesModule,
   ],
   controllers: [LivenessController],
 })

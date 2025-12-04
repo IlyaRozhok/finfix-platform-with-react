@@ -21,6 +21,19 @@ export const createRegularIncome = async (data: { amount: number; description: s
   }
 };
 
+export const updateRegularIncome = async (
+  id: string,
+  data: { amount?: number; description?: string }
+) => {
+  try {
+    const response = await api.put(`api/incomes/regular/${id}`, data);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update regular income:", err);
+    throw err;
+  }
+};
+
 export const createEventIncome = async (data: { amount: number; description: string; date: string }) => {
   try {
     const response = await api.post("api/incomes/event/create", {

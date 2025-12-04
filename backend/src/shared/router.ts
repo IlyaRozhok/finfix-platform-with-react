@@ -33,14 +33,16 @@ export const ENDPOINTS = {
     OVERVIEW: "overview",
     REGULAR_INCOMES: "regular_incomes",
     EVENT_INCOMES: "event_incomes",
+    INCOMES: "incomes",
   },
-  INCOMES: {
-    FIND_REGULAR: "regular/find",
-    FIND_EVENT: "event/find",
-    FIND_ALL: "all/find",
-    REGULAR: "regular/:id",
-    EVENT: "event/:id",
-    REGULAR_CREATE: "regular/create",
-    EVENT_CREATE: "event/create",
+  REGULAR_INCOMES: {
+    GET: "regular-income",
+    BY_ID: "regular-income/:id",
+    CREATE: "regular-income/create",
+  },
+  EVENT_INCOMES: {
+    GET: "event-income",
+    BY_ID: "event-income/:id",
+    CREATE: "event-income/create",
   },
 };
