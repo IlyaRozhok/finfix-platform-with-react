@@ -25,7 +25,7 @@ export class EventIncomesService {
   }
 
   async findOne(userId: string, id: string) {
-    const income = await this.eventIncomesRepository.find({
+    const income = await this.eventIncomesRepository.findOne({
       where: {
         userId,
         id,

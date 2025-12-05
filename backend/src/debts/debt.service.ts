@@ -15,7 +15,7 @@ export class DebtsService {
     private readonly DebtsRepository: Repository<Debt>
   ) {}
 
-  async getDebts(uid: string) {
+  async findAll(uid: string) {
     if (!uid) {
       throw new BadRequestException("User id not provided");
     }
@@ -27,7 +27,7 @@ export class DebtsService {
     return debts;
   }
 
-  async createDebts(dto: CreateDebtDto[]): Promise<Debt[]> {
+  async create(dto: CreateDebtDto[]): Promise<Debt[]> {
     if (!dto.length) {
       throw new BadRequestException("Payload did not provided");
     }
@@ -47,7 +47,7 @@ export class DebtsService {
     return await this.DebtsRepository.save(debts);
   }
 
-  async updateDebt(id: string, dto: CreateDebtDto): Promise<Debt> {
+  async update(id: string, dto: CreateDebtDto): Promise<Debt> {
     if (!id) {
       throw new BadRequestException("Debt id not provided");
     }
@@ -71,7 +71,7 @@ export class DebtsService {
     return await this.DebtsRepository.save(debt);
   }
 
-  async deleteDebt(id: string) {
+  async delete(id: string) {
     if (!id) {
       throw new BadRequestException("Debt id not provided");
     }

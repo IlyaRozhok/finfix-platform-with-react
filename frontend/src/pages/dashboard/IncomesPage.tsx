@@ -1,8 +1,16 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { fetchAllIncomes, fetchRegularIncome } from "@/features/incomes/api";
+import {
+  fetchAllIncomes,
+  fetchRegularIncome,
+  fetchEventIncome,
+  deleteRegularIncome,
+  deleteEventIncome,
+} from "@/features/incomes/api";
 import { AllIncomes } from "@/features/incomes/model/types";
 import { IncomeForm } from "@/features/incomes/ui/IncomeForm";
 import { Button } from "@/shared/ui/Button";
+import { ConfirmationModal } from "@/shared/ui/ConfirmationModal";
+import { useToast } from "@/shared/ui";
 import {
   SparklesIcon,
   CurrencyDollarIcon,
@@ -10,9 +18,11 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   PencilIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 
 export function IncomesPage() {
+  const { addToast } = useToast();
   const [incomes, setIncomes] = useState<AllIncomes>({
     regular: [],
     events: [],
@@ -22,9 +32,20 @@ export function IncomesPage() {
   const [showForm, setShowForm] = useState(false);
   const [formType, setFormType] = useState<"regular" | "event">("regular");
   const [isEditing, setIsEditing] = useState(false);
-  const [editingIncome, setEditingIncome] = useState<any>(null);
+  const [editingIncome, setEditingIncome] = useState<{
+    id: string;
+    description: string;
+    amount: number;
+    date?: string;
+  } | null>(null);
   const [regularExpanded, setRegularExpanded] = useState(true);
   const [eventExpanded, setEventExpanded] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    type: "regular" | "event";
+    id: string;
+    description: string;
+  } | null>(null);
 
   // Calculate summary statistics
   const summaryStats = useMemo(() => {
@@ -58,14 +79,70 @@ export function IncomesPage() {
     }
   };
 
-  const openForm = async (type: "regular" | "event", income?: any) => {
+  const handleDeleteRegularIncome = (id: string, description: string) => {
+    setDeleteTarget({ type: "regular", id, description });
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteEventIncome = (id: string, description: string) => {
+    setDeleteTarget({ type: "event", id, description });
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      if (deleteTarget.type === "regular") {
+        await deleteRegularIncome(deleteTarget.id);
+        addToast(
+          "success",
+          "Regular Income Deleted",
+          `Successfully deleted "${deleteTarget.description}"`
+        );
+      } else {
+        await deleteEventIncome(deleteTarget.id);
+        addToast(
+          "success",
+          "Event Income Deleted",
+          `Successfully deleted "${deleteTarget.description}"`
+        );
+      }
+      const data = await fetchAllIncomes();
+      setIncomes(data);
+    } catch (err) {
+      console.error("Failed to delete income:", err);
+      addToast("error", "Failed to Delete Income", "Please try again.");
+    } finally {
+      setShowDeleteModal(false);
+      setDeleteTarget(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteTarget(null);
+  };
+
+  const openForm = async (
+    type: "regular" | "event",
+    income?: {
+      id: string;
+      description: string;
+      amount: number;
+      date?: string;
+    }
+  ) => {
     setFormType(type);
     if (income) {
       setIsEditing(true);
-      if (type === "regular" && income.id) {
+      if (income.id) {
         // Fetch fresh data for editing
         try {
-          const freshIncome = await fetchRegularIncome(income.id);
+          const freshIncome =
+            type === "regular"
+              ? await fetchRegularIncome(income.id)
+              : await fetchEventIncome(income.id);
           setEditingIncome(freshIncome);
           setShowForm(true);
         } catch (err) {
@@ -263,13 +340,27 @@ export function IncomesPage() {
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            onClick={() => openForm("regular", income)}
-                            className="text-primary-background hover:text-primary-background/80 p-1 rounded-lg hover:bg-white/10 transition-all duration-200 group"
-                            title="Edit income"
-                          >
-                            <PencilIcon className="h-4 w-4" />
-                          </button>
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              onClick={() => openForm("regular", income)}
+                              className="text-primary-background hover:text-primary-background/80 p-1 rounded-lg hover:bg-white/10 transition-all duration-200 group"
+                              title="Edit income"
+                            >
+                              <PencilIcon className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleDeleteRegularIncome(
+                                  income.id,
+                                  income.description
+                                )
+                              }
+                              className="text-red-400 hover:text-red-300 p-1 rounded-lg hover:bg-red-500/10 transition-all duration-200 group"
+                              title="Delete income"
+                            >
+                              <TrashIcon className="h-4 w-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -332,6 +423,9 @@ export function IncomesPage() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Date
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-transparent divide-y divide-white/10">
@@ -357,6 +451,29 @@ export function IncomesPage() {
                             year: "numeric",
                           })}
                         </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              onClick={() => openForm("event", income)}
+                              className="text-primary-background hover:text-primary-background/80 p-1 rounded-lg hover:bg-white/10 transition-all duration-200 group"
+                              title="Edit income"
+                            >
+                              <PencilIcon className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleDeleteEventIncome(
+                                  income.id,
+                                  income.description
+                                )
+                              }
+                              className="text-red-400 hover:text-red-300 p-1 rounded-lg hover:bg-red-500/10 transition-all duration-200 group"
+                              title="Delete income"
+                            >
+                              <TrashIcon className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -379,11 +496,18 @@ export function IncomesPage() {
         type={formType}
         isEditing={isEditing}
         incomeId={editingIncome?.id}
-        initialData={isEditing ? {
-          description: editingIncome?.description || "",
-          amount: editingIncome?.amount?.toString() || "",
-        } : undefined}
+        editingIncome={editingIncome}
+        initialData={undefined}
       />
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && deleteTarget && (
+        <ConfirmationModal
+          title={`Are you sure you want to delete "${deleteTarget.description}"?`}
+          action={confirmDelete}
+          cancel={cancelDelete}
+        />
+      )}
     </div>
   );
 }

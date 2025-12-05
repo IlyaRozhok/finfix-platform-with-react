@@ -25,7 +25,7 @@ export class DebtsController {
   @Get(`${ENDPOINTS.ONBOARDING.DEBTS}`)
   async getOnboardingDebts(@Req() req) {
     const uid = req.user.sub;
-    const debts = await this.DebtsService.getDebts(uid);
+    const debts = await this.DebtsService.findAll(uid);
     return debts;
   }
 
@@ -33,19 +33,19 @@ export class DebtsController {
   @ApiBody({ type: [CreateDebtDto] })
   @Post(ENDPOINTS.ONBOARDING.DEBTS)
   async createDebt(@Body() dto: CreateDebtDto[]) {
-    const debts = await this.DebtsService.createDebts(dto);
+    const debts = await this.DebtsService.create(dto);
     return debts;
   }
 
   @Put(`${ENDPOINTS.ONBOARDING.DEBTS}/:id`)
   async updateDebt(@Param("id") id: string, @Body() dto: CreateDebtDto) {
-    const debt = await this.DebtsService.updateDebt(id, dto);
+    const debt = await this.DebtsService.update(id, dto);
     return debt;
   }
 
   @Delete(`${ENDPOINTS.ONBOARDING.DEBTS}/:id`)
   async deleteDebt(@Req() id: string) {
-    const debt = await this.DebtsService.deleteDebt(id);
+    const debt = await this.DebtsService.delete(id);
     return debt;
   }
 }

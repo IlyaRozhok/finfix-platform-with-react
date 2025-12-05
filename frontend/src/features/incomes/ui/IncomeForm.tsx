@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "@/shared/ui/Button";
-import { DatePicker } from "@/shared/ui/DatePicker";
+import { Calendar } from "@/shared/ui/Calendar";
 import { useToast } from "@/shared/ui";
 import {
   createRegularIncome,
   createEventIncome,
   updateRegularIncome,
+  updateEventIncome,
 } from "@/features/incomes/api";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -24,6 +25,7 @@ interface IncomeFormProps {
   initialData?: IncomeFormData;
   isEditing?: boolean;
   incomeId?: string;
+  editingIncome?: any;
 }
 
 export function IncomeForm({
@@ -34,6 +36,7 @@ export function IncomeForm({
   initialData,
   isEditing = false,
   incomeId,
+  editingIncome,
 }: IncomeFormProps) {
   const { addToast } = useToast();
   const [formData, setFormData] = useState<IncomeFormData>(
@@ -44,11 +47,26 @@ export function IncomeForm({
     }
   );
 
+  // Update form data when initialData or editingIncome changes (for editing)
   useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
+    if (isOpen && editingIncome && isEditing) {
+      const newData: IncomeFormData = {
+        description: editingIncome.description || "",
+        amount: editingIncome.amount?.toString() || "",
+        ...(type === "event" && {
+          date: editingIncome.date
+            ? new Date(editingIncome.date).toISOString().split("T")[0]
+            : "",
+        }),
+      };
+      setFormData(newData);
+    } else if (isOpen && initialData) {
+      setFormData((prevData) => ({
+        ...prevData,
+        ...initialData,
+      }));
     }
-  }, [initialData]);
+  }, [editingIncome, initialData, type, isOpen, isEditing]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,17 +96,31 @@ export function IncomeForm({
           );
         }
       } else if (type === "event") {
-        // Convert amount to number and date to proper format
-        await createEventIncome({
-          amount: parseFloat(formData.amount),
-          description: formData.description,
-          date: formData.date || "",
-        });
-        addToast(
-          "success",
-          "Event Income Added",
-          `Successfully added $${formData.amount} one-time income`
-        );
+        if (isEditing && incomeId) {
+          // Update existing event income
+          await updateEventIncome(incomeId, {
+            amount: parseFloat(formData.amount),
+            description: formData.description,
+            date: formData.date,
+          });
+          addToast(
+            "success",
+            "Event Income Updated",
+            `Successfully updated $${formData.amount} one-time income`
+          );
+        } else {
+          // Create new event income
+          await createEventIncome({
+            amount: parseFloat(formData.amount),
+            description: formData.description,
+            date: formData.date || "",
+          });
+          addToast(
+            "success",
+            "Event Income Added",
+            `Successfully added $${formData.amount} one-time income`
+          );
+        }
       }
       onClose();
       await onSubmit();
@@ -179,7 +211,7 @@ export function IncomeForm({
                 <label className="block text-sm font-semibold text-primary-background/90 mb-2 tracking-wide">
                   Date
                 </label>
-                <DatePicker
+                <Calendar
                   value={formData.date}
                   onChange={(date) => setFormData({ ...formData, date })}
                   placeholder="Select event date"

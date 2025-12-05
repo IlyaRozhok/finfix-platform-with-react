@@ -15,6 +15,8 @@ rules:
    • reusable, isolated UI blocks  
    • predictable imports, no cross-layer violations
 
+- Do not use styles, use customs scss instead
+
 - Never run the backend and frontend servers, Docker, migrations, or any shell commands related to server execution.  
   I run the servers manually.
 

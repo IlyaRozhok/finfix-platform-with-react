@@ -21,6 +21,16 @@ export const fetchRegularIncome = async (id: string) => {
   }
 };
 
+export const fetchEventIncome = async (id: string) => {
+  try {
+    const response = await api.get(`api/incomes/event/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch event income:", err);
+    throw err;
+  }
+};
+
 export const fetchEventIncomes = async () => {
   try {
     const response = await api.get("api/incomes/event");
@@ -95,6 +105,22 @@ export const deleteRegularIncome = async (id: string) => {
     await api.delete(`api/incomes/regular/${id}`);
   } catch (err) {
     console.error("Failed to delete regular income:", err);
+    throw err;
+  }
+};
+
+export const updateEventIncome = async (
+  id: string,
+  data: { amount?: number; description?: string; date?: string }
+) => {
+  try {
+    const response = await api.put(`api/incomes/event/${id}`, {
+      ...data,
+      ...(data.date && { date: new Date(data.date) }), // Convert string to Date object if date is provided
+    });
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update event income:", err);
     throw err;
   }
 };
