@@ -49,24 +49,14 @@ export const hasDebtsChanged = (
   currentDebts: Debt[],
   originalDebts: Debt[]
 ): boolean => {
-  // Get only existing debts (not temp ones) for comparison
-  const currentExistingDebts = currentDebts.filter((debt) => debt.id);
-  const originalExistingDebts = originalDebts.filter((debt) => debt.id);
-
-  // Check if any new debts were added
-  const hasNewDebts = currentDebts.some((debt) => !debt.id);
-  if (hasNewDebts) {
-    return true;
-  }
-
-  // Compare existing debts arrays
-  if (currentExistingDebts.length !== originalExistingDebts.length) {
+  // Quick length check to detect additions/removals
+  if (currentDebts.length !== originalDebts.length) {
     return true;
   }
 
   // Create maps for easier comparison
-  const currentMap = new Map(currentExistingDebts.map((debt) => [debt.id, debt]));
-  const originalMap = new Map(originalExistingDebts.map((debt) => [debt.id, debt]));
+  const currentMap = new Map(currentDebts.map((debt) => [debt.id, debt]));
+  const originalMap = new Map(originalDebts.map((debt) => [debt.id, debt]));
 
   // Check if all original debts still exist and are unchanged
   for (const [id, originalDebt] of originalMap) {
@@ -83,6 +73,13 @@ export const hasDebtsChanged = (
       currentDebt.interest !== originalDebt.interest
     ) {
       // Debt was modified
+      return true;
+    }
+  }
+
+  // Check if any new debts were added
+  for (const [id] of currentMap) {
+    if (!originalMap.has(id)) {
       return true;
     }
   }

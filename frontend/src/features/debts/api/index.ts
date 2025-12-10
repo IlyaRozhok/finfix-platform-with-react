@@ -18,12 +18,14 @@ export interface Debt {
 }
 
 export interface CreateDebtData {
+  userId: string;
   description: string;
   totalDebt: string;
   interest: string;
 }
 
 export interface UpdateDebtData {
+  userId: string;
   description?: string;
   totalDebt?: string;
   interest?: string;

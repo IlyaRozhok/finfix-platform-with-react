@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  fetchDebts,
-  createDebt,
-  updateDebt,
-  deleteDebt,
-  Debt,
-} from "@/features/debts/api";
+import { fetchDebts, deleteDebt, Debt } from "@/features/debts/api";
 import { DebtForm } from "@/features/debts/ui/DebtForm";
 import { Button } from "@/shared/ui/Button";
 import { ConfirmationModal } from "@/shared/ui/ConfirmationModal";
 import { useToast } from "@/shared/ui";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 export function DebtsPage() {
   const { addToast } = useToast();
+  const { user } = useAuth();
   const [debts, setDebts] = useState<Debt[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -243,6 +239,7 @@ export function DebtsPage() {
               }
             : undefined
         }
+        userId={user?.id ?? ""}
       />
 
       {/* Delete Confirmation Modal */}

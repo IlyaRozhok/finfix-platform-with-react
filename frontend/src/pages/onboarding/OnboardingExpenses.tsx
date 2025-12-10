@@ -7,9 +7,11 @@ import { useEffect, useMemo, useState } from "react";
 import { ExpenseRow } from "@/features/onboarding/";
 import { ReqUserExpense as Row } from "@/features/onboarding/model/types";
 import { fetchCategories } from "@/features/onboarding/api";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 export const OnboardingExpenses = () => {
   const { data, addExpense, updateExpense } = useOnboarding();
+  const { user } = useAuth();
   const [categories, setCategories] = useState<
     {
       id: string;
@@ -42,12 +44,12 @@ export const OnboardingExpenses = () => {
             expense.id,
             "categoryId",
             categories[0].id,
-            expense.userId
+            user?.id as string
           );
         }
       });
     }
-  }, [categories, data.expenses, updateExpense]);
+  }, [categories, data.expenses, updateExpense, user?.id]);
 
   const widgetData = {
     title: "Monthly expenses",

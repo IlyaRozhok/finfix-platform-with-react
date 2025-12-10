@@ -3,16 +3,18 @@ import { ReqCreateDebt } from "../model/types";
 
 export const prepareNewDebtsForApi = (
   debts: Debt[],
-  userId: string
+  userId: string,
+  originalDebts: Debt[] = []
 ): ReqCreateDebt[] => {
+  const originalIds = new Set(originalDebts.map((debt) => debt.id));
+
   return debts
-    .filter((debt) => !debt.id)
+    .filter((debt) => !originalIds.has(debt.id))
     .map((debt) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...rest } = debt;
       return {
         ...rest,
-        userId: userId,
+        userId,
       };
     });
 };

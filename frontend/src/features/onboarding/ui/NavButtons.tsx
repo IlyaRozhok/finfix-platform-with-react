@@ -20,12 +20,14 @@ import { newInstallmentPayload } from "../lib/newInstallmentPayload";
 import { prepareNewDebtsForApi } from "../lib/prepareNewDebtsForApi";
 
 const prepareExpensesForApi = (
-  expenses: ReqUserExpense[]
+  expenses: ReqUserExpense[],
+  userId?: string
 ): ReqCreateUserExpense[] => {
   return expenses.map((expense) => {
-    const { id, ...rest } = expense;
+    const { id, userId: expenseUserId, ...rest } = expense;
     return {
       ...rest,
+      userId: userId ?? expenseUserId ?? "",
       ...(id && { id }),
     };
   });
@@ -56,6 +58,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
   const { user, refresh } = useAuth();
   const {
     data,
+    originalData,
     setIncomesError,
     validateExpenses,
     validateDebts,
@@ -80,7 +83,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
       if (!ok) return;
 
       if (hasExpensesChanged() && user?.id) {
-        const expensesPayload = prepareExpensesForApi(data.expenses);
+        const expensesPayload = prepareExpensesForApi(data.expenses, user.id);
         createUserExpenses(expensesPayload);
       }
     }
@@ -90,12 +93,19 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
       if (!ok) return;
       console.log("user", user);
       if (hasDebtsChanged() && user?.id) {
-        const newDebtsPayload = prepareNewDebtsForApi(data.debts, user.id);
+        const newDebtsPayload = prepareNewDebtsForApi(
+          data.debts,
+          user.id,
+          originalData.debts
+        );
         if (newDebtsPayload.length > 0) {
-          createDebts(newDebtsPayload, user.id);
+          createDebts(newDebtsPayload);
         }
 
-        const existingDebts = data.debts.filter((debt) => debt.id);
+        const originalIds = new Set(originalData.debts.map((debt) => debt.id));
+        const existingDebts = data.debts.filter((debt) =>
+          debt.id ? originalIds.has(debt.id) : false
+        );
         for (const debt of existingDebts) {
           const debtPayload = {
             userId: user.id,
@@ -103,7 +113,7 @@ export const OnboardingNextButton: React.FC<OnboardingNextButtonProps> = ({
             interest: debt.interest,
             description: debt.description || "",
           };
-          updateDebt(user.id, debtPayload);
+          updateDebt(debt.id, debtPayload);
         }
       }
     }

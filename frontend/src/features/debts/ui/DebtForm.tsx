@@ -19,6 +19,7 @@ interface DebtFormProps {
   isEditing?: boolean;
   debtId?: string;
   editingDebt?: Debt;
+  userId: string;
 }
 
 export function DebtForm({
@@ -29,6 +30,7 @@ export function DebtForm({
   isEditing = false,
   debtId,
   editingDebt,
+  userId,
 }: DebtFormProps) {
   const { addToast } = useToast();
   const [formData, setFormData] = useState<DebtFormData>(
@@ -57,9 +59,18 @@ export function DebtForm({
     e.preventDefault();
 
     try {
+      if (!userId) {
+        addToast(
+          "error",
+          "Missing user",
+          "Please sign in again and try to save the debt."
+        );
+        return;
+      }
       if (isEditing && debtId) {
         // Update existing debt
         await updateDebt(debtId, {
+          userId,
           description: formData.description,
           totalDebt: formData.totalDebt,
           interest: formData.interest,
@@ -68,6 +79,7 @@ export function DebtForm({
       } else {
         // Create new debt
         await createDebt({
+          userId,
           description: formData.description,
           totalDebt: formData.totalDebt,
           interest: formData.interest,

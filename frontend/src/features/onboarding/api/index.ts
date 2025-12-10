@@ -39,7 +39,7 @@ export const createUserOnboardingIncomes = async (payload: ReqUserIncomes) => {
 
 export const createUserExpenses = async (payload: ReqCreateUserExpense[]) => {
   try {
-    const response = await api.post("api/onboarding/expenses", payload);
+    const response = await api.post("api/expenses/create-expenses", payload);
     return response.data;
   } catch (err) {
     console.error("Failed to update expenses:", err);
@@ -49,7 +49,7 @@ export const createUserExpenses = async (payload: ReqCreateUserExpense[]) => {
 
 export const deleteExpense = async (id: string) => {
   try {
-    const expense = await api.delete(`/api/onboarding/expenses/${id}`);
+    const expense = await api.delete(`/api/expenses/${id}`);
     alert("Expense sucessfully deleted");
     return expense.data;
   } catch (err) {
@@ -82,7 +82,7 @@ export const fetchSummary = async (id: string) => {
 
 export const fetchDebts = async (): Promise<ReqCreateDebt[]> => {
   try {
-    const response = await api.get(`api/onboarding/debts`);
+    const response = await api.get(`api/debts`);
     return response.data;
   } catch (err) {
     console.error("Failed to fetch debts:", err);
@@ -90,9 +90,9 @@ export const fetchDebts = async (): Promise<ReqCreateDebt[]> => {
   }
 };
 
-export const createDebts = async (payload: ReqCreateDebt[], uid: string) => {
+export const createDebts = async (payload: ReqCreateDebt[]) => {
   try {
-    const response = await api.post(`api/onboarding/debts?uid=${uid}`, payload);
+    const response = await api.post(`api/debts/create`, payload);
     return response.data;
   } catch (err) {
     console.error("Failed to update debts:", err);
@@ -102,7 +102,7 @@ export const createDebts = async (payload: ReqCreateDebt[], uid: string) => {
 
 export const updateDebt = async (id: string, payload: ReqCreateDebt) => {
   try {
-    const response = await api.put(`/api/onboarding/debts/${id}`, payload);
+    const response = await api.put(`/api/debts/${id}`, payload);
     return response.data;
   } catch (err) {
     console.error("Failed to update debt:", err);
@@ -112,7 +112,7 @@ export const updateDebt = async (id: string, payload: ReqCreateDebt) => {
 
 export const deleteDebt = async (id: string) => {
   try {
-    const debt = await api.delete(`/api/onboarding/debts/${id}`);
+    const debt = await api.delete(`/api/debts/${id}`);
     alert("Debt sucessfully deleted");
     return debt.data;
   } catch (err) {
@@ -121,9 +121,9 @@ export const deleteDebt = async (id: string) => {
   }
 };
 
-export const fetchInstallments = async (uid: string) => {
+export const fetchInstallments = async () => {
   try {
-    const response = await api.get(`api/onboarding/installments/${uid}`);
+    const response = await api.get(`api/installments`);
     return response.data;
   } catch (err) {
     console.error("Failed to fetch installments:", err);
@@ -133,7 +133,7 @@ export const fetchInstallments = async (uid: string) => {
 
 export const createInstallments = async (payload: ReqCreateInstallment[]) => {
   try {
-    const response = await api.post(`api/onboarding/installments`, payload);
+    const response = await api.post(`api/installments/create-installments`, payload);
     return response.data;
   } catch (err) {
     console.error("Failed to create installments:", err);
@@ -141,25 +141,9 @@ export const createInstallments = async (payload: ReqCreateInstallment[]) => {
   }
 };
 
-export const updateInstallment = async (
-  id: string,
-  payload: ReqCreateInstallment
-) => {
-  try {
-    const response = await api.put(
-      `/api/onboarding/installments/${id}`,
-      payload
-    );
-    return response.data;
-  } catch (err) {
-    console.error("Failed to update installment:", err);
-    throw err;
-  }
-};
-
 export const deleteInstallment = async (id: string) => {
   try {
-    const installment = await api.delete(`/api/onboarding/installments/${id}`);
+    const installment = await api.delete(`/api/installments/${id}`);
     return installment.data;
   } catch (err) {
     console.error("Failed to delete installment:", err);
