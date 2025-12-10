@@ -5,41 +5,56 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Req,
   UseGuards,
 } from "@nestjs/common";
 import { RecurringExpensesService } from "./recurring-expenses.service";
 import { RecurringExpense } from "../entities/recurring-expense.entity";
-import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
+import { ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { CreateExpenseDto, UpdateExpenseDto } from "@/expenses/dto";
 
 @UseGuards(JwtAuthGuard)
 @ApiTags("Expenses")
-@Controller(ROUTE_SEGMENTS.ONBOARDING)
+@Controller(ROUTE_SEGMENTS.EXPENSES)
 export class RecurringExpensesController {
   constructor(
-    private readonly recurringExpensesService: RecurringExpensesService
+    private readonly recurringExpensesService: RecurringExpensesService,
   ) {}
 
-  @Post(ENDPOINTS.ONBOARDING.EXPENSES)
-  async createExpense(@Body() dto: RecurringExpense[]) {
-    const expenses = await this.recurringExpensesService.updateExpenses(dto);
-    return expenses;
+  @ApiOperation({ summary: "Create expenses" })
+  @Post("create-expenses")
+  async createExpenses(@Body() dto: RecurringExpense[]) {
+    return await this.recurringExpensesService.updateExpenses(dto);
   }
 
-  @Get(ENDPOINTS.ONBOARDING.EXPENSES)
+  @ApiOperation({ summary: "Get expense" })
+  @Get()
   async getOnboardingExpenses(@Req() req) {
     const uid = req.user.sub;
-    console.log("uid", uid);
-    const expenses = await this.recurringExpensesService.getExpenses(uid);
-    return expenses;
+    return await this.recurringExpensesService.getExpenses(uid);
   }
 
-  @Delete(`${ENDPOINTS.ONBOARDING.EXPENSES}/:expenseId`)
-  async deleteExpense(@Param("expenseId") expenseId: string) {
-    const expense =
-      await this.recurringExpensesService.deleteExpense(expenseId);
-    return expense;
+  @ApiOperation({ summary: "Delete expense" })
+  @Delete("/:id")
+  async deleteExpense(@Param("id") id: string) {
+    await this.recurringExpensesService.deleteExpense(id);
+    return true
+  }
+
+  @ApiOperation({ summary: "Create expense" })
+  @Post()
+  async createExpense(@Body() dto: CreateExpenseDto, @Req() req) {
+    const userId = req.user.sub;
+    return await this.recurringExpensesService.createExpense(dto, userId);
+  }
+
+  @ApiOperation({summary: "Update expense"})
+  @Put()
+  async updateExpense(@Body() dto: UpdateExpenseDto, @Req() req, @Param("id") id: string) {
+    const userId = req.user.sub;
+    return await this.recurringExpensesService.updateExpense(dto, userId)
   }
 }

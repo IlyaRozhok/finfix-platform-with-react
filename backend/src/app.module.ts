@@ -5,7 +5,7 @@ import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
 import { OnboadingModule } from "./onboarding/onboarding.module";
 import { DebtsModule } from "./debts/debts.module";
-import { RecurringExpensesModule } from "./recurring-expenses/recurring-expenses.module";
+import { RecurringExpensesModule } from "@/expenses/recurring-expenses.module";
 import { InstallmentsModule } from "./installments/installments.module";
 import { TransactionsModule } from "./transactions/transactions.module";
 import { envFileMap } from "./shared/envFileMap";

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { Installment } from "../entities/installment.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -9,10 +9,10 @@ import { addMonths, format, parseISO } from "date-fns";
 export class InstallmentsService {
   constructor(
     @InjectRepository(Installment)
-    private readonly installmentRepository: Repository<Installment>
+    private readonly installmentRepository: Repository<Installment>,
   ) {}
 
-  async getInstallments(uid: string): Promise<Installment[]> {
+  async findAll(uid: string): Promise<Installment[]> {
     if (!uid) {
       throw new BadRequestException("User id not provided");
     }
@@ -25,8 +25,8 @@ export class InstallmentsService {
     return installments;
   }
 
-  async createInstallment(
-    dtos: CreateInstallmentDto[]
+  async createInstallments(
+    dtos: CreateInstallmentDto[],
   ): Promise<Installment[]> {
     if (!Array.isArray(dtos) || dtos.length === 0) {
       throw new BadRequestException("Payload must be a non-empty array");
@@ -39,7 +39,7 @@ export class InstallmentsService {
 
       const interestRate = 1.9;
       const monthlyPayment = Math.floor(
-        Number(d.totalAmount) / Number(d.totalPayments)
+        Number(d.totalAmount) / Number(d.totalPayments),
       );
       const monthlyInteres = (Number(d.totalAmount) / 100) * interestRate;
       const totalInteres = monthlyInteres * d.totalPayments;
@@ -47,7 +47,7 @@ export class InstallmentsService {
       const start = parseISO(d.startDate);
       if (isNaN(start.getTime())) {
         throw new BadRequestException(
-          "Invalid startDate format. Expected ISO format: 2024-03-18T00:00:00.000Z"
+          "Invalid startDate format. Expected ISO format: 2024-03-18T00:00:00.000Z",
         );
       }
       const end = addMonths(start, Number(d.totalPayments));
@@ -68,5 +68,44 @@ export class InstallmentsService {
     });
 
     return await this.installmentRepository.save(entities);
+  }
+
+  async createInstallment(dto: CreateInstallmentDto) {
+    const interestRate = 1.9;
+    const monthlyPayment = Math.floor(
+      Number(dto.totalAmount) / Number(dto.totalPayments),
+    );
+    const monthlyInterest = (Number(dto.totalAmount) / 100) * interestRate;
+    const totalInterest = monthlyInterest * dto.totalPayments;
+
+    const start = parseISO(dto.startDate);
+    if (isNaN(start.getTime())) {
+      throw new BadRequestException(
+        "Invalid startDate format. Expected ISO format: 2024-03-18T00:00:00.000Z",
+      );
+    }
+    const end = addMonths(start, Number(dto.totalPayments));
+    const startDateSQL = format(start, "yyyy-MM-dd");
+    const endDateSQL = format(end, "yyyy-MM-dd");
+
+    const entity = this.installmentRepository.create({
+      userId: dto.userId,
+      startDate: startDateSQL,
+      endDate: endDateSQL,
+      totalAmount: Number(dto.totalAmount) + totalInterest,
+      totalPayments: dto.totalPayments,
+      monthlyPayment: monthlyPayment + monthlyInterest,
+      description: dto.description.trim(),
+    });
+
+    return await this.installmentRepository.save(entity);
+  }
+
+  async delete(userId: string) {
+    const result = await this.installmentRepository.delete({userId})
+
+    if (result.affected === 0) {
+      throw new NotFoundException("Installment not found")
+    }
   }
 }

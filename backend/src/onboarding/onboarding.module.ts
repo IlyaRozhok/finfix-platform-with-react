@@ -6,7 +6,7 @@ import { Category } from "../entities/onboarding.entity";
 import { UsersModule } from "@/users/users.module";
 import { User } from "@/entities/user.entity";
 import { UsersService } from "@/users/users.service";
-import { RecurringExpensesModule } from "@/recurring-expenses/recurring-expenses.module";
+import { RecurringExpensesModule } from "@/expenses/recurring-expenses.module";
 import { RecurringExpense } from "@/entities/recurring-expense.entity";
 import { InstallmentsModule } from "@/installments/installments.module";
 import { Installment } from "@/entities/installment.entity";

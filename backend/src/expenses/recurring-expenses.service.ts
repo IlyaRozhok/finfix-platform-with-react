@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { CreateRecurringExpenseDto } from "./dto";
+import { CreateExpenseDto, CreateRecurringExpenseDto, UpdateExpenseDto } from "./dto";
 import { RecurringExpense } from "../entities/recurring-expense.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -8,16 +8,10 @@ import { Repository } from "typeorm";
 export class RecurringExpensesService {
   constructor(
     @InjectRepository(RecurringExpense)
-    private readonly ReccuringExpensesRepository: Repository<RecurringExpense>
+    private readonly RecurringExpensesRepository: Repository<RecurringExpense>,
   ) {}
 
-  async updateExpenses(
-    dto: CreateRecurringExpenseDto[]
-  ): Promise<RecurringExpense[]> {
-    if (!dto.length) {
-      throw new BadRequestException("Payload did not provided");
-    }
-
+  async updateExpenses(dto: CreateRecurringExpenseDto[]) {
     const userId = dto[0]?.userId;
     if (!userId) {
       throw new BadRequestException("User ID is required");
@@ -27,7 +21,7 @@ export class RecurringExpensesService {
 
     for (const expenseDto of dto) {
       if (expenseDto.id) {
-        const existingExpense = await this.ReccuringExpensesRepository.findOne({
+        const existingExpense = await this.RecurringExpensesRepository.findOne({
           where: { id: expenseDto.id, userId },
         });
 
@@ -36,28 +30,35 @@ export class RecurringExpensesService {
           existingExpense.amount = expenseDto.amount;
           existingExpense.description = expenseDto.description || "";
           results.push(
-            await this.ReccuringExpensesRepository.save(existingExpense)
+            await this.RecurringExpensesRepository.save(existingExpense),
           );
         } else {
           const newExpense =
-            this.ReccuringExpensesRepository.create(expenseDto);
-          results.push(await this.ReccuringExpensesRepository.save(newExpense));
+            this.RecurringExpensesRepository.create(expenseDto);
+          results.push(await this.RecurringExpensesRepository.save(newExpense));
         }
       } else {
-        const newExpense = this.ReccuringExpensesRepository.create(expenseDto);
-        results.push(await this.ReccuringExpensesRepository.save(newExpense));
+        const newExpense = this.RecurringExpensesRepository.create(expenseDto);
+        results.push(await this.RecurringExpensesRepository.save(newExpense));
       }
     }
 
     return results;
   }
 
+  async createExpense(dto: CreateExpenseDto, userId: string) {
+    const newExpense = this.RecurringExpensesRepository.create({
+      ...dto,
+      userId,
+    });
+    return this.RecurringExpensesRepository.save(newExpense);
+  }
+
   async getExpenses(uid: string) {
-    console.log("uid", uid);
     if (!uid) {
       throw new BadRequestException("User id not provided");
     }
-    const expenses = await this.ReccuringExpensesRepository.find({
+    const expenses = await this.RecurringExpensesRepository.find({
       where: {
         userId: uid,
       },
@@ -68,10 +69,16 @@ export class RecurringExpensesService {
   }
 
   async deleteExpense(expenseId: string) {
-    const expenses = await this.ReccuringExpensesRepository.delete({
+    return await this.RecurringExpensesRepository.delete({
       id: expenseId,
     });
+  }
 
-    return expenses;
+  async updateExpense(dto: UpdateExpenseDto, userId: string) {
+    const expense = await this.RecurringExpensesRepository.find({
+      where: { userId },
+    });
+    Object.assign(expense, {...dto, userId})
+    return await this.RecurringExpensesRepository.save(expense);
   }
 }

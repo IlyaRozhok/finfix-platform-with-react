@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { Category, CategoryKind } from "../entities/onboarding.entity";
 import { User } from "@/entities/user.entity";
 import { UsersService } from "@/users/users.service";
-import { RecurringExpensesService } from "@/recurring-expenses/recurring-expenses.service";
+import { RecurringExpensesService } from "@/expenses/recurring-expenses.service";
 import { InstallmentsService } from "@/installments/installments.service";
 import { DebtsService } from "@/debts/debt.service";
 
@@ -37,8 +37,8 @@ export class OnboardingService {
     }
 
     const expenses = await this.expenseService.getExpenses(uid);
-    const installmnets = await this.installmentsService.getInstallments(uid);
-    const debts = await this.debtsService.getDebts(uid);
+    const installmnets = await this.installmentsService.findAll(uid);
+    const debts = await this.debtsService.findAll(uid);
     const resData = {
       currency: user.currency,
       incomes: user.incomes,
