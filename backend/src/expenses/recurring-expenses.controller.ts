@@ -52,9 +52,9 @@ export class RecurringExpensesController {
   }
 
   @ApiOperation({summary: "Update expense"})
-  @Put()
+  @Put("/:id")
   async updateExpense(@Body() dto: UpdateExpenseDto, @Req() req, @Param("id") id: string) {
     const userId = req.user.sub;
-    return await this.recurringExpensesService.updateExpense(dto, userId)
+    return await this.recurringExpensesService.updateExpense(dto, userId, id)
   }
 }

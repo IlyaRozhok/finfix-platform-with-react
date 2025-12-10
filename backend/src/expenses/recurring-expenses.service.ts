@@ -74,11 +74,11 @@ export class RecurringExpensesService {
     });
   }
 
-  async updateExpense(dto: UpdateExpenseDto, userId: string) {
-    const expense = await this.RecurringExpensesRepository.find({
-      where: { userId },
+  async updateExpense(dto: UpdateExpenseDto, userId: string, id: string) {
+    const expense = await this.RecurringExpensesRepository.findOne({
+      where: { userId, id },
     });
-    Object.assign(expense, {...dto, userId})
+    Object.assign(expense, dto)
     return await this.RecurringExpensesRepository.save(expense);
   }
 }
