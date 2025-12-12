@@ -1,12 +1,41 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { fetchUserInstallments } from "@/features/installments/api";
+import {
+  fetchUserInstallments,
+  deleteInstallment,
+} from "@/features/installments/api";
 import { Installment } from "@/features/installments/model/types";
-import { CurrencyDollarIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
+import { InstallmentForm } from "@/features/installments/ui/InstallmentForm";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { Button } from "@/shared/ui/Button";
+import { ConfirmationModal, useToast } from "@/shared/ui";
+import {
+  CurrencyDollarIcon,
+  CalendarDaysIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 
 export function InstallmentsPage() {
+  const { user } = useAuth();
+  const { addToast } = useToast();
+
   const [installments, setInstallments] = useState<Installment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Form state
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingInstallment, setEditingInstallment] = useState<
+    Installment | undefined
+  >();
+
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    description: string;
+  } | null>(null);
 
   // Calculate summary statistics (always call this hook, before any returns)
   const summaryStats = useMemo(() => {
@@ -18,8 +47,14 @@ export function InstallmentsPage() {
       };
     }
 
-    const totalAmount = installments.reduce((sum, installment) => sum + installment.totalAmount, 0);
-    const monthlyPayment = installments.reduce((sum, installment) => sum + installment.monthlyPayment, 0);
+    const totalAmount = installments.reduce(
+      (sum, installment) => sum + installment.totalAmount,
+      0
+    );
+    const monthlyPayment = installments.reduce(
+      (sum, installment) => sum + installment.monthlyPayment,
+      0
+    );
 
     return {
       totalAmount,
@@ -44,6 +79,64 @@ export function InstallmentsPage() {
 
     loadInstallments();
   }, []);
+
+  const handleFormSubmit = async () => {
+    // Reload installments after form submission
+    try {
+      const data = await fetchUserInstallments();
+      setInstallments(data);
+    } catch (err) {
+      console.error("Failed to reload installments:", err);
+    }
+  };
+
+  const handleAddInstallment = () => {
+    setIsEditing(false);
+    setEditingInstallment(undefined);
+    setIsFormOpen(true);
+  };
+
+  const handleEditInstallment = (installment: Installment) => {
+    setIsEditing(true);
+    setEditingInstallment(installment);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteInstallment = (installment: Installment) => {
+    setDeleteTarget({
+      id: installment.id,
+      description: installment.description,
+    });
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      await deleteInstallment(deleteTarget.id);
+      addToast(
+        "success",
+        "Installment Deleted",
+        "Successfully deleted installment"
+      );
+
+      // Reload installments
+      const data = await fetchUserInstallments();
+      setInstallments(data);
+    } catch (err) {
+      console.error("Failed to delete installment:", err);
+      addToast("error", "Failed to Delete Installment", "Please try again");
+    } finally {
+      setShowDeleteModal(false);
+      setDeleteTarget(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteTarget(null);
+  };
 
   if (loading) {
     return (
@@ -83,7 +176,9 @@ export function InstallmentsPage() {
           <div className="p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-primary-background">Total Amount</p>
+                <p className="text-sm font-medium text-primary-background">
+                  Total Amount
+                </p>
                 <p className="text-2xl font-bold mt-1 text-primary-background">
                   ${summaryStats.totalAmount.toLocaleString()}
                 </p>
@@ -97,7 +192,9 @@ export function InstallmentsPage() {
           <div className="p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-primary-background">Monthly Payment</p>
+                <p className="text-sm font-medium text-primary-background">
+                  Monthly Payment
+                </p>
                 <p className="text-2xl font-bold mt-1 text-primary-background">
                   ${summaryStats.monthlyPayment.toLocaleString()}
                 </p>
@@ -109,6 +206,18 @@ export function InstallmentsPage() {
           </div>
         </div>
       )}
+
+      {/* Add Installment Button */}
+      <div className="flex justify-end">
+        <Button
+          onClick={handleAddInstallment}
+          variant="glass-primary"
+          size="lg"
+          className="flex items-center gap-2"
+        >
+          Add Installment
+        </Button>
+      </div>
 
       {/* Installments Table */}
       <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg overflow-hidden">
@@ -122,7 +231,8 @@ export function InstallmentsPage() {
 
               {/* Subtitle */}
               <p className="text-sm text-disable leading-relaxed">
-                Your installment plans will appear here once you add some purchases.
+                Your installment plans will appear here once you add some
+                purchases.
               </p>
             </div>
           </div>
@@ -149,11 +259,17 @@ export function InstallmentsPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-transparent divide-y divide-white/10">
                 {installments.map((installment) => (
-                  <tr key={installment.id} className="hover:bg-white/5 transition-colors">
+                  <tr
+                    key={installment.id}
+                    className="hover:bg-white/5 transition-colors"
+                  >
                     <td className="px-6 py-4">
                       <div className="text-sm font-medium text-gray-900 max-w-xs truncate">
                         {installment.description}
@@ -178,21 +294,44 @@ export function InstallmentsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <div>
-                        {new Date(installment.endDate).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
+                        {new Date(installment.endDate).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          }
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                        installment.status === 'active'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                          installment.status === "active"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
                         {installment.status}
                       </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEditInstallment(installment)}
+                          className="text-primary-background hover:text-primary-background/80 p-1 rounded-lg hover:bg-white/10 transition-all duration-200"
+                          title="Edit installment"
+                        >
+                          <PencilIcon className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteInstallment(installment)}
+                          className="text-red-400 hover:text-red-300 p-1 rounded-lg hover:bg-red-500/10 transition-all duration-200"
+                          title="Delete installment"
+                        >
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -201,6 +340,26 @@ export function InstallmentsPage() {
           </div>
         )}
       </div>
+
+      {/* Installment Form Modal */}
+      <InstallmentForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        onSubmit={handleFormSubmit}
+        isEditing={isEditing}
+        installmentId={editingInstallment?.id}
+        editingInstallment={editingInstallment}
+        userId={user?.id ?? ""}
+      />
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && deleteTarget && (
+        <ConfirmationModal
+          title={`Are you sure you want to delete "${deleteTarget.description}"?`}
+          action={confirmDelete}
+          cancel={cancelDelete}
+        />
+      )}
     </div>
   );
 }

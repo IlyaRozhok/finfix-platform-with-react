@@ -59,7 +59,7 @@ export const OnboardingInstallments = () => {
               onClick={handleAdd}
               className="w-full sm:w-auto"
             >
-              + Add installment
+              Add installment
             </Button>
             <div className="text-sm text-slate-300 text-right">
               Total estimation:
