@@ -6,7 +6,7 @@ import {
 import { Debt } from "../entities/debt.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateDebtDto } from "./dto";
+import { CreateDebtDto, CreateDebtsDto } from "./dto";
 
 @Injectable()
 export class DebtsService {
@@ -27,7 +27,7 @@ export class DebtsService {
     return debts;
   }
 
-  async create(dto: CreateDebtDto[]): Promise<Debt[]> {
+  async createMany(dto: CreateDebtsDto[]): Promise<Debt[]> {
     if (!dto.length) {
       throw new BadRequestException("Payload did not provided");
     }
@@ -47,7 +47,7 @@ export class DebtsService {
     return await this.DebtsRepository.save(debts);
   }
 
-  async update(id: string, dto: CreateDebtDto): Promise<Debt> {
+  async update(id: string, dto: CreateDebtsDto): Promise<Debt> {
     if (!id) {
       throw new BadRequestException("Debt id not provided");
     }
@@ -69,6 +69,22 @@ export class DebtsService {
         : debt.monthlyPayment;
 
     return await this.DebtsRepository.save(debt);
+  }
+
+  async create(dto: CreateDebtDto, userId: string) {
+    const debt = this.DebtsRepository.create({
+      //@ts-ignore
+      userId,
+      description: dto.description ?? null,
+      interest: Number(dto.interest),
+      totalDebt: Number(dto.totalDebt),
+      debtType: "credit_card",
+      monthlyPayment: (Number(dto.totalDebt) * Number(dto.interest)) / 100,
+      isClosed: false,
+    });
+
+    return await this.DebtsRepository.save(debt);
+
   }
 
   async delete(id: string) {

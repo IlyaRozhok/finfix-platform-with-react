@@ -1,20 +1,10 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Req,
-  UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
 
-import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
+import { ROUTE_SEGMENTS } from "@/shared/router";
 import { DebtsService } from "./debt.service";
-import { CreateDebtDto } from "./dto";
+import { CreateDebtDto, CreateDebtsDto } from "./dto";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
-import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @UseGuards(JwtAuthGuard)
 @ApiTags("Debts")
@@ -26,29 +16,37 @@ export class DebtsController {
   @Get(ROUTE_SEGMENTS.DEBTS)
   async getOnboardingDebts(@Req() req) {
     const uid = req.user.sub;
-    const debts = await this.DebtsService.findAll(uid);
-    return debts;
+    return await this.DebtsService.findAll(uid);
   }
 
   @ApiOperation({ summary: "Create debts" })
-  @ApiBody({ type: [CreateDebtDto] })
+  @ApiBody({ type: [CreateDebtsDto] })
   @Post(ROUTE_SEGMENTS.DEBTS + "/create")
-  async createDebt(@Body() dto: CreateDebtDto[]) {
-    const debts = await this.DebtsService.create(dto);
-    return debts;
+  async createDebts(@Body() dto: CreateDebtsDto[]) {
+    return await this.DebtsService.createMany(dto);
+  }
+
+  @ApiResponse({
+    type: CreateDebtDto,
+    description: "Debt created",
+    status: 201,
+  })
+  @ApiOperation({ summary: "Create debts" })
+  @Post(ROUTE_SEGMENTS.DEBTS)
+  async createDebt(@Body() dto: CreateDebtDto, @Req() req) {
+    const userId = req.user.sub;
+    return await this.DebtsService.create(dto, userId)
   }
 
   @ApiOperation({ summary: "Update debts" })
   @Put(`${ROUTE_SEGMENTS.DEBTS}/:id`)
-  async updateDebt(@Param("id") id: string, @Body() dto: CreateDebtDto) {
-    const debt = await this.DebtsService.update(id, dto);
-    return debt;
+  async updateDebt(@Param("id") id: string, @Body() dto: CreateDebtsDto) {
+    return await this.DebtsService.update(id, dto);
   }
 
   @ApiOperation({ summary: "Delete debts" })
   @Delete(`${ROUTE_SEGMENTS.DEBTS}/:id`)
   async deleteDebt(@Req() id: string) {
-    const debt = await this.DebtsService.delete(id);
-    return debt;
+    return await this.DebtsService.delete(id);
   }
 }
