@@ -8,7 +8,7 @@ import {
   Min,
   IsOptional,
 } from "class-validator";
-import { Transform } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateInstallmentDto {
@@ -75,4 +75,42 @@ export class UpdateInstallmentDto {
   @IsString()
   @IsNotEmpty()
   description: string;
+}
+
+export class InstallmentResponseDto {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  userId: string;
+
+  @ApiProperty()
+  description: string;
+
+  @ApiProperty()
+  startDate: string;
+
+  @ApiProperty()
+  endDate: string;
+
+  @ApiProperty()
+  @Type(() => Number)
+  totalAmount: number;
+
+  @ApiProperty()
+  @Type(() => Number)
+  monthlyPayment: number;
+
+  @ApiProperty()
+  @Type(() => Number)
+  totalPayments: number;
+
+  @ApiProperty()
+  status: string;
+
+  @ApiProperty()
+  createdAt: string;
+
+  @ApiProperty()
+  updatedAt: string;
 }

@@ -48,11 +48,11 @@ export function InstallmentsPage() {
     }
 
     const totalAmount = installments.reduce(
-      (sum, installment) => sum + installment.totalAmount,
+      (sum, installment) => sum + Number(installment.totalAmount),
       0
     );
     const monthlyPayment = installments.reduce(
-      (sum, installment) => sum + installment.monthlyPayment,
+      (sum, installment) => sum + Number(installment.monthlyPayment),
       0
     );
 
@@ -265,76 +265,85 @@ export function InstallmentsPage() {
                 </tr>
               </thead>
               <tbody className="bg-transparent divide-y divide-white/10">
-                {installments.map((installment) => (
-                  <tr
-                    key={installment.id}
-                    className="hover:bg-white/5 transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900 max-w-xs truncate">
-                        {installment.description}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-semibold text-gray-900">
-                        ${installment.totalAmount.toLocaleString()}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-semibold text-gray-900">
-                        ${installment.monthlyPayment.toLocaleString()}
-                      </div>
-                      <div className="text-xs text-gray-500">per month</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {installment.totalPayments}
-                      </div>
-                      <div className="text-xs text-gray-500">payments</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div>
-                        {new Date(installment.endDate).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          }
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                          installment.status === "active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        {installment.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleEditInstallment(installment)}
-                          className="text-primary-background hover:text-primary-background/80 p-1 rounded-lg hover:bg-white/10 transition-all duration-200"
-                          title="Edit installment"
+                {installments.map((installment) => {
+                  console.log("Installment data:", installment);
+                  return (
+                    <tr
+                      key={installment.id}
+                      className="hover:bg-white/5 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900 max-w-xs truncate">
+                          {installment.description}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-semibold text-gray-900">
+                          $
+                          {Number(
+                            installment.totalAmount || 0
+                          ).toLocaleString()}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-semibold text-gray-900">
+                          $
+                          {Number(
+                            installment.monthlyPayment || 0
+                          ).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-gray-500">per month</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {installment.totalPayments}
+                        </div>
+                        <div className="text-xs text-gray-500">payments</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div>
+                          {new Date(installment.endDate).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            }
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                            installment.status === "active"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
                         >
-                          <PencilIcon className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteInstallment(installment)}
-                          className="text-red-400 hover:text-red-300 p-1 rounded-lg hover:bg-red-500/10 transition-all duration-200"
-                          title="Delete installment"
-                        >
-                          <TrashIcon className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          {installment.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleEditInstallment(installment)}
+                            className="text-primary-background hover:text-primary-background/80 p-1 rounded-lg hover:bg-white/10 transition-all duration-200"
+                            title="Edit installment"
+                          >
+                            <PencilIcon className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteInstallment(installment)}
+                            className="text-red-400 hover:text-red-300 p-1 rounded-lg hover:bg-red-500/10 transition-all duration-200"
+                            title="Delete installment"
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

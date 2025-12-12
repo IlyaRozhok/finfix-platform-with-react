@@ -23,8 +23,8 @@ export type Installment = {
   description: string;
   startDate: string;
   endDate: string;
-  totalAmount: string;
-  monthlyPayment: string;
+  totalAmount: number;
+  monthlyPayment: number;
   totalPayments: number;
   status: string;
   createdAt: string;

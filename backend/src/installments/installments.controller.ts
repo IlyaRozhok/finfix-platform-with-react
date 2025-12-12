@@ -10,10 +10,15 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { InstallmentsService } from "./installments.service";
-import { CreateInstallmentDto, UpdateInstallmentDto } from "./dto";
+import {
+  CreateInstallmentDto,
+  UpdateInstallmentDto,
+  InstallmentResponseDto,
+} from "./dto";
 import { ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { plainToInstance } from "class-transformer";
 
 @UseGuards(JwtAuthGuard)
 @ApiTags("Installments")
@@ -30,17 +35,20 @@ export class InstallmentsController {
   @ApiOperation({ summary: "Update installment" })
   @ApiResponse({
     status: 202,
-    type: UpdateInstallmentDto,
+    type: InstallmentResponseDto,
     description: "Installment updated",
   })
   @Put(`${ROUTE_SEGMENTS.INSTALLMENTS}/:id`)
   async updateInstallment(
     @Param("id") id: string,
     @Body() dto: UpdateInstallmentDto,
-    @Req() req,
+    @Req() req
   ) {
     const userId = req.user.sub;
-    return await this.installmentsService.update(dto, userId, id);
+    const installment = await this.installmentsService.update(dto, userId, id);
+    return plainToInstance(InstallmentResponseDto, installment, {
+      excludeExtraneousValues: true,
+    });
   }
   @Get(ROUTE_SEGMENTS.INSTALLMENTS)
   async getInstallments(@Req() req) {
@@ -59,7 +67,9 @@ export class InstallmentsController {
   @Post(`${ROUTE_SEGMENTS.INSTALLMENTS}/create`)
   async createInstallment(@Body() dto: CreateInstallmentDto) {
     const installment = await this.installmentsService.createInstallment(dto);
-    return installment;
+    return plainToInstance(InstallmentResponseDto, installment, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @ApiOperation({ summary: "Delete installment" })

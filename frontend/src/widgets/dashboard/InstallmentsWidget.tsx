@@ -23,7 +23,7 @@ export function InstallmentsWidget({ installments }: InstallmentsWidgetProps) {
               </div>
               <div className="text-right">
                 <p className="font-semibold text-primary-background">
-                  {parseFloat(installment.totalAmount).toLocaleString()}
+                  {installment.totalAmount.toLocaleString()}
                 </p>
                 <p className="text-xs text-disable/80">
                   {new Date(installment.startDate).toLocaleDateString()} - {new Date(installment.endDate).toLocaleDateString()}
