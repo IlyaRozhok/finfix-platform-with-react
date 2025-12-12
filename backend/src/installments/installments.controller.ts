@@ -33,11 +33,11 @@ export class InstallmentsController {
     type: UpdateInstallmentDto,
     description: "Installment updated",
   })
-  @Put(ROUTE_SEGMENTS.INSTALLMENTS)
+  @Put(`${ROUTE_SEGMENTS.INSTALLMENTS}/:id`)
   async updateInstallment(
+    @Param("id") id: string,
     @Body() dto: UpdateInstallmentDto,
     @Req() req,
-    @Param("id") id: string,
   ) {
     const userId = req.user.sub;
     return await this.installmentsService.update(dto, userId, id);
@@ -68,8 +68,8 @@ export class InstallmentsController {
     description: "Installment deleted",
   })
   @Delete(`${ROUTE_SEGMENTS.INSTALLMENTS}/:id`)
-  async deleteInstallment(@Req() req, @Param("id") id: string) {
+  async deleteInstallment(@Param("id") id: string, @Req() req) {
     const userId = req.user.sub;
-    await this.installmentsService.delete(userId);
+    await this.installmentsService.delete(id, userId);
   }
 }

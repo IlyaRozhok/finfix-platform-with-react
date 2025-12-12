@@ -46,7 +46,7 @@ export class DebtsController {
 
   @ApiOperation({ summary: "Delete debts" })
   @Delete(`${ROUTE_SEGMENTS.DEBTS}/:id`)
-  async deleteDebt(@Req() id: string) {
+  async deleteDebt(@Param("id") id: string) {
     return await this.DebtsService.delete(id);
   }
 }

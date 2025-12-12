@@ -86,8 +86,8 @@ export class InstallmentsService {
     return this.installmentRepository.save(currentInstallment);
   }
 
-  async delete(userId: string) {
-    const result = await this.installmentRepository.delete({ userId });
+  async delete(id: string, userId: string) {
+    const result = await this.installmentRepository.delete({ id, userId });
 
     if (result.affected === 0) {
       throw new NotFoundException("Installment not found");

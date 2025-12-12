@@ -150,9 +150,9 @@ export function ExpensesPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Expenses</h1>
-          <p className="mt-1">Track your recurring expenses</p>
+      <div>
+        <h1 className="text-3xl font-bold">Expenses</h1>
+        <p className="mt-1">Track your recurring expenses</p>
         </div>
         <Button variant="glass-primary" onClick={handleAddExpense}>
           Add Expense
