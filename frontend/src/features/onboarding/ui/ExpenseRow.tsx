@@ -11,7 +11,7 @@ import { useState } from "react";
 
 interface Props {
   row: Row;
-  categories: { id: string; label: string }[];
+  categories: { value: string; label: string }[];
 }
 
 // const FREQUENCIES: Row["frequency"][] = ["monthly", "weekly", "yearly"];
@@ -33,7 +33,7 @@ export function ExpenseRow(props: Props) {
 
   // Find category name by ID
   const categoryName =
-    categories.find((cat) => cat.id === row.categoryId)?.label ||
+    categories.find((cat) => cat.value === row.categoryId)?.label ||
     row.categoryId;
 
   // Check if this expense has been modified

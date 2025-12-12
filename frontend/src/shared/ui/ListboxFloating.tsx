@@ -13,13 +13,14 @@ import clsx from "clsx";
 type ListboxFloatingProps<T extends string> = {
   value: T;
   onChange: (v: T) => void;
-  options: { id: string; label: string }[];
+  options: { value: T; label: string }[];
   renderButton: (args: { open: boolean }) => React.ReactNode;
   placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
   matchWidth?: boolean;
   maxHeight?: number;
   optionsClassName?: string;
   optionClassName?: string;
+  variant?: "dark" | "glass";
 };
 
 export const ListboxFloating = <T extends string>({
@@ -32,6 +33,7 @@ export const ListboxFloating = <T extends string>({
   maxHeight = 280,
   optionsClassName,
   optionClassName,
+  variant = "dark",
 }: ListboxFloatingProps<T>) => {
   const { refs, floatingStyles } = useFloating({
     placement,
@@ -75,24 +77,27 @@ export const ListboxFloating = <T extends string>({
                 ref={refs.setFloating}
                 style={floatingStyles}
                 className={clsx(
-                  "z-[1000] overflow-auto rounded-xl",
-                  "nice-scroll",
-                  "bg-black/90 backdrop-blur-md",
-                  "ring-1 ring-slate-400/25 shadow-2xl",
-                  "p-1",
+                  "z-[1000] overflow-auto rounded-xl nice-scroll p-1",
+                  variant === "glass"
+                    ? "bg-white/20 backdrop-blur-xl border border-white/30 ring-1 ring-white/15 shadow-2xl text-black"
+                    : "bg-black/90 backdrop-blur-md ring-1 ring-slate-400/25 shadow-2xl text-slate-200",
                   optionsClassName
                 )}
               >
                 {options.map((opt) => (
                   <Listbox.Option
-                    key={opt.id}
-                    value={opt.id}
+                    key={opt.value}
+                    value={opt.value}
                     className={({ active, selected }) =>
                       clsx(
                         "cursor-pointer select-none rounded-lg px-3 py-2 text-sm",
-                        "text-slate-200",
-                        active && "bg-white/10",
-                        selected && "bg-sky-400/20",
+                        variant === "glass" ? "text-black" : "text-slate-200",
+                        active &&
+                          (variant === "glass" ? "bg-white/30" : "bg-white/10"),
+                        selected &&
+                          (variant === "glass"
+                            ? "bg-white/40"
+                            : "bg-sky-400/20"),
                         optionClassName
                       )
                     }

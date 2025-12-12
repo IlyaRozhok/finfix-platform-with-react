@@ -4,6 +4,7 @@ import { Installment } from "../entities/installment.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateInstallmentDto } from "./dto";
 import { addMonths, format, parseISO } from "date-fns";
+import { generateInstallment } from "@/installments/lib/generateInstallment";
 
 @Injectable()
 export class InstallmentsService {
@@ -71,41 +72,25 @@ export class InstallmentsService {
   }
 
   async createInstallment(dto: CreateInstallmentDto) {
-    const interestRate = 1.9;
-    const monthlyPayment = Math.floor(
-      Number(dto.totalAmount) / Number(dto.totalPayments),
-    );
-    const monthlyInterest = (Number(dto.totalAmount) / 100) * interestRate;
-    const totalInterest = monthlyInterest * dto.totalPayments;
+    const entity = generateInstallment(dto);
+    const installmentEntity = this.installmentRepository.create(entity);
+    return await this.installmentRepository.save(installmentEntity);
+  }
 
-    const start = parseISO(dto.startDate);
-    if (isNaN(start.getTime())) {
-      throw new BadRequestException(
-        "Invalid startDate format. Expected ISO format: 2024-03-18T00:00:00.000Z",
-      );
-    }
-    const end = addMonths(start, Number(dto.totalPayments));
-    const startDateSQL = format(start, "yyyy-MM-dd");
-    const endDateSQL = format(end, "yyyy-MM-dd");
+  async update(dto: Partial<CreateInstallmentDto>, userId: string, id: string) {
+    const currentInstallment = await this.installmentRepository.findOne({where: {id, userId}});
+    Object.assign(currentInstallment, dto);
+    const updatedInstallment = generateInstallment(currentInstallment)
+    Object.assign(currentInstallment, updatedInstallment);
 
-    const entity = this.installmentRepository.create({
-      userId: dto.userId,
-      startDate: startDateSQL,
-      endDate: endDateSQL,
-      totalAmount: Number(dto.totalAmount) + totalInterest,
-      totalPayments: dto.totalPayments,
-      monthlyPayment: monthlyPayment + monthlyInterest,
-      description: dto.description.trim(),
-    });
-
-    return await this.installmentRepository.save(entity);
+    return this.installmentRepository.save(currentInstallment);
   }
 
   async delete(userId: string) {
-    const result = await this.installmentRepository.delete({userId})
+    const result = await this.installmentRepository.delete({ userId });
 
     if (result.affected === 0) {
-      throw new NotFoundException("Installment not found")
+      throw new NotFoundException("Installment not found");
     }
   }
 }

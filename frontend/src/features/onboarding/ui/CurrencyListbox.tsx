@@ -7,15 +7,15 @@ import { useEffect, useState } from "react";
 
 const CURRENCIES = [
   {
-    id: "UAH",
+    value: "UAH",
     label: "UAH",
   },
   {
-    id: "USD",
+    value: "USD",
     label: "USD",
   },
   {
-    id: "EUR",
+    value: "EUR",
     label: "EUR",
   },
 ];

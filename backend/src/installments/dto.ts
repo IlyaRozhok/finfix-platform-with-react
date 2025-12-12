@@ -49,3 +49,30 @@ export class CreateInstallmentDto {
   @IsNotEmpty()
   description: string;
 }
+
+export class UpdateInstallmentDto {
+  @ApiProperty({
+    description: "Date of start an installment",
+    example: "2025-07-01T19:08:37.000Z",
+  })
+  @IsNotEmpty()
+  @IsDateString()
+  startDate: string;
+
+  @ApiProperty({ description: "Total amount of installment", example: 20000 })
+  @Transform(({ value }) => Number(value))
+  @IsInt()
+  @Min(1)
+  totalAmount: number;
+
+  @ApiProperty({ description: "Total number of payments", example: 6 })
+  @Transform(({ value }) => Number(value))
+  @IsInt()
+  @Min(1)
+  totalPayments: number;
+
+  @ApiProperty({ example: "iPhone 17 Pro", description: "Description" })
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+}

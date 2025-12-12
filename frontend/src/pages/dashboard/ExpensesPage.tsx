@@ -1,13 +1,27 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { fetchUserExpenses } from "@/features/expenses/api";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  fetchUserExpenses,
+  deleteExpense,
+} from "@/features/expenses/api";
 import { Expense } from "@/features/expenses/model/types";
 import { CategoryIcon } from "@/features/expenses/ui/CategoryIcon";
-import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { CurrencyDollarIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ExpenseForm } from "@/features/expenses/ui/ExpenseForm";
+import { Button } from "@/shared/ui/Button";
+import { ConfirmationModal, useToast } from "@/shared/ui";
+import { fetchCategories } from "@/features/onboarding/api";
 
 export function ExpensesPage() {
+  const { addToast } = useToast();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [categories, setCategories] = useState<{ id: string; label: string }[]>([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; description: string } | null>(null);
 
   // Calculate summary statistics (always call this hook, before any returns)
   const summaryStats = useMemo(() => {
@@ -40,8 +54,73 @@ export function ExpensesPage() {
       }
     };
 
+    const loadCategories = async () => {
+      try {
+        const data = await fetchCategories();
+        setCategories(
+          data.map((c: { id: string; name: string }) => ({
+            id: c.id,
+            label: c.name,
+          }))
+        );
+      } catch (err) {
+        console.error("Failed to load categories:", err);
+      }
+    };
+
     loadExpenses();
+    loadCategories();
   }, []);
+
+  const refreshExpenses = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchUserExpenses();
+      setExpenses(data);
+    } catch (err) {
+      console.error("Failed to load expenses:", err);
+      setError("Failed to load expenses");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditExpense = (expense: Expense) => {
+    setEditingExpense(expense);
+    setIsEditing(true);
+    setShowForm(true);
+  };
+
+  const handleAddExpense = () => {
+    setEditingExpense(null);
+    setIsEditing(false);
+    setShowForm(true);
+  };
+
+  const handleDeleteExpense = (expense: Expense) => {
+    setDeleteTarget({ id: expense.id, description: expense.description || "Expense" });
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteExpense(deleteTarget.id);
+      addToast("success", "Expense deleted", "Expense removed successfully.");
+      await refreshExpenses();
+    } catch (err) {
+      console.error("Failed to delete expense:", err);
+      addToast("error", "Delete failed", "Please try again.");
+    } finally {
+      setShowDeleteModal(false);
+      setDeleteTarget(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteTarget(null);
+  };
 
   if (loading) {
     return (
@@ -70,9 +149,14 @@ export function ExpensesPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Expenses</h1>
-        <p className="mt-1">Track your recurring expenses</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Expenses</h1>
+          <p className="mt-1">Track your recurring expenses</p>
+        </div>
+        <Button variant="glass-primary" onClick={handleAddExpense}>
+          Add Expense
+        </Button>
       </div>
 
       {/* Summary Cards */}
@@ -143,6 +227,9 @@ export function ExpensesPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Added
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-transparent divide-y divide-white/10">
@@ -196,6 +283,24 @@ export function ExpensesPage() {
                         })}
                       </div>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => handleEditExpense(expense)}
+                          className="text-primary-background hover:text-primary-background/80 p-1 rounded-lg hover:bg-white/10 transition-all duration-200"
+                          title="Edit expense"
+                        >
+                          <PencilIcon className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteExpense(expense)}
+                          className="text-red-400 hover:text-red-300 p-1 rounded-lg hover:bg-red-500/10 transition-all duration-200"
+                          title="Delete expense"
+                        >
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -203,6 +308,36 @@ export function ExpensesPage() {
           </div>
         )}
       </div>
+
+      <ExpenseForm
+        isOpen={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setIsEditing(false);
+          setEditingExpense(null);
+        }}
+        onSubmit={refreshExpenses}
+        isEditing={isEditing}
+        expenseId={editingExpense?.id}
+        categories={categories}
+        initialData={
+          isEditing && editingExpense
+            ? {
+                categoryId: editingExpense.categoryId,
+                amount: editingExpense.amount,
+                description: editingExpense.description || "",
+              }
+            : undefined
+        }
+      />
+
+      {showDeleteModal && deleteTarget && (
+        <ConfirmationModal
+          title={`Are you sure you want to delete "${deleteTarget.description}"?`}
+          action={confirmDelete}
+          cancel={cancelDelete}
+        />
+      )}
     </div>
   );
 }

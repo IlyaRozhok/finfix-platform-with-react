@@ -14,7 +14,7 @@ export const OnboardingExpenses = () => {
   const { user } = useAuth();
   const [categories, setCategories] = useState<
     {
-      id: string;
+      value: string;
       label: string;
     }[]
   >();
@@ -24,7 +24,7 @@ export const OnboardingExpenses = () => {
       const categories = await fetchCategories();
       if (categories.length) {
         const formattedCategories = categories?.map((category) => {
-          return { id: category.id, label: category.name };
+          return { value: category.id, label: category.name };
         });
         setCategories(formattedCategories);
       }
@@ -43,7 +43,7 @@ export const OnboardingExpenses = () => {
           updateExpense(
             expense.id,
             "categoryId",
-            categories[0].id,
+            categories[0].value,
             user?.id as string
           );
         }
@@ -83,7 +83,7 @@ export const OnboardingExpenses = () => {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-1 items-center mb-3">
             <Button
               variant="ghost"
-              onClick={() => addExpense(categories?.[0]?.id)}
+              onClick={() => addExpense(categories?.[0]?.value)}
               className="w-full sm:w-auto"
             >
               + Add expense

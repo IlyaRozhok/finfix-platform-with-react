@@ -1,6 +1,16 @@
-import {Body, Controller, Delete, Get, Param, Post, Req, UseGuards} from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import { InstallmentsService } from "./installments.service";
-import { CreateInstallmentDto } from "./dto";
+import { CreateInstallmentDto, UpdateInstallmentDto } from "./dto";
 import { ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -10,13 +20,28 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 @Controller()
 export class InstallmentsController {
   constructor(private readonly installmentsService: InstallmentsService) {}
-
+  @ApiOperation({ summary: "Create installments" })
   @Post(`${ROUTE_SEGMENTS.INSTALLMENTS}/create-installments`)
   async createInstallments(@Body() dto: CreateInstallmentDto[]) {
     const installments = await this.installmentsService.createInstallments(dto);
     return installments;
   }
 
+  @ApiOperation({ summary: "Update installment" })
+  @ApiResponse({
+    status: 202,
+    type: UpdateInstallmentDto,
+    description: "Installment updated",
+  })
+  @Put(ROUTE_SEGMENTS.INSTALLMENTS)
+  async updateInstallment(
+    @Body() dto: UpdateInstallmentDto,
+    @Req() req,
+    @Param("id") id: string,
+  ) {
+    const userId = req.user.sub;
+    return await this.installmentsService.update(dto, userId, id);
+  }
   @Get(ROUTE_SEGMENTS.INSTALLMENTS)
   async getInstallments(@Req() req) {
     const uid = req.user.sub;
@@ -37,11 +62,14 @@ export class InstallmentsController {
     return installment;
   }
 
-  @ApiOperation({ summary: "Delete installment"})
+  @ApiOperation({ summary: "Delete installment" })
+  @ApiResponse({
+    status: 204,
+    description: "Installment deleted",
+  })
   @Delete(`${ROUTE_SEGMENTS.INSTALLMENTS}/:id`)
-  async deleteInstallment(@Req() req,@Param("id") id: string) {
-
-  const userId = req.user.sub;
-  await this.installmentsService.delete(userId)
+  async deleteInstallment(@Req() req, @Param("id") id: string) {
+    const userId = req.user.sub;
+    await this.installmentsService.delete(userId);
   }
 }
