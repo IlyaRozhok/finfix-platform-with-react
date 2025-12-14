@@ -27,15 +27,14 @@ export class CreateInstallmentDto {
   startDate: string;
 
   @ApiProperty({ description: "Total amount of installment", example: 20000 })
-  @Matches(/^\d+(\.\d{1,2})?$/)
-  @Min(1)
+  @Matches(/^(?!0+(?:\.0{1,2})?$)\d+(\.\d{1,2})?$/)
   @IsString()
   totalAmount: string;
 
   @ApiProperty({ description: "Total number of payments", example: 6 })
-  @Min(1)
   @Type(() => Number)
   @IsInt()
+  @Min(1)
   totalPayments: number;
 
   @ApiProperty({ example: "iPhone 17 Pro", description: "Description" })
@@ -54,14 +53,12 @@ export class UpdateInstallmentDto {
   startDate: string;
 
   @ApiProperty({ description: "Total amount of installment", example: 20000 })
-  @Transform(({ value }) => Number(value))
-  @Matches(/^\d+(\.\d{1,2})?$/)
-  @Min(1)
+  @Matches(/^(?!0+(?:\.0{1,2})?$)\d+(\.\d{1,2})?$/)
   @IsString()
   totalAmount: string;
 
   @ApiProperty({ description: "Total number of payments", example: 6 })
-  @Transform(({ value }) => Number(value))
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   totalPayments: number;
@@ -89,17 +86,12 @@ export class InstallmentResponseDto {
   endDate: string;
 
   @ApiProperty()
-  @Matches(/^\d+(\.\d{1,2})?$/)
-  @Min(1)
-  @IsString()
   totalAmount: string;
 
   @ApiProperty()
-  @Type(() => Number)
-  monthlyPayment: number;
+  monthlyPayment: string;
 
   @ApiProperty()
-  @Type(() => Number)
   totalPayments: number;
 
   @ApiProperty()
