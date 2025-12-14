@@ -23,7 +23,6 @@ import { EventIncomesModule } from "./incomes/event-incomes/event-incomes.module
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        console.log;
         return {
           type: "postgres",
           host: configService.getOrThrow<string>("PG_HOST"),
