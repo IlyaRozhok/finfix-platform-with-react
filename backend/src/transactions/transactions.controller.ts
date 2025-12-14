@@ -21,27 +21,5 @@ export class TransactionsController {
   async create(@Req() req, @Body() dto: CreateTransactionDto) {
     const userId = (req.user as { sub: string }).sub;
 
-    if (
-      dto.type === TransactionType.EXPENSE ||
-      dto.type === TransactionType.INCOME
-    ) {
-      if (dto.installmentId || dto.debtId)
-        throw new BadRequestException(
-          "installmentId/debtId not allowed for this type"
-        );
-    }
-    if (
-      dto.type === TransactionType.INSTALLMENT_PAYMENT &&
-      !dto.installmentId
-    ) {
-      throw new BadRequestException(
-        "installmentId is required for installment_payment"
-      );
-    }
-    if (dto.type === TransactionType.DEBT_PAYMENT && !dto.debtId) {
-      throw new BadRequestException("debtId is required for debt_payment");
-    }
-
-    return this.transactionService.create(userId, dto);
   }
 }

@@ -1,5 +1,4 @@
 import { User } from "@/entities/user.entity";
-import { Type } from "class-transformer";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -10,6 +9,7 @@ import {
   UpdateDateColumn,
   Index,
 } from "typeorm";
+import { DecimalTransformer } from "@/shared/decimal.transformer";
 
 @Entity("installments")
 export class Installment {
@@ -34,15 +34,24 @@ export class Installment {
   @Column({ name: "end_date", type: "date" })
   endDate: string;
 
-  @Type(() => Number)
-  @Column({ name: "total_amount", type: "numeric", precision: 14, scale: 2 })
-  totalAmount: number;
+  @Column({
+    name: "total_amount",
+    type: "numeric",
+    precision: 14,
+    scale: 2,
+    transformer: DecimalTransformer,
+  })
+  totalAmount: string;
 
-  @Type(() => Number)
-  @Column({ name: "monthly_payment", type: "numeric", precision: 14, scale: 2 })
-  monthlyPayment: number;
+  @Column({
+    name: "monthly_payment",
+    type: "numeric",
+    precision: 14,
+    scale: 2,
+    transformer: DecimalTransformer,
+  })
+  monthlyPayment: string;
 
-  @Type(() => Number)
   @Column({ name: "total_payments", type: "int" })
   totalPayments: number;
 

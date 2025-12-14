@@ -25,12 +25,7 @@ import { plainToInstance } from "class-transformer";
 @Controller()
 export class InstallmentsController {
   constructor(private readonly installmentsService: InstallmentsService) {}
-  @ApiOperation({ summary: "Create installments" })
-  @Post(`${ROUTE_SEGMENTS.INSTALLMENTS}/create-installments`)
-  async createInstallments(@Body() dto: CreateInstallmentDto[]) {
-    const installments = await this.installmentsService.createInstallments(dto);
-    return installments;
-  }
+
 
   @ApiOperation({ summary: "Update installment" })
   @ApiResponse({
@@ -65,8 +60,9 @@ export class InstallmentsController {
   })
   @ApiOperation({ summary: "Create installment" })
   @Post(`${ROUTE_SEGMENTS.INSTALLMENTS}/create`)
-  async createInstallment(@Body() dto: CreateInstallmentDto) {
-    const installment = await this.installmentsService.createInstallment(dto);
+  async createInstallment(@Body() dto: CreateInstallmentDto, @Req() req) {
+    const userId = req.user.sub;
+    const installment = await this.installmentsService.createInstallment(dto, userId);
     return plainToInstance(InstallmentResponseDto, installment, {
       excludeExtraneousValues: true,
     });

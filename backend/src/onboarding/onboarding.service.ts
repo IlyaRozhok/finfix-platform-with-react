@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Category, CategoryKind } from "../entities/onboarding.entity";
-import { User } from "@/entities/user.entity";
+import { Category } from "../entities/onboarding.entity";
 import { UsersService } from "@/users/users.service";
 import { RecurringExpensesService } from "@/expenses/recurring-expenses.service";
 import { InstallmentsService } from "@/installments/installments.service";

@@ -14,3 +14,7 @@ export const categories = [
   { id: 12, name: "Emergency fund" },
   { id: 13, name: "Family" },
 ];
+
+export const BANK_INTEREST = {
+  ABANK: 1.9
+}

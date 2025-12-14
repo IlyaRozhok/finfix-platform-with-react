@@ -1,4 +1,3 @@
-import { Category } from "@/entities/onboarding.entity";
 import { Debt } from "@/entities/debt.entity";
 import { Installment } from "@/entities/installment.entity";
 import { RecurringExpense } from "@/entities/recurring-expense.entity";
@@ -10,7 +9,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Transaction } from "@/entities/transaction.entity";
 
 @Entity("users")
 export class User {
@@ -48,5 +46,4 @@ export class User {
   recurringExpenses: RecurringExpense[];
   @OneToMany(() => Installment, (i) => i.user) installments: Installment[];
   @OneToMany(() => Debt, (d) => d.user) debts: Debt[];
-  @OneToMany(() => Transaction, (t) => t.user) transactions: Transaction[];
 }

@@ -1,18 +1,9 @@
-import { User } from "@/entities/user.entity";
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
-  Unique,
   Index,
 } from "typeorm";
-
-export enum CategoryKind {
-  EXPENSE = "expense",
-  INCOME = "income",
-}
 
 @Entity("categories")
 export class Category {
