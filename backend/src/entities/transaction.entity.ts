@@ -7,7 +7,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
-  ForeignKey,
 } from "typeorm";
 import { Category } from "../entities/onboarding.entity";
 import { Installment } from "../entities/installment.entity";
