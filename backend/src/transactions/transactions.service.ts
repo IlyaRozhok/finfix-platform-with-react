@@ -17,4 +17,8 @@ export class TransactionsService {
     const transaction = this.transactionRepository.create({ ...dto, userId });
     return await this.transactionRepository.save(transaction)
   }
+
+  async syncMonobank() {
+
+  }
 }
