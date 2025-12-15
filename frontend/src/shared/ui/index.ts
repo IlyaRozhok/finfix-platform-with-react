@@ -7,3 +7,4 @@ export { ListboxFloating } from "./ListboxFloating";
 export { Toast } from "./Toast";
 export { ToastContainer } from "./ToastContainer";
 export { ToastProvider, useToast } from "./ToastContext";
+export { Skeleton, DashboardSkeleton, TableSkeleton, ListSkeleton } from "./Skeleton";

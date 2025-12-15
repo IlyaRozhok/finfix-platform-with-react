@@ -7,8 +7,8 @@ import { Expense } from "@/features/expenses/model/types";
 import { CategoryIcon } from "@/features/expenses/ui/CategoryIcon";
 import { CurrencyDollarIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { ExpenseForm } from "@/features/expenses/ui/ExpenseForm";
-import { Button } from "@/shared/ui/Button";
-import { ConfirmationModal, useToast } from "@/shared/ui";
+import { Button, useToast } from "@/shared/ui";
+import { ConfirmationModal } from "@/shared/ui/ConfirmationModal";
 import { fetchCategories } from "@/features/onboarding/api";
 
 export function ExpensesPage() {
@@ -73,8 +73,8 @@ export function ExpensesPage() {
   }, []);
 
   const refreshExpenses = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const data = await fetchUserExpenses();
       setExpenses(data);
     } catch (err) {
@@ -122,6 +122,8 @@ export function ExpensesPage() {
     setDeleteTarget(null);
   };
 
+
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -134,14 +136,6 @@ export function ExpensesPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-red-300">{error}</div>
-      </div>
-    );
-  }
-
-  if (!expenses) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-black/70">Loading expenses...</div>
       </div>
     );
   }

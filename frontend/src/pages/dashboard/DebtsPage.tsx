@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { fetchDebts, deleteDebt, Debt } from "@/features/debts/api";
 import { DebtForm } from "@/features/debts/ui/DebtForm";
-import { Button } from "@/shared/ui/Button";
+import { Button, useToast } from "@/shared/ui";
 import { ConfirmationModal } from "@/shared/ui/ConfirmationModal";
-import { useToast } from "@/shared/ui";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -84,6 +83,8 @@ export function DebtsPage() {
     setIsEditing(false);
     setShowForm(true);
   };
+
+
 
   if (loading) {
     return (

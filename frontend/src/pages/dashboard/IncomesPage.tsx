@@ -8,9 +8,8 @@ import {
 } from "@/features/incomes/api";
 import { AllIncomes } from "@/features/incomes/model/types";
 import { IncomeForm } from "@/features/incomes/ui/IncomeForm";
-import { Button } from "@/shared/ui/Button";
+import { Button, useToast } from "@/shared/ui";
 import { ConfirmationModal } from "@/shared/ui/ConfirmationModal";
-import { useToast } from "@/shared/ui";
 import {
   SparklesIcon,
   CurrencyDollarIcon,
@@ -178,6 +177,8 @@ export function IncomesPage() {
 
     loadIncomes();
   }, []);
+
+
 
   if (loading) {
     return (

@@ -5,6 +5,7 @@ import { DashboardStats } from "@/features/dashboard/model/types";
 import { OverviewWidget } from "@/widgets/dashboard/OverviewWidget";
 import { ExpenseCategoriesChart } from "@/widgets/dashboard/ExpenseCategoriesChart";
 import { InstallmentsWidget } from "@/widgets/dashboard/InstallmentsWidget";
+import { DashboardSkeleton } from "@/shared/ui";
 import {
   CurrencyDollarIcon,
   ArrowTrendingUpIcon,
@@ -35,11 +36,7 @@ export function DashboardPage() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-black/70">Loading dashboard...</div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (error || !stats) {

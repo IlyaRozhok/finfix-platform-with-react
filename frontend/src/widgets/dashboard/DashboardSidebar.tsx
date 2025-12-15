@@ -35,13 +35,13 @@ export function DashboardSidebar() {
   return (
     <div
       className={clsx(
-        "flex h-full flex-col transition-all duration-300 bg-white/10 backdrop-blur-xl border-r border-white/20 shadow-2xl",
+        "flex h-full flex-col transition-all duration-300 bg-white/10 backdrop-blur-xl shadow-2xl",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
       <div
         className={clsx(
-          "flex items-center transition-all duration-300 border-b border-white/20",
+          "flex items-center transition-all duration-300",
           isCollapsed ? "h-16 justify-center px-0" : "h-16 px-6"
         )}
       >
@@ -101,16 +101,20 @@ export function DashboardSidebar() {
                   : isDashboardActive;
                 return (
                   <>
-                    <div className={clsx(
-                      "flex items-center justify-center",
-                      isCollapsed ? "" : "mr-3"
-                    )}>
-                      <div className={clsx(
-                        "p-1.5 rounded-lg transition-all duration-200",
-                        isItemActive
-                          ? "bg-white/20"
-                          : "group-hover:bg-white/10"
-                      )}>
+                    <div
+                      className={clsx(
+                        "flex items-center justify-center",
+                        isCollapsed ? "" : "mr-3"
+                      )}
+                    >
+                      <div
+                        className={clsx(
+                          "p-1.5 rounded-lg transition-all duration-200",
+                          isItemActive
+                            ? "bg-white/20"
+                            : "group-hover:bg-white/10"
+                        )}
+                      >
                         <item.icon
                           className={clsx(
                             "h-4 w-4 flex-shrink-0",

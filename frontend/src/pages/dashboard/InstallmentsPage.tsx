@@ -6,8 +6,8 @@ import {
 import { Installment } from "@/features/installments/model/types";
 import { InstallmentForm } from "@/features/installments/ui/InstallmentForm";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { Button } from "@/shared/ui/Button";
-import { ConfirmationModal, useToast } from "@/shared/ui";
+import { Button, useToast } from "@/shared/ui";
+import { ConfirmationModal } from "@/shared/ui/ConfirmationModal";
 import {
   CurrencyDollarIcon,
   CalendarDaysIcon,
@@ -138,6 +138,8 @@ export function InstallmentsPage() {
     setDeleteTarget(null);
   };
 
+
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -150,14 +152,6 @@ export function InstallmentsPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-red-300">{error}</div>
-      </div>
-    );
-  }
-
-  if (!installments) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-black/70">Loading installments...</div>
       </div>
     );
   }

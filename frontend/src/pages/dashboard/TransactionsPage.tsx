@@ -5,6 +5,16 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 
 export function TransactionsPage() {
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading for consistency with other pages
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleAddTransaction = () => {
     setShowForm(true);
@@ -15,6 +25,14 @@ export function TransactionsPage() {
     // Since we're only creating transactions currently, we might not need to fetch them
     // This could be expanded later to show transaction history
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-black/70">Loading transactions...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

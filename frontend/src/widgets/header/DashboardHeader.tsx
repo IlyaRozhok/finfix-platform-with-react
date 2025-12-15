@@ -27,9 +27,11 @@ export const DashboardHeader: React.FC = () => {
   const pageTitle = getPageTitle(location.pathname);
   return (
     user && (
-      <header className="h-16 px-6 flex items-center justify-between bg-white/10 backdrop-blur-xl border-b border-white/20 shadow-lg">
+      <header className="h-16 px-6 flex items-center justify-between backdrop-blur-xl shadow-lg">
         <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-bold text-primary-background tracking-tight">{pageTitle}</h1>
+          <h1 className="text-xl font-bold text-primary-background tracking-tight">
+            {pageTitle}
+          </h1>
         </div>
 
         <div className="relative">
@@ -75,7 +77,9 @@ export const DashboardHeader: React.FC = () => {
                     <p className="text-sm font-semibold text-primary-background">
                       {user?.userName}
                     </p>
-                    <p className="text-xs text-primary-background/70">{user?.email}</p>
+                    <p className="text-xs text-primary-background/70">
+                      {user?.email}
+                    </p>
                   </div>
                 </div>
                 <CloseButton handleClose={() => setIsMenuOpen(false)} />
