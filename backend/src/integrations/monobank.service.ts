@@ -15,8 +15,7 @@ export class MonobankService {
     this.token = config.getOrThrow("MONOBANK_TOKEN");
   }
 
-  async syncMonobank() {
-
+  async getClientInfo() {
     const res = await firstValueFrom(
       this.httpService.get(this.baseUrl, {
         headers: {
@@ -24,8 +23,22 @@ export class MonobankService {
         }
       })
     )
+    return res.data
+  }
 
-    console.log('res', res.data)
+  async getTransactions(from: string, to: string, accountId: string) {
+    const res = await firstValueFrom(
+      this.httpService.get(
+        `https://api.monobank.ua/personal/statement/${accountId}/${from}/${to}`,
+        {
+          headers: {
+            "X-Token": this.token,
+          },
+        },
+      ),
+    );
+
+    console.log("RESPONSE!!!", res)
     return res.data
   }
 }
