@@ -13,7 +13,8 @@ import { StatsModule } from "./stats/stats.module";
 import { LivenessController } from "./liveness.controller";
 import { RegularIncomesModule } from "./incomes/regular-incomes/regular-incomes.module";
 import { EventIncomesModule } from "./incomes/event-incomes/event-incomes.module";
-import { MonobankModule } from './integrations/monobank.module';
+import { MonobankModule } from "@/integrations/monobank/monobank.module";
+
 
 @Module({
   imports: [

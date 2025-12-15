@@ -81,6 +81,16 @@ export const fetchDebts = async (): Promise<Debt[]> => {
   }
 };
 
+export const fetchTransactions = async (): Promise<Transaction[]> => {
+  try {
+    const response = await api.get("api/transactions");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch transactions:", err);
+    throw err;
+  }
+};
+
 export const createTransaction = async (
   data: CreateTransactionData
 ): Promise<Transaction> => {

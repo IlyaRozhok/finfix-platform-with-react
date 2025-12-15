@@ -5,6 +5,7 @@ import { DashboardStats } from "@/features/dashboard/model/types";
 import { OverviewWidget } from "@/widgets/dashboard/OverviewWidget";
 import { ExpenseCategoriesChart } from "@/widgets/dashboard/ExpenseCategoriesChart";
 import { InstallmentsWidget } from "@/widgets/dashboard/InstallmentsWidget";
+import { TransactionsFeed } from "@/widgets/dashboard/TransactionsFeed";
 import { DashboardSkeleton } from "@/shared/ui";
 import {
   CurrencyDollarIcon,
@@ -89,6 +90,11 @@ export function DashboardPage() {
             icon={<BanknotesIcon className="h-8 w-8" />}
           />
         </div>
+      </div>
+
+      {/* Transactions Feed */}
+      <div className="w-full">
+        <TransactionsFeed />
       </div>
 
       {/* Bottom Widgets */}

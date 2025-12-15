@@ -6,11 +6,14 @@ import {
   Req,
   BadRequestException,
   Get,
+  Delete,
+  Param,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { TransactionsService } from "./transactions.service";
 import { CreateTransactionDto, TransactionsResDto } from "@/transactions/dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { plainToInstance } from "class-transformer";
 
 @ApiTags("Transactions")
 @Controller("transactions")
@@ -34,12 +37,26 @@ export class TransactionsController {
   @ApiResponse({
     status: 200,
     type: TransactionsResDto,
-    description: "Transaction created",
+    description: "Transaction fetched",
   })
   @Get()
   async getTransactions(@Req() req) {
     const userId = req.user.sub;
     const transactions = await this.transactionService.getTransactions(userId);
-    return 
+    return plainToInstance(TransactionsResDto, transactions, {
+      excludeExtraneousValues: true
+    })
+  }
+
+  @ApiOperation({ summary: "Get transactions" })
+  @ApiResponse({
+    status: 204,
+    description: "Transaction deleted",
+  })
+  @Delete()
+    async deleteTransactions(@Param("id") id: string, @Req() req) {
+    const userId = req.user.sub;
+    return await this.transactionService.delete(userId, id)
+
   }
 }

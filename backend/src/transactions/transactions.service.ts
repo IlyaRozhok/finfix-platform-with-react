@@ -26,4 +26,14 @@ export class TransactionsService {
     return transactions;
 
   }
+
+  async delete(userId: string, id: string) {
+    const res = await this.transactionRepository.delete({userId, id})
+
+    if (res.affected === 0) {
+      throw new NotFoundException("Transaction not found")
+    }
+
+    return true;
+  }
 }
