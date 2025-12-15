@@ -8,7 +8,7 @@ import {
   Matches,
   MinLength,
 } from "class-validator";
-import { Transform } from "class-transformer";
+import { Expose, Transform } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateTransactionDto {
@@ -69,5 +69,39 @@ export class CreateTransactionDto {
   @IsOptional()
   @IsString()
   @MinLength(1)
+  note?: string;
+}
+
+export class TransactionsResDto {
+  @Expose()
+  @ApiProperty()
+  type: TransactionType;
+
+  @Expose()
+  @ApiProperty()
+  direction: TransactionDirection;
+
+  @Expose()
+  @ApiProperty()
+  categoryId?: string;
+
+  @Expose()
+  @ApiProperty()
+  installmentId?: string;
+
+  @Expose()
+  @ApiProperty()
+  debtId?: string;
+
+  @Expose()
+  @ApiProperty()
+  amount: string;
+
+  @Expose()
+  @ApiProperty()
+  occurredAt: string;
+
+  @Expose()
+  @ApiProperty()
   note?: string;
 }

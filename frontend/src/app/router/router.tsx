@@ -16,6 +16,7 @@ import { DebtsPage } from "@/pages/dashboard/DebtsPage";
 import { ExpensesPage } from "@/pages/dashboard/ExpensesPage";
 import { InstallmentsPage } from "@/pages/dashboard/InstallmentsPage";
 import { IncomesPage } from "@/pages/dashboard/IncomesPage";
+import { TransactionsPage } from "@/pages/dashboard/TransactionsPage";
 import {
   OnboardingCurrency,
   OnboardingIncomes,
@@ -87,17 +88,7 @@ export function AppRouter() {
       >
         <Route index element={<DashboardPage />} />
         <Route path="incomes" element={<IncomesPage />} />
-        <Route
-          path="transactions"
-          element={
-            <div className="text-center py-20">
-              <h2 className="text-2xl font-semibold text-gray-900">
-                Transactions
-              </h2>
-              <p className="text-gray-600 mt-2">Coming soon...</p>
-            </div>
-          }
-        />
+        <Route path="transactions" element={<TransactionsPage />} />
         <Route path="debts" element={<DebtsPage />} />
         <Route path="installments" element={<InstallmentsPage />} />
         <Route path="expenses" element={<ExpensesPage />} />

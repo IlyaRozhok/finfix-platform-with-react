@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Transaction } from "@/entities/transaction.entity";
@@ -18,7 +18,12 @@ export class TransactionsService {
     return await this.transactionRepository.save(transaction)
   }
 
-  async syncMonobank() {
+  async getTransactions(userId: string) {
+    const transactions = await this.transactionRepository.find({where: {userId}, order: {occurredAt: "DESC"}})
+    if (!transactions) {
+      throw new NotFoundException("Transactions not found")
+    }
+    return transactions;
 
   }
 }
