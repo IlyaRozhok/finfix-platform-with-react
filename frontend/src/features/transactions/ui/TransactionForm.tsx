@@ -155,9 +155,34 @@ export function TransactionForm({
       addToast("success", "Transaction created", "Transaction created successfully.");
       await onSubmit();
       handleClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to create transaction:", error);
-      addToast("error", "Create failed", "Please try again.");
+
+      // Extract validation error message from API response
+      let errorMessage = "Please try again.";
+      let errorTitle = "Create failed";
+
+      if (error?.response?.data) {
+        const responseData = error.response.data;
+
+        // Handle different error response formats
+        if (typeof responseData === 'string') {
+          errorMessage = responseData;
+        } else if (responseData.message) {
+          errorMessage = responseData.message;
+          // Use a more specific title if available
+          if (responseData.error) {
+            errorTitle = responseData.error;
+          }
+        } else if (responseData.error && typeof responseData.error === 'string') {
+          errorMessage = responseData.error;
+        } else if (Array.isArray(responseData.message)) {
+          // Handle array of validation messages
+          errorMessage = responseData.message.join(', ');
+        }
+      }
+
+      addToast("error", errorTitle, errorMessage);
     }
   };
 

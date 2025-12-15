@@ -4,7 +4,6 @@ import {
   Post,
   UseGuards,
   Req,
-  BadRequestException,
   Get,
   Delete,
   Param,
@@ -53,7 +52,7 @@ export class TransactionsController {
     status: 204,
     description: "Transaction deleted",
   })
-  @Delete()
+  @Delete(":id")
     async deleteTransactions(@Param("id") id: string, @Req() req) {
     const userId = req.user.sub;
     return await this.transactionService.delete(userId, id)
