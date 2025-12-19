@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { fetchDashboardStats } from "@/features/dashboard/api";
 import { DashboardStats } from "@/features/dashboard/model/types";
@@ -92,15 +92,15 @@ export function DashboardPage() {
         </div>
       </div>
 
-      {/* Transactions Feed */}
-      <div className="w-full">
-        <TransactionsFeed />
-      </div>
-
-      {/* Bottom Widgets */}
+      {/* Installments & Expenses Widgets */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ExpenseCategoriesChart expenses={stats.expenses} />
         <InstallmentsWidget installments={stats.installments} />
+      </div>
+
+      {/* Transactions Feed */}
+      <div className="w-full">
+        <TransactionsFeed />
       </div>
     </div>
   );

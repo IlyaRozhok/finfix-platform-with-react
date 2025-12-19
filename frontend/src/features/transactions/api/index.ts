@@ -102,3 +102,12 @@ export const createTransaction = async (
     throw err;
   }
 };
+
+export const deleteTransaction = async (id: string): Promise<void> => {
+  try {
+    await api.delete(`api/transactions/${id}`);
+  } catch (err) {
+    console.error("Failed to delete transaction:", err);
+    throw err;
+  }
+};

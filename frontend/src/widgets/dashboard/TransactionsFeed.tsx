@@ -4,25 +4,15 @@ import {
   PlusIcon,
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "@/shared/ui";
+import { Button, useToast } from "@/shared/ui";
+import { ConfirmationModal } from "@/shared/ui/ConfirmationModal";
 import {
-  TransactionType,
-  TransactionDirection,
-} from "@/features/transactions/model/types";
-import { fetchTransactions } from "@/features/transactions/api";
-
-interface Transaction {
-  id: string;
-  type: TransactionType;
-  direction: TransactionDirection;
-  amount: string;
-  occurredAt: string;
-  note?: string;
-  category?: { name: string };
-  installment?: { description: string };
-  debt?: { description: string };
-}
+  fetchTransactions,
+  deleteTransaction,
+  Transaction,
+} from "@/features/transactions/api";
 
 interface TransactionsFeedProps {
   onAddTransaction?: () => void;
@@ -30,27 +20,64 @@ interface TransactionsFeedProps {
 
 export function TransactionsFeed({ onAddTransaction }: TransactionsFeedProps) {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    description: string;
+  } | null>(null);
+
+  const loadTransactions = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchTransactions();
+      // Take only the latest 5 transactions for the feed
+      setTransactions(data.slice(0, 5));
+    } catch (err) {
+      console.error("Failed to fetch transactions:", err);
+      setError("Failed to load transactions");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadTransactions = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchTransactions();
-        // Take only the latest 5 transactions for the feed
-        setTransactions(data.slice(0, 5));
-      } catch (err) {
-        console.error("Failed to fetch transactions:", err);
-        setError("Failed to load transactions");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadTransactions();
   }, []);
+
+  const handleDeleteTransaction = (transaction: Transaction) => {
+    const description = getTransactionDescription(transaction);
+    setDeleteTarget({ id: transaction.id, description });
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      await deleteTransaction(deleteTarget.id);
+      addToast(
+        "success",
+        "Transaction deleted",
+        "Transaction removed successfully."
+      );
+      await loadTransactions();
+    } catch (err) {
+      console.error("Failed to delete transaction:", err);
+      addToast("error", "Delete failed", "Please try again.");
+    } finally {
+      setShowDeleteModal(false);
+      setDeleteTarget(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteTarget(null);
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -60,31 +87,27 @@ export function TransactionsFeed({ onAddTransaction }: TransactionsFeedProps) {
     });
   };
 
-  const formatAmount = (amount: string, direction: TransactionDirection) => {
+  const formatAmount = (amount: string, direction: string) => {
     const formatted = parseFloat(amount).toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
-    return direction === TransactionDirection.INCOME
-      ? `+$${formatted}`
-      : `-$${formatted}`;
+    return direction === "income" ? `+$${formatted}` : `-$${formatted}`;
   };
 
   const getTransactionDescription = (transaction: Transaction) => {
     switch (transaction.type) {
-      case TransactionType.CATEGORY_BASED:
-        return transaction.category?.name || "Category Transaction";
-      case TransactionType.INSTALLMENT_PAYMENT:
-        return `Installment: ${
-          transaction.installment?.description || "Payment"
-        }`;
-      case TransactionType.DEBT_PAYMENT:
-        return `Debt: ${transaction.debt?.description || "Payment"}`;
-      case TransactionType.TRANSFER:
+      case "category_based":
+        return "Category Transaction";
+      case "installment_payment":
+        return "Installment Payment";
+      case "debt_payment":
+        return "Debt Payment";
+      case "transfer":
         return "Transfer";
-      case TransactionType.INCOME_REGULAR:
+      case "income_regular":
         return "Regular Income";
-      case TransactionType.INCOME_EVENT:
+      case "income_event":
         return "Event Income";
       default:
         return "Transaction";
@@ -173,21 +196,21 @@ export function TransactionsFeed({ onAddTransaction }: TransactionsFeedProps) {
               key={transaction.id}
               className="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 flex-1">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    transaction.direction === TransactionDirection.INCOME
+                    transaction.direction === "income"
                       ? "bg-green-500/20 text-green-400"
                       : "bg-red-500/20 text-red-400"
                   }`}
                 >
-                  {transaction.direction === TransactionDirection.INCOME ? (
+                  {transaction.direction === "income" ? (
                     <ArrowTrendingUpIcon className="h-4 w-4" />
                   ) : (
                     <ArrowTrendingDownIcon className="h-4 w-4" />
                   )}
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-primary-background">
                     {getTransactionDescription(transaction)}
                   </p>
@@ -196,18 +219,35 @@ export function TransactionsFeed({ onAddTransaction }: TransactionsFeedProps) {
                   </p>
                 </div>
               </div>
-              <div
-                className={`text-sm font-semibold ${
-                  transaction.direction === TransactionDirection.INCOME
-                    ? "text-green-400"
-                    : "text-red-400"
-                }`}
-              >
-                {formatAmount(transaction.amount, transaction.direction)}
+              <div className="flex items-center space-x-2">
+                <div
+                  className={`text-sm font-semibold ${
+                    transaction.direction === "income"
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }`}
+                >
+                  {formatAmount(transaction.amount, transaction.direction)}
+                </div>
+                <button
+                  onClick={() => handleDeleteTransaction(transaction)}
+                  className="p-1 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200"
+                  title="Delete transaction"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </button>
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {showDeleteModal && deleteTarget && (
+        <ConfirmationModal
+          title={`Are you sure you want to delete "${deleteTarget.description}"?`}
+          action={confirmDelete}
+          cancel={cancelDelete}
+        />
       )}
     </div>
   );
