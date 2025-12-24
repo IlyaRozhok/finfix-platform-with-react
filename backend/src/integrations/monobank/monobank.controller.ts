@@ -18,10 +18,9 @@ export class MonobankController {
   @Get("monobank/client-info")
   syncMonobank() {
     const info = this.monobankService.getClientInfo();
-    return info
-    // return plainToInstance(ClientInfoRespDto, info, {
-    //   excludeExtraneousValues: true
-    // })
+    return plainToInstance(ClientInfoRespDto, info, {
+      excludeExtraneousValues: true
+    })
   }
 
   @ApiOperation({ summary: "Get transactions" })
