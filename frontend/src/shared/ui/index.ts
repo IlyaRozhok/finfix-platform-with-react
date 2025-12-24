@@ -1,7 +1,7 @@
 export { Button } from "./Button";
 export { CloseButton } from "./CloseButton";
 export { ConfirmationModal } from "./ConfirmationModal";
-export { Calendar } from "./Calendar";
+export { Calendar } from "./Calendar/Calendar";
 export { Input } from "./Input";
 export { ListboxFloating } from "./ListboxFloating";
 export { Toast } from "./Toast";

@@ -14,6 +14,7 @@ import { LivenessController } from "./liveness.controller";
 import { RegularIncomesModule } from "./incomes/regular-incomes/regular-incomes.module";
 import { EventIncomesModule } from "./incomes/event-incomes/event-incomes.module";
 import { MonobankModule } from "@/integrations/monobank/monobank.module";
+import { AccountsModule } from './accounts/accounts.module';
 
 
 @Module({
@@ -49,6 +50,7 @@ import { MonobankModule } from "@/integrations/monobank/monobank.module";
     RegularIncomesModule,
     EventIncomesModule,
     MonobankModule,
+    AccountsModule,
   ],
   controllers: [LivenessController],
 })

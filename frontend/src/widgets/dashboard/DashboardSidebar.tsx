@@ -25,7 +25,7 @@ const navigation = [
     icon: ReceiptRefundIcon,
   },
   { name: "Expenses", href: "/dashboard/expenses", icon: CurrencyDollarIcon },
-  { name: "Settings", href: "/dashboard/settings", icon: CogIcon },
+  { name: "Monobank", href: "/dashboard/monobank", icon: CogIcon },
 ];
 
 export function DashboardSidebar() {

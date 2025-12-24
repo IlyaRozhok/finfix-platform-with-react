@@ -4,7 +4,6 @@ import {
   IsDate,
   IsInt,
   IsString,
-  IsUUID,
   MaxLength,
   Min,
 } from "class-validator";

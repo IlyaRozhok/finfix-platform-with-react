@@ -1,23 +1,37 @@
 import { Controller, Get, Param, Req } from "@nestjs/common";
 import { MonobankService } from './monobank.service';
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ClientInfoRespDto } from "@/integrations/monobank/dto";
+import { plainToInstance } from "class-transformer";
 
 @ApiTags("integrations")
-@Controller('integrations')
+@Controller("integrations")
 export class MonobankController {
   constructor(private readonly monobankService: MonobankService) {}
 
-  @ApiOperation({summary: "Get client info"})
+  @ApiResponse({
+    status: 200,
+    type: ClientInfoRespDto,
+    description: "Monobank client info fetched"
+  })
+  @ApiOperation({ summary: "Get client info" })
   @Get("monobank/client-info")
   syncMonobank() {
-    return this.monobankService.getClientInfo();
+    const info = this.monobankService.getClientInfo();
+    return info
+    // return plainToInstance(ClientInfoRespDto, info, {
+    //   excludeExtraneousValues: true
+    // })
   }
 
-  @ApiOperation({summary: "Get transactions"})
+  @ApiOperation({ summary: "Get transactions" })
   @Get("monobank/transactions")
-  getTransactions(@Param("from") from: string, @Param("to") to: string, @Param("accountId") accountId: string, @Req() req) {
-    console.log(req)
-    return this.monobankService.getTransactions(from, to, accountId)
+  getTransactions(
+    @Param("from") from: string,
+    @Param("to") to: string,
+    @Param("accountId") accountId: string,
+    @Req() req,
+  ) {
+    return this.monobankService.getTransactions(from, to, accountId);
   }
-
 }

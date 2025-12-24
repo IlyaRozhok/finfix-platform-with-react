@@ -3,7 +3,6 @@ import { TransactionForm } from "@/features/transactions";
 import { Button, useToast } from "@/shared/ui";
 import { ConfirmationModal } from "@/shared/ui/ConfirmationModal";
 import {
-  PlusIcon,
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
   TrashIcon,
@@ -18,6 +17,7 @@ export function TransactionsPage() {
   const { addToast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -36,8 +36,9 @@ export function TransactionsPage() {
       const data = await fetchTransactions();
       setTransactions(data);
     } catch (err) {
-      console.error("Failed to load transactions:", err);
       setError("Failed to load transactions");
+      console.warn(err)
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -150,10 +151,12 @@ export function TransactionsPage() {
           <h1 className="text-3xl font-bold">Transactions</h1>
           <p className="mt-1">Record your financial transactions</p>
         </div>
-        <Button variant="glass-primary" onClick={handleAddTransaction}>
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Add Transaction
-        </Button>
+
+        <div>
+          <Button variant="glass-primary" onClick={handleAddTransaction}>
+            Add Transaction
+          </Button>
+        </div>
       </div>
 
       {/* Transactions Table */}

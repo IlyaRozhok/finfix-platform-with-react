@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "@/shared/ui/Button";
-import { Calendar } from "@/shared/ui/Calendar";
+import { Calendar } from "@/shared/ui/Calendar/Calendar";
 import { useToast } from "@/shared/ui";
 import {
   createRegularIncome,

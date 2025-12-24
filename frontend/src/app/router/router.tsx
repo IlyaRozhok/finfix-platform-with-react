@@ -24,8 +24,8 @@ import {
   OnboardingDebts,
   OnboardingInstallments,
 } from "@/pages/onboarding";
+import Monobank from "@pages/dashboard/monobank";
 
-// Component for root redirect that considers user auth status
 function RootRedirect() {
   const { user, loading } = useAuth();
 
@@ -92,14 +92,7 @@ export function AppRouter() {
         <Route path="debts" element={<DebtsPage />} />
         <Route path="installments" element={<InstallmentsPage />} />
         <Route path="expenses" element={<ExpensesPage />} />
-        <Route
-          path="settings"
-          element={
-            <div className="text-center py-20">
-              <h2 className="text-2xl font-semibold text-gray-900">Settings</h2>
-              <p className="text-gray-600 mt-2">Coming soon...</p>
-            </div>
-          }
+        <Route path="monobank" element={<Monobank/>}
         />
       </Route>
 

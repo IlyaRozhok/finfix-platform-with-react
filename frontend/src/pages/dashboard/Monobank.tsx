@@ -4,10 +4,16 @@ import {fetchClientInfo} from "@features/monobank/api";
 const Monobank = () => {
     const [monoClientInfo, setMonoClientInfo] = useState()
 
-    useEffect(() => {
-        const clientInfo = fetchClientInfo();
-        setMonoClientInfo(clientInfo);
-    }, [])
+    const getClient = async () => {
+       try {
+           const clientInfo = await fetchClientInfo();
+           setMonoClientInfo(clientInfo)
+       } catch(err) {
+           console.log('Failed to fetched client info', err)
+       }
+    }
+
+    useEffect(getClient, [])
 
     return (
         <div className="space-y-8">
