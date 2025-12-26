@@ -31,7 +31,7 @@ export class DebtsController {
     description: "Debt created",
     status: 201,
   })
-  @ApiOperation({ summary: "Create debts" })
+  @ApiOperation({ summary: "Create debt" })
   @Post(ROUTE_SEGMENTS.DEBTS)
   async createDebt(@Body() dto: CreateDebtDto, @Req() req) {
     const userId = req.user.sub;

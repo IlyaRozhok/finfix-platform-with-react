@@ -16,14 +16,19 @@ export class MonobankService {
   }
 
   async getClientInfo() {
-    const res = await firstValueFrom(
-      this.httpService.get(this.baseUrl, {
-        headers: {
-          "X-Token": this.token
-        }
-      })
-    )
-    return res.data
+    try {
+      const res = await firstValueFrom(
+        this.httpService.get(this.baseUrl, {
+          headers: {
+            "X-Token": this.token
+          }
+        })
+      )
+      return res.data
+    } catch (e) {
+      
+    }
+
   }
 
   async getTransactions(from: string, to: string, accountId: string) {
