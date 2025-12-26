@@ -34,9 +34,9 @@
   --color-light-blue: #adebff;
 
   /* New color palette */
-  --color-background: #1F2937;
-  --color-secondary: #F9FAFB;
-  --color-disable: #4B5563;
+  --color-background: #1f2937;
+  --color-secondary: #f9fafb;
+  --color-disable: #4b5563;
 }
 
 /* Тонкий, «воздушный» скролл для выпадашек */
@@ -97,7 +97,8 @@
 
 /* Glassmorphism animations */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -107,4 +108,22 @@
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+/* 3D Card Flip Animation */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
 }
