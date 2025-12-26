@@ -73,9 +73,8 @@ export const AccountCard = ({
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
               <div className="text-lg font-semibold text-primary-background">
-                {account.type}
+                {account.type.toUpperCase()}
               </div>
-              <div className="text-xs text-gray-400 mt-2">{currencyName}</div>
             </div>
           </div>
         </button>

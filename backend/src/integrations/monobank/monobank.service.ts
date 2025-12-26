@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
 import { firstValueFrom } from "rxjs";
+import { ClientInfoRespDto } from "@/integrations/monobank/dto";
 
 @Injectable()
 export class MonobankService {
@@ -16,7 +17,6 @@ export class MonobankService {
   }
 
   async getClientInfo() {
-    try {
       const res = await firstValueFrom(
         this.httpService.get(this.baseUrl, {
           headers: {
@@ -24,11 +24,13 @@ export class MonobankService {
           }
         })
       )
-      return res.data
-    } catch (e) {
-      
-    }
 
+      const clientInfo: ClientInfoRespDto = res.data;
+
+      clientInfo.accounts = clientInfo.accounts.filter(
+        (acc) => acc.type === "black" || acc.type === "fop",
+      );
+      return clientInfo;
   }
 
   async getTransactions(from: string, to: string, accountId: string) {
@@ -43,7 +45,6 @@ export class MonobankService {
       ),
     );
 
-    console.log("RESPONSE!!!", res)
     return res.data
   }
 }

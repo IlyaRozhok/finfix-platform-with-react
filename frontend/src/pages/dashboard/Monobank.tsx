@@ -59,7 +59,7 @@ const Monobank = () => {
 
   const handleAccountClick = (account: MonoAccount) => {
     setSelectedAccount(account);
-    loadTransactions(account);
+    // loadTransactions(account);
   };
 
   useEffect(() => {
@@ -175,7 +175,7 @@ const Monobank = () => {
                     {Object.entries(accountsByCurrency).map(
                       ([currency, accounts]) => (
                         <div key={currency}>
-                          <h4 className="text-md font-medium text-gray-400 mb-3">
+                          <h4 className="text-md font-medium text-gray-600 mb-3">
                             {currency}
                           </h4>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
