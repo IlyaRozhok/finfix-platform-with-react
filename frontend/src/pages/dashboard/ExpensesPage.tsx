@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  fetchUserExpenses,
-  deleteExpense,
-} from "@/features/expenses/api";
+import { fetchUserExpenses, deleteExpense } from "@/features/expenses/api";
 import { Expense } from "@/features/expenses/model/types";
 import { CategoryIcon } from "@/features/expenses/ui/CategoryIcon";
-import { CurrencyDollarIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  CurrencyDollarIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { ExpenseForm } from "@/features/expenses/ui/ExpenseForm";
 import { Button, useToast } from "@/shared/ui";
 import { ConfirmationModal } from "@/shared/ui/ConfirmationModal";
@@ -19,9 +20,14 @@ export function ExpensesPage() {
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
-  const [categories, setCategories] = useState<{ id: string; label: string }[]>([]);
+  const [categories, setCategories] = useState<
+    { value: string; label: string }[]
+  >([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<{ id: string; description: string } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    description: string;
+  } | null>(null);
 
   // Calculate summary statistics (always call this hook, before any returns)
   const summaryStats = useMemo(() => {
@@ -32,7 +38,10 @@ export function ExpensesPage() {
       };
     }
 
-    const totalAmount = expenses.reduce((sum, expense) => sum + parseFloat(expense.amount || "0"), 0);
+    const totalAmount = expenses.reduce(
+      (sum, expense) => sum + parseFloat(expense.amount || "0"),
+      0
+    );
 
     return {
       totalAmount,
@@ -59,7 +68,7 @@ export function ExpensesPage() {
         const data = await fetchCategories();
         setCategories(
           data.map((c: { id: string; name: string }) => ({
-            id: c.id,
+            value: c.id,
             label: c.name,
           }))
         );
@@ -98,7 +107,10 @@ export function ExpensesPage() {
   };
 
   const handleDeleteExpense = (expense: Expense) => {
-    setDeleteTarget({ id: expense.id, description: expense.description || "Expense" });
+    setDeleteTarget({
+      id: expense.id,
+      description: expense.description || "Expense",
+    });
     setShowDeleteModal(true);
   };
 
@@ -122,8 +134,6 @@ export function ExpensesPage() {
     setDeleteTarget(null);
   };
 
-
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -144,9 +154,9 @@ export function ExpensesPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-3xl font-bold">Expenses</h1>
-        <p className="mt-1">Track your recurring expenses</p>
+        <div>
+          <h1 className="text-3xl font-bold">Expenses</h1>
+          <p className="mt-1">Track your recurring expenses</p>
         </div>
         <Button variant="glass-primary" onClick={handleAddExpense}>
           Add Expense
@@ -159,7 +169,9 @@ export function ExpensesPage() {
           <div className="p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-primary-background">Total Monthly</p>
+                <p className="text-sm font-medium text-primary-background">
+                  Total Monthly
+                </p>
                 <p className="text-2xl font-bold mt-1 text-primary-background">
                   ${summaryStats.totalAmount.toLocaleString()}
                 </p>
@@ -173,13 +185,14 @@ export function ExpensesPage() {
           <div className="p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-primary-background">Total Expenses</p>
+                <p className="text-sm font-medium text-primary-background">
+                  Total Expenses
+                </p>
                 <p className="text-2xl font-bold mt-1 text-primary-background">
                   {summaryStats.expenseCount}
                 </p>
               </div>
-              <div className="text-2xl text-primary-background/80">
-              </div>
+              <div className="text-2xl text-primary-background/80"></div>
             </div>
           </div>
         </div>
@@ -197,7 +210,8 @@ export function ExpensesPage() {
 
               {/* Subtitle */}
               <p className="text-sm text-disable leading-relaxed">
-                Your expense information will appear here once you add some recurring expenses.
+                Your expense information will appear here once you add some
+                recurring expenses.
               </p>
             </div>
           </div>
@@ -228,7 +242,10 @@ export function ExpensesPage() {
               </thead>
               <tbody className="bg-transparent divide-y divide-white/10">
                 {expenses.map((expense) => (
-                  <tr key={expense.id} className="hover:bg-white/5 transition-colors">
+                  <tr
+                    key={expense.id}
+                    className="hover:bg-white/5 transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-8 w-8">
@@ -264,17 +281,23 @@ export function ExpensesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <div>
-                        {new Date(expense.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
+                        {new Date(expense.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          }
+                        )}
                       </div>
                       <div className="text-xs text-gray-400">
-                        {new Date(expense.createdAt).toLocaleTimeString('en-US', {
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
+                        {new Date(expense.createdAt).toLocaleTimeString(
+                          "en-US",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
