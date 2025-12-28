@@ -4,7 +4,7 @@ alwaysApply: true
 
 rules:
 
-- You have no permissions to edit, modify, create or delete any files inside the "backend" directory!!!  
+- You have no permissions to edit, modify, create or delete any files inside the "backend" directory
   You may read backend code, but you must not change it under any circumstances.
 
 - All business logic, calculations, aggregations must be implemented on the backend.
@@ -15,7 +15,7 @@ rules:
    • reusable, isolated UI blocks  
    • predictable imports, no cross-layer violations
 
-- Do not use styles, use customs scss instead
+- Do not use styles attributes in html, use customs scss instead
 
 - Never run the backend and frontend servers, Docker, migrations, or any shell commands related to server execution.  
   I run the servers manually.

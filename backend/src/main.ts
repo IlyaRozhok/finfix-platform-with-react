@@ -65,7 +65,7 @@ async function bootstrap() {
     },
   });
 
-  const port = process.env.PORT || 3001;
+  const port = process.env.PORT || 1337;
   await app.listen(port);
 
   console.log(`FinFix API is running on: http://localhost:${port}`);
