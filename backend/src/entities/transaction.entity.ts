@@ -8,11 +8,12 @@ import {
   UpdateDateColumn,
   Index,
 } from "typeorm";
-import { Category } from "../entities/onboarding.entity";
-import { Installment } from "../entities/installment.entity";
-import { Debt } from "../entities/debt.entity";
+import { Category } from "@/entities/onboarding.entity";
+import { Installment } from "@/entities/installment.entity";
+import { Debt } from "@/entities/debt.entity";
 import { DecimalTransformer } from "@/shared/decimal.transformer";
 import { TransactionDirection, TransactionType } from "@/transactions/types";
+import { Accounts } from "@/entities/accounts.entity";
 
 @Entity("transactions")
 export class Transaction {
@@ -58,6 +59,13 @@ export class Transaction {
 
   @Column({ type: "text", nullable: true })
   note?: string | null;
+
+  @Column({ name: "account_id", type: "uuid", nullable: true })
+  accountId?: string | null;
+
+  @ManyToOne(() => Accounts, { onDelete: "SET NULL", nullable: true })
+  @JoinColumn({ name: "account_id" })
+  account?: Accounts | null;
 
   @CreateDateColumn({ name: "created_at", type: "timestamptz" })
   createdAt: Date;
