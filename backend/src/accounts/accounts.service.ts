@@ -27,7 +27,7 @@ export class AccountsService {
     })
 
     if (!accounts.length) {
-      throw new NotFoundException("Accounts do not found")
+      throw new NotFoundException("Accounts not found")
     }
 
     return accounts;

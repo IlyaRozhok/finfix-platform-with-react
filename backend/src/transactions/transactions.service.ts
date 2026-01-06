@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { Transaction } from "@/entities/transaction.entity";
 import { validateInvariants } from "@/transactions/lib/validateInvariants";
 import { CreateTransactionDto } from "@/transactions/dto";
+import { TransactionDirection } from "@/transactions/types";
 
 @Injectable()
 export class TransactionsService {
@@ -15,25 +16,43 @@ export class TransactionsService {
   async create(dto: CreateTransactionDto, userId: string) {
     validateInvariants(dto);
     const transaction = this.transactionRepository.create({ ...dto, userId });
-    return await this.transactionRepository.save(transaction)
+    return await this.transactionRepository.save(transaction);
   }
 
-  async getTransactions(userId: string) {
-    const transactions = await this.transactionRepository.find({where: {userId}, order: {occurredAt: "DESC"}})
+  async findAllTransactions(userId: string) {
+    const transactions = await this.transactionRepository.find({
+      where: { userId },
+      order: { occurredAt: "DESC" },
+    });
     if (!transactions) {
-      throw new NotFoundException("Transactions not found")
+      throw new NotFoundException("Transactions not found");
     }
     return transactions;
+  }
 
+  async findAllExpenseTransactions(userId: string) {
+    const expenseTransactions = await this.transactionRepository.find({
+      where: {
+        userId,
+        direction: TransactionDirection.EXPENSE,
+      },
+      order: {
+        occurredAt: "DESC"
+      }
+    });
+
+    if (!expenseTransactions.length) {
+      throw new NotFoundException("Expense transactions not found");
+    }
+
+    return expenseTransactions;
   }
 
   async delete(userId: string, id: string) {
-    const res = await this.transactionRepository.delete({userId, id})
-
+    const res = await this.transactionRepository.delete({ userId, id });
     if (res.affected === 0) {
-      throw new NotFoundException("Transaction not found")
+      throw new NotFoundException("Transaction not found");
     }
-
     return true;
   }
 }

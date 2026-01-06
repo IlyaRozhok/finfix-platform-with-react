@@ -6,6 +6,7 @@ import { RecurringExpensesService } from "@/expenses/recurring-expenses.service"
 import { InstallmentsService } from "@/installments/installments.service";
 import { EventIncomesService } from "@/incomes/event-incomes/event-incomes.service";
 import { RegularIncomesService } from "@/incomes/regular-incomes/regular-incomes.service";
+import { TransactionsService } from "@/transactions/transactions.service";
 
 @Injectable()
 export class StatsService {
@@ -15,7 +16,8 @@ export class StatsService {
     private readonly expensesService: RecurringExpensesService,
     private readonly installmentsService: InstallmentsService,
     private readonly regularIncomesService: RegularIncomesService,
-    private readonly eventIncomesService: EventIncomesService
+    private readonly eventIncomesService: EventIncomesService,
+    private readonly transactionsService: TransactionsService,
   ) {}
   async getOverview(dto: ReqOverviewDto) {
     const user = await this.usersService.findById(dto.uid);
@@ -25,9 +27,9 @@ export class StatsService {
     const incomes = user.incomes;
     const debts = await this.debtsService.findAll(dto.uid);
     const expenses = await this.expensesService.getExpenses(dto.uid);
-    const installments = await this.installmentsService.findAll(
-      dto.uid
-    );
+    const installments = await this.installmentsService.findAll(dto.uid);
+    const expenseTransactions = await this.transactionsService.findAllExpenseTransactions(dto.uid)
+
     const totalMonthlyInstallments = installments.reduce((acc, i) => {
       acc += Number(i.monthlyPayment);
       return acc;
@@ -53,6 +55,7 @@ export class StatsService {
       debts,
       expenses,
       installments,
+      expenseTransactions,
       monthlyNetworth: Math.floor(monthlyNetworth),
       monthlyObligations,
     };

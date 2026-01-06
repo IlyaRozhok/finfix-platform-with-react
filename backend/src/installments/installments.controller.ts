@@ -25,7 +25,6 @@ export class InstallmentsController {
     @Body() dto: UpdateInstallmentDto,
     @Req() req
   ) {
-    console.log('req', req)
     const userId = req.user.sub;
     const installment = await this.installmentsService.update(dto, userId, id);
     return plainToInstance(InstallmentResponseDto, installment, {

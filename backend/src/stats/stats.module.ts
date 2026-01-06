@@ -7,6 +7,7 @@ import { RecurringExpensesModule } from "@/expenses/recurring-expenses.module";
 import { InstallmentsModule } from "@/installments/installments.module";
 import { EventIncomesModule } from "@/incomes/event-incomes/event-incomes.module";
 import { RegularIncomesModule } from "@/incomes/regular-incomes/regular-incomes.module";
+import { TransactionsModule } from "@/transactions/transactions.module";
 
 @Module({
   controllers: [StatsController],
@@ -18,6 +19,7 @@ import { RegularIncomesModule } from "@/incomes/regular-incomes/regular-incomes.
     InstallmentsModule,
     RegularIncomesModule,
     EventIncomesModule,
+    TransactionsModule
   ],
 })
 export class StatsModule {}

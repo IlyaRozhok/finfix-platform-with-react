@@ -41,7 +41,7 @@ export class TransactionsController {
   @Get()
   async getTransactions(@Req() req) {
     const userId = req.user.sub;
-    const transactions = await this.transactionService.getTransactions(userId);
+    const transactions = await this.transactionService.findAllTransactions(userId);
     return plainToInstance(TransactionsResDto, transactions, {
       excludeExtraneousValues: true
     })

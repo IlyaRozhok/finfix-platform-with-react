@@ -1,11 +1,10 @@
-import { Controller, Get, Query, Req, UseGuards } from "@nestjs/common";
+import { Controller, Get, Req, UseGuards } from "@nestjs/common";
 import { StatsService } from "./stats.service";
 import { ENDPOINTS } from "@/shared/router";
 import { ROUTE_SEGMENTS } from "@/shared/router";
-import { ReqOverviewDto, ResOverviewDto } from "./dto";
+import { ResOverviewDto } from "./dto";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import {
-  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -49,4 +48,5 @@ export class StatsController {
 
     return { regular: regularDto, events: eventsDto };
   }
+
 }
