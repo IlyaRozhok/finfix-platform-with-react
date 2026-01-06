@@ -1,20 +1,6 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Req,
-  UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { InstallmentsService } from "./installments.service";
-import {
-  CreateInstallmentDto,
-  UpdateInstallmentDto,
-  InstallmentResponseDto,
-} from "./dto";
+import { CreateInstallmentDto, InstallmentResponseDto, UpdateInstallmentDto } from "./dto";
 import { ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -39,6 +25,7 @@ export class InstallmentsController {
     @Body() dto: UpdateInstallmentDto,
     @Req() req
   ) {
+    console.log('req', req)
     const userId = req.user.sub;
     const installment = await this.installmentsService.update(dto, userId, id);
     return plainToInstance(InstallmentResponseDto, installment, {
@@ -48,8 +35,8 @@ export class InstallmentsController {
   @Get(ROUTE_SEGMENTS.INSTALLMENTS)
   async getInstallments(@Req() req) {
     const uid = req.user.sub;
-    const installments = await this.installmentsService.findAll(uid);
-    return installments;
+
+    return await this.installmentsService.findAll(uid);
   }
 
   @ApiBody({ type: CreateInstallmentDto })
