@@ -14,6 +14,7 @@ const getPageTitle = (pathname: string): string => {
     "/dashboard/debts": "Debts",
     "/dashboard/installments": "Installments",
     "/dashboard/expenses": "Expenses",
+    "/dashboard/accounts": "Accounts",
     "/dashboard/monobank": "Monobank",
   };
 

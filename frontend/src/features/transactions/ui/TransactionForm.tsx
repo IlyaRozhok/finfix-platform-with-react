@@ -141,16 +141,34 @@ export function TransactionForm({
     }
 
     try {
-      await createTransaction({
+      const transactionData: any = {
         type: formData.type,
         direction: formData.direction,
         amount: formData.amount,
         occurredAt: new Date(formData.occurredAt).toISOString(),
-        categoryId: formData.categoryId || undefined,
-        installmentId: formData.installmentId || undefined,
-        debtId: formData.debtId || undefined,
-        note: formData.note || undefined,
-      });
+      };
+
+      // Only include categoryId if it's not empty
+      if (formData.categoryId && formData.categoryId.trim() !== "") {
+        transactionData.categoryId = formData.categoryId;
+      }
+
+      // Only include installmentId if it's not empty
+      if (formData.installmentId && formData.installmentId.trim() !== "") {
+        transactionData.installmentId = formData.installmentId;
+      }
+
+      // Only include debtId if it's not empty
+      if (formData.debtId && formData.debtId.trim() !== "") {
+        transactionData.debtId = formData.debtId;
+      }
+
+      // Only include note if it's not empty
+      if (formData.note && formData.note.trim() !== "") {
+        transactionData.note = formData.note;
+      }
+
+      await createTransaction(transactionData);
 
       addToast("success", "Transaction created", "Transaction created successfully.");
       await onSubmit();

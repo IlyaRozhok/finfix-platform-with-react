@@ -11,6 +11,7 @@ import {
   CogIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  WalletIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../../assets/money-tree.png";
 
@@ -25,6 +26,7 @@ const navigation = [
     icon: ReceiptRefundIcon,
   },
   { name: "Expenses", href: "/dashboard/expenses", icon: CurrencyDollarIcon },
+  { name: "Accounts", href: "/dashboard/accounts", icon: WalletIcon },
   { name: "Monobank", href: "/dashboard/monobank", icon: CogIcon },
 ];
 

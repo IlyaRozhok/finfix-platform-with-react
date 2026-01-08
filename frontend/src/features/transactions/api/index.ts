@@ -33,8 +33,23 @@ export interface Transaction {
   amount: string;
   occurredAt: string;
   categoryId?: string;
+  category?: Category;
   installmentId?: string;
+  installment?: {
+    id: string;
+    description: string;
+  };
   debtId?: string;
+  debt?: {
+    id: string;
+    description: string;
+  };
+  accountId?: string;
+  account?: {
+    id: string;
+    name: string;
+    assetCode: string;
+  };
   note?: string;
   createdAt: string;
   updatedAt: string;

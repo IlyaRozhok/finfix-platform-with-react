@@ -69,18 +69,21 @@ export const ListboxFloating = <T extends string>({
             <Transition
               as={Fragment}
               show={open}
+              enter="transition ease-out duration-200"
+              enterFrom="opacity-0 translate-y-1 scale-95"
+              enterTo="opacity-100 translate-y-0 scale-100"
               leave="transition ease-in duration-150"
-              leaveFrom="opacity-100 translate-y-0"
-              leaveTo="opacity-0 -translate-y-1"
+              leaveFrom="opacity-100 translate-y-0 scale-100"
+              leaveTo="opacity-0 -translate-y-1 scale-95"
             >
               <Listbox.Options
                 ref={refs.setFloating}
                 style={floatingStyles}
                 className={clsx(
-                  "z-[1000] overflow-auto rounded-xl nice-scroll p-1",
+                  "z-[1000] overflow-auto nice-scroll p-1.5",
                   variant === "glass"
-                    ? "bg-white/20 backdrop-blur-xl border border-white/30 ring-1 ring-white/15 shadow-2xl text-black"
-                    : "bg-black/90 backdrop-blur-md ring-1 ring-slate-400/25 shadow-2xl text-slate-200",
+                    ? "bg-white/5 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] rounded-2xl text-primary-background/90"
+                    : "bg-black/90 backdrop-blur-md ring-1 ring-slate-400/25 shadow-2xl rounded-xl text-slate-200",
                   optionsClassName
                 )}
               >
@@ -90,14 +93,18 @@ export const ListboxFloating = <T extends string>({
                     value={opt.value}
                     className={({ active, selected }) =>
                       clsx(
-                        "cursor-pointer select-none rounded-lg px-3 py-2 text-sm",
-                        variant === "glass" ? "text-black" : "text-slate-200",
-                        active &&
-                          (variant === "glass" ? "bg-white/30" : "bg-white/10"),
-                        selected &&
-                          (variant === "glass"
-                            ? "bg-white/40"
-                            : "bg-sky-400/20"),
+                        "cursor-pointer select-none rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
+                        variant === "glass" 
+                          ? clsx(
+                              "text-primary-background/80",
+                              active && "bg-white/10 backdrop-blur-sm",
+                              selected && "bg-white/15 backdrop-blur-sm font-medium text-primary-background/90"
+                            )
+                          : clsx(
+                              "text-slate-200",
+                              active && "bg-white/10",
+                              selected && "bg-sky-400/20"
+                            ),
                         optionClassName
                       )
                     }

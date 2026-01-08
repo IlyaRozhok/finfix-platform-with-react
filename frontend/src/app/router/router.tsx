@@ -17,6 +17,7 @@ import { ExpensesPage } from "@/pages/dashboard/ExpensesPage";
 import { InstallmentsPage } from "@/pages/dashboard/InstallmentsPage";
 import { IncomesPage } from "@/pages/dashboard/IncomesPage";
 import { TransactionsPage } from "@/pages/dashboard/TransactionsPage";
+import { AccountsPage } from "@/pages/dashboard/AccountsPage";
 import {
   OnboardingCurrency,
   OnboardingIncomes,
@@ -24,7 +25,7 @@ import {
   OnboardingDebts,
   OnboardingInstallments,
 } from "@/pages/onboarding";
-import Monobank from "@pages/dashboard/monobank";
+import Monobank from "@/pages/dashboard/Monobank";
 
 function RootRedirect() {
   const { user, loading } = useAuth();
@@ -92,6 +93,7 @@ export function AppRouter() {
         <Route path="debts" element={<DebtsPage />} />
         <Route path="installments" element={<InstallmentsPage />} />
         <Route path="expenses" element={<ExpensesPage />} />
+        <Route path="accounts" element={<AccountsPage />} />
         <Route path="monobank" element={<Monobank/>}
         />
       </Route>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Expense } from "@/features/dashboard/model/types";
+import { Expense, ExpenseTransaction } from "@/features/dashboard/model/types";
 import { ThreePieChart } from "./ThreePieChart";
 
 const COLORS = [
@@ -15,18 +15,37 @@ const COLORS = [
 
 interface ExpenseCategoriesChartProps {
   expenses: Expense[];
+  expenseTransactions?: ExpenseTransaction[];
 }
 
 export function ExpenseCategoriesChart({
   expenses,
+  expenseTransactions,
 }: ExpenseCategoriesChartProps) {
-  // Calculate category totals
-  const categoryTotals = expenses.reduce((acc, expense) => {
-    const amount = parseFloat(expense.amount);
-    const categoryName = expense.category.name;
-    acc[categoryName] = (acc[categoryName] || 0) + amount;
-    return acc;
-  }, {} as Record<string, number>);
+  // Use expenseTransactions if available, otherwise fall back to expenses
+  const categoryTotals = React.useMemo(() => {
+    const totals: Record<string, number> = {};
+
+    if (expenseTransactions && expenseTransactions.length > 0) {
+      // Use expenseTransactions (transactions with categories)
+      expenseTransactions.forEach((transaction) => {
+        if (transaction.category && transaction.direction === "expense") {
+          const amount = parseFloat(transaction.amount);
+          const categoryName = transaction.category.name;
+          totals[categoryName] = (totals[categoryName] || 0) + amount;
+        }
+      });
+    } else {
+      // Fall back to expenses (recurring expenses)
+      expenses.forEach((expense) => {
+        const amount = parseFloat(expense.amount);
+        const categoryName = expense.category.name;
+        totals[categoryName] = (totals[categoryName] || 0) + amount;
+      });
+    }
+
+    return totals;
+  }, [expenses, expenseTransactions]);
 
   const sortedCategories = Object.entries(categoryTotals)
     .sort(([, a], [, b]) => b - a)
@@ -85,7 +104,10 @@ export function ExpenseCategoriesChart({
 
         {/* 3D Chart on the right */}
         <div className="flex items-center justify-center">
-          <ThreePieChart expenses={expenses} />
+          <ThreePieChart
+            expenses={expenses}
+            expenseTransactions={expenseTransactions}
+          />
         </div>
       </div>
     </div>

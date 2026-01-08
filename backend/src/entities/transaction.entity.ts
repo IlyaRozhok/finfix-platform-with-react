@@ -45,13 +45,22 @@ export class Transaction {
   @Column({ name: "occurred_at", type: "timestamptz" })
   occurredAt: Date;
 
+  @Column({ name: "category_id", type: "uuid", nullable: true })
+  categoryId?: string | null;
+
   @ManyToOne(() => Category, { nullable: true, onDelete: "SET NULL" })
   @JoinColumn({ name: "category_id" })
   category?: Category | null;
 
+  @Column({ name: "installment_id", type: "uuid", nullable: true })
+  installmentId?: string | null;
+
   @ManyToOne(() => Installment, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: "installment_id" })
   installment?: Installment | null;
+
+  @Column({ name: "debt_id", type: "uuid", nullable: true })
+  debtId?: string | null;
 
   @ManyToOne(() => Debt, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: "debt_id" })

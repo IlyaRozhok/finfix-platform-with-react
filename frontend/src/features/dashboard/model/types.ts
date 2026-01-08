@@ -31,10 +31,33 @@ export type Installment = {
   updatedAt: string;
 };
 
+export type ExpenseTransaction = {
+  id: string;
+  userId: string;
+  type: string;
+  direction: string;
+  amount: string;
+  occurredAt: string;
+  categoryId?: string;
+  category?: Category;
+  installmentId?: string;
+  debtId?: string;
+  accountId?: string;
+  account?: {
+    id: string;
+    name: string;
+    assetCode: string;
+  };
+  note?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type DashboardStats = {
   incomes: number;
   debts: Debt[];
   expenses: Expense[];
+  expenseTransactions?: ExpenseTransaction[];
   installments: Installment[];
   monthlyNetworth: number;
   monthlyObligations: number;
