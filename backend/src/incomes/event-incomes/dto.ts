@@ -28,6 +28,10 @@ export class EventIncomeResDto {
     description: "Date of income",
   })
   date: Date;
+
+  userId: string;
+
+  createdAt: Date;
 }
 
 export class EventIncomeDto {

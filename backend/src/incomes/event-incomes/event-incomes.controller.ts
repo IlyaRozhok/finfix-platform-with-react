@@ -13,7 +13,6 @@ import {
 import { EventIncomesService } from "./event-incomes.service";
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
-import { plainToInstance } from "class-transformer";
 import { EventIncomeDto, EventIncomeResDto } from "./dto";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 
@@ -30,15 +29,11 @@ export class EventIncomesController {
     @Body() dto: EventIncomeDto
   ): Promise<EventIncomeResDto> {
     const userId = req.user.sub;
-
-    const createdEventIncome = await this.eventIncomesService.create(
+    return await this.eventIncomesService.create(
       userId,
       dto
     );
 
-    return plainToInstance(EventIncomeResDto, createdEventIncome, {
-      excludeExtraneousValues: true,
-    });
   }
   @HttpCode(201)
   @ApiResponse({
@@ -50,10 +45,7 @@ export class EventIncomesController {
   @Get(ENDPOINTS.EVENT_INCOMES.GET)
   async getEventIncomes(@Req() req) {
     const userId = req.user.sub;
-    const eventIncomes = await this.eventIncomesService.getAll(userId);
-    return plainToInstance(EventIncomeResDto, eventIncomes, {
-      excludeExtraneousValues: true,
-    });
+    return await this.eventIncomesService.getAll(userId);
   }
 
   @ApiResponse({
@@ -66,10 +58,7 @@ export class EventIncomesController {
   @Get(ENDPOINTS.EVENT_INCOMES.BY_ID)
   async getOneEventIncome(@Req() req, @Param("id") id: string) {
     const userId = req.user.sub;
-    const income = await this.eventIncomesService.findOne(userId, id);
-    return plainToInstance(EventIncomeResDto, income, {
-      excludeExtraneousValues: true,
-    });
+    return await this.eventIncomesService.findOne(userId, id);
   }
 
   @ApiResponse({
@@ -85,11 +74,7 @@ export class EventIncomesController {
     @Param("id") id: string
   ): Promise<EventIncomeDto> {
     const userId = req.user.sub;
-    const income = await this.eventIncomesService.update(userId, id, dto);
-
-    return plainToInstance(EventIncomeResDto, income, {
-      excludeExtraneousValues: true,
-    });
+    return await this.eventIncomesService.update(userId, id, dto);
   }
 
   @ApiOperation({ summary: "Delete event income" })

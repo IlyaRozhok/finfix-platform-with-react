@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { EventIncomeDto } from "./dto";
+import { EventIncomeDto, EventIncomeResDto } from "./dto";
 import { EventIncomes } from "@/entities/incomes/income-event.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class EventIncomesService {
@@ -17,10 +18,13 @@ export class EventIncomesService {
   }
 
   async getAll(userId: string) {
-    return await this.eventIncomesRepository.find({
+    const eventIncomes = await this.eventIncomesRepository.find({
       where: {
         userId,
       },
+    });
+    return plainToInstance(EventIncomeResDto, eventIncomes, {
+      excludeExtraneousValues: true,
     });
   }
 
@@ -36,7 +40,9 @@ export class EventIncomesService {
       throw new NotFoundException("Event income not found");
     }
 
-    return income;
+    return plainToInstance(EventIncomeResDto, income, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async update(userId: string, id: string, dto: EventIncomeDto) {
@@ -49,7 +55,11 @@ export class EventIncomesService {
 
     Object.assign(income, dto);
 
-    return await this.eventIncomesRepository.save(income);
+    const updatedIncome = this.eventIncomesRepository.save(income);
+
+    return plainToInstance(EventIncomeResDto, updatedIncome, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async create(userId: string, dto: EventIncomeDto): Promise<EventIncomes> {
@@ -60,6 +70,10 @@ export class EventIncomesService {
       date: dto.date,
     });
 
-    return await this.eventIncomesRepository.save(income);
+    const event = await this.eventIncomesRepository.save(income);
+
+    return plainToInstance(EventIncomeResDto, event, {
+      excludeExtraneousValues: true,
+    });
   }
 }
