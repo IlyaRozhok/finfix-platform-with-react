@@ -4,7 +4,6 @@ import { CreateInstallmentDto, InstallmentResponseDto, UpdateInstallmentDto } fr
 import { ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { plainToInstance } from "class-transformer";
 
 @UseGuards(JwtAuthGuard)
 @ApiTags("Installments")
@@ -26,10 +25,7 @@ export class InstallmentsController {
     @Req() req
   ) {
     const userId = req.user.sub;
-    const installment = await this.installmentsService.update(dto, userId, id);
-    return plainToInstance(InstallmentResponseDto, installment, {
-      excludeExtraneousValues: true,
-    });
+    return await this.installmentsService.update(dto, userId, id);
   }
   @Get(ROUTE_SEGMENTS.INSTALLMENTS)
   async getInstallments(@Req() req) {
@@ -48,10 +44,7 @@ export class InstallmentsController {
   @Post(`${ROUTE_SEGMENTS.INSTALLMENTS}/create`)
   async createInstallment(@Body() dto: CreateInstallmentDto, @Req() req) {
     const userId = req.user.sub;
-    const installment = await this.installmentsService.createInstallment(dto, userId);
-    return plainToInstance(InstallmentResponseDto, installment, {
-      excludeExtraneousValues: true,
-    });
+    return await this.installmentsService.createInstallment(dto, userId);
   }
 
   @ApiOperation({ summary: "Delete installment" })

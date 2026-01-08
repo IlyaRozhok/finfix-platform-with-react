@@ -3,8 +3,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Transaction } from "@/entities/transaction.entity";
 import { validateInvariants } from "@/transactions/lib/validateInvariants";
-import { CreateTransactionDto } from "@/transactions/dto";
+import { CreateTransactionDto, TransactionsResDto } from "@/transactions/dto";
 import { TransactionDirection } from "@/transactions/types";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class TransactionsService {
@@ -27,7 +28,9 @@ export class TransactionsService {
     if (!transactions) {
       throw new NotFoundException("Transactions not found");
     }
-    return transactions;
+    return plainToInstance(TransactionsResDto, transactions, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async findAllExpenseTransactions(userId: string) {
@@ -45,7 +48,9 @@ export class TransactionsService {
       throw new NotFoundException("Expense transactions not found");
     }
 
-    return expenseTransactions;
+    return plainToInstance(TransactionsResDto, expenseTransactions, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async delete(userId: string, id: string) {

@@ -8,7 +8,8 @@ export const ROUTE_SEGMENTS = {
   DEBTS: "debts",
   INSTALLMENTS: "installments",
   INCOMES: "incomes",
-  ACCOUNTS: "accounts"
+  ACCOUNTS: "accounts",
+  TRANSACTIONS: "transactions"
 };
 
 export const ENDPOINTS = {
@@ -43,6 +44,8 @@ export const ENDPOINTS = {
   },
   ACCOUNTS: {
     CREATE: "create",
-    FIND: "/",
   },
+  TRANSACTIONS: {
+    EXPENSES: "expenses"
+  }
 };

@@ -2,9 +2,9 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { Repository } from "typeorm";
 import { Installment } from "../entities/installment.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateInstallmentDto, UpdateInstallmentDto } from "./dto";
-import { addMonths, format, parseISO } from "date-fns";
+import { CreateInstallmentDto, InstallmentResponseDto, UpdateInstallmentDto } from "./dto";
 import { generateInstallment } from "@/installments/lib/generateInstallment";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class InstallmentsService {
@@ -17,19 +17,22 @@ export class InstallmentsService {
     if (!uid) {
       throw new BadRequestException("User id not provided");
     }
-    const installments = await this.installmentRepository.find({
+
+    return await this.installmentRepository.find({
       where: {
         userId: uid,
       },
     });
-
-    return installments;
   }
 
   async createInstallment(dto: CreateInstallmentDto, userId: string) {
     const entity = generateInstallment(dto, userId);
     const installmentEntity = this.installmentRepository.create(entity);
-    return await this.installmentRepository.save(installmentEntity);
+    const installment = this.installmentRepository.save(installmentEntity);
+
+    return plainToInstance(InstallmentResponseDto, installment, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async update(dto: UpdateInstallmentDto, userId: string, id: string) {
@@ -43,7 +46,10 @@ export class InstallmentsService {
 
     Object.assign(currentInstallment, updatedInstallment);
 
-    return this.installmentRepository.save(currentInstallment);
+    const installment = this.installmentRepository.save(currentInstallment);
+    return plainToInstance(InstallmentResponseDto, installment, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async delete(id: string, userId: string) {

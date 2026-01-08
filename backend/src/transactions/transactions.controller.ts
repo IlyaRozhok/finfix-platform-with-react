@@ -12,10 +12,10 @@ import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { TransactionsService } from "./transactions.service";
 import { CreateTransactionDto, TransactionsResDto } from "@/transactions/dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { plainToInstance } from "class-transformer";
+import { ROUTE_SEGMENTS } from "@/shared/router";
 
 @ApiTags("Transactions")
-@Controller("transactions")
+@Controller(ROUTE_SEGMENTS.TRANSACTIONS)
 @UseGuards(JwtAuthGuard)
 export class TransactionsController {
   constructor(private readonly transactionService: TransactionsService) {}
@@ -41,10 +41,19 @@ export class TransactionsController {
   @Get()
   async getTransactions(@Req() req) {
     const userId = req.user.sub;
-    const transactions = await this.transactionService.findAllTransactions(userId);
-    return plainToInstance(TransactionsResDto, transactions, {
-      excludeExtraneousValues: true
-    })
+    return await this.transactionService.findAllTransactions(userId);
+  }
+
+  @ApiOperation({ summary: "Get expense transactions" })
+  @ApiResponse({
+    status: 200,
+    type: TransactionsResDto,
+    description: "Transaction fetched",
+  })
+  @Get()
+  async getExpenseTransactions(@Req() req) {
+    const userId = req.user.sub;
+    return await this.transactionService.findAllTransactions(userId);
   }
 
   @ApiOperation({ summary: "Get transactions" })
@@ -53,9 +62,8 @@ export class TransactionsController {
     description: "Transaction deleted",
   })
   @Delete(":id")
-    async deleteTransactions(@Param("id") id: string, @Req() req) {
+  async deleteTransactions(@Param("id") id: string, @Req() req) {
     const userId = req.user.sub;
-    return await this.transactionService.delete(userId, id)
-
+    return await this.transactionService.delete(userId, id);
   }
 }

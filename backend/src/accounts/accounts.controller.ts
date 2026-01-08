@@ -29,7 +29,7 @@ export class AccountsController {
     type: AccountsResDto,
     description: "Accounts fetched",
   })
-  @Get(ENDPOINTS.ACCOUNTS.FIND)
+  @Get()
   async fetchAccounts(@Req() req) {
     const userId = req.user.sub;
     return plainToInstance(AccountsResDto, this.accountsService.findAll(userId), {

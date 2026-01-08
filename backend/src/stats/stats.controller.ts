@@ -23,7 +23,7 @@ export class StatsController {
   @ApiOperation({ summary: "Get user financial overview" })
   @ApiResponse({
     status: 204,
-    description: "Overview statistics returned successfuly",
+    description: "Overview statistics returned successfully",
     type: ResOverviewDto,
   })
   async getOverview(@Req() req) {
