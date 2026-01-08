@@ -1,8 +1,9 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { CreateExpenseDto, CreateRecurringExpenseDto, UpdateExpenseDto } from "./dto";
+import { CreateExpenseDto, CreateRecurringExpenseDto, ExpensesResDto, UpdateExpenseDto } from "./dto";
 import { RecurringExpense } from "../entities/recurring-expense.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class RecurringExpensesService {
@@ -65,7 +66,10 @@ export class RecurringExpensesService {
       relations: ["category"],
     });
 
-    return expenses;
+    return plainToInstance(ExpensesResDto, expenses, {
+      excludeExtraneousValues: true,
+    });
+
   }
 
   async deleteExpense(expenseId: string) {

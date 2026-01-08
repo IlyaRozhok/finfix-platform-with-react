@@ -8,6 +8,7 @@ import {
   Matches,
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 
 export class CreateRecurringExpenseDto {
   @IsOptional()
@@ -77,4 +78,22 @@ export class UpdateExpenseDto {
   @IsNotEmpty()
   @IsNumberString()
   amount: string;
+}
+
+export class ExpensesResDto {
+  @Expose()
+  @ApiProperty()
+  id: string;
+
+  @Expose()
+  @ApiProperty()
+  amount: string;
+
+  @Expose()
+  @ApiProperty()
+  description: string;
+
+  @Expose()
+  @ApiProperty()
+  categoryId: string;
 }
