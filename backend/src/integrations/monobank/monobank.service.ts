@@ -11,30 +11,30 @@ export class MonobankService {
   private token: string;
   constructor(
     private readonly httpService: HttpService,
-    private readonly config: ConfigService,
+    private readonly config: ConfigService
   ) {
     this.baseUrl = config.getOrThrow("MONOBANK_URL");
     this.token = config.getOrThrow("MONOBANK_TOKEN");
   }
 
   async getClientInfo() {
-      const res = await firstValueFrom(
-        this.httpService.get(this.baseUrl, {
-          headers: {
-            "X-Token": this.token
-          }
-        })
-      )
+    const res = await firstValueFrom(
+      this.httpService.get(this.baseUrl, {
+        headers: {
+          "X-Token": this.token,
+        },
+      })
+    );
 
-      const clientInfo: ClientInfoRespDto = res.data;
+    const clientInfo: ClientInfoRespDto = res.data;
 
-      clientInfo.accounts = clientInfo.accounts.filter(
-        (acc) => acc.type === "black" || acc.type === "fop",
-      );
-      
-      return plainToInstance(ClientInfoRespDto, clientInfo, {
-        excludeExtraneousValues: true
-      });
+    clientInfo.accounts = clientInfo.accounts.filter(
+      (acc) => acc.type === "black" || acc.type === "fop"
+    );
+
+    return plainToInstance(ClientInfoRespDto, clientInfo, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async getTransactions(from: string, to: string, accountId: string) {
@@ -45,10 +45,10 @@ export class MonobankService {
           headers: {
             "X-Token": this.token,
           },
-        },
-      ),
+        }
+      )
     );
 
-    return res.data
+    return res.data;
   }
 }

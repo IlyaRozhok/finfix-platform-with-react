@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Accounts } from "@/entities/accounts.entity";
 import { Repository } from "typeorm";
@@ -9,30 +9,30 @@ import { plainToInstance } from "class-transformer";
 export class AccountsService {
   constructor(
     @InjectRepository(Accounts)
-    private readonly AccountRepository: Repository<Accounts>,
+    private readonly AccountRepository: Repository<Accounts>
   ) {}
 
   async create(dto: CreateAccountDto, userId: string) {
     const newAccount = this.AccountRepository.create({ ...dto, userId });
-    return await this.AccountRepository.save(newAccount)
+    return await this.AccountRepository.save(newAccount);
   }
 
   async findAll(userId: string) {
     const accounts = await this.AccountRepository.find({
       where: {
-        userId
+        userId,
       },
       order: {
-        type: "DESC"
-      }
-    })
+        type: "DESC",
+      },
+    });
 
     if (!accounts.length) {
-      throw new NotFoundException("Accounts not found")
+      throw new NotFoundException("Accounts not found");
     }
 
     return plainToInstance(AccountsResDto, accounts, {
-      excludeExtraneousValues: true
+      excludeExtraneousValues: true,
     });
   }
 }

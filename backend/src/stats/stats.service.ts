@@ -20,7 +20,7 @@ export class StatsService {
     private readonly installmentsService: InstallmentsService,
     private readonly regularIncomesService: RegularIncomesService,
     private readonly eventIncomesService: EventIncomesService,
-    private readonly transactionsService: TransactionsService,
+    private readonly transactionsService: TransactionsService
   ) {}
   async getOverview(dto: ReqOverviewDto) {
     const user = await this.usersService.findById(dto.uid);
@@ -31,7 +31,8 @@ export class StatsService {
     const debts = await this.debtsService.findAll(dto.uid);
     const expenses = await this.expensesService.getExpenses(dto.uid);
     const installments = await this.installmentsService.findAll(dto.uid);
-    const expenseTransactions = await this.transactionsService.findAllExpenseTransactions(dto.uid)
+    const expenseTransactions =
+      await this.transactionsService.findAllExpenseTransactions(dto.uid);
 
     const totalMonthlyInstallments = installments.reduce((acc, i) => {
       acc += Number(i.monthlyPayment);

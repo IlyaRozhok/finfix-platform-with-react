@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
-import { AccountsService } from './accounts.service';
+import { AccountsService } from "./accounts.service";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { AccountsResDto, CreateAccountDto } from "@/accounts/dto";

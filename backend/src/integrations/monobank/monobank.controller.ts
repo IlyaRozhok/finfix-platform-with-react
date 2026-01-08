@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Req } from "@nestjs/common";
-import { MonobankService } from './monobank.service';
+import { MonobankService } from "./monobank.service";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ClientInfoRespDto } from "@/integrations/monobank/dto";
 
@@ -11,7 +11,7 @@ export class MonobankController {
   @ApiResponse({
     status: 200,
     type: ClientInfoRespDto,
-    description: "Monobank client info fetched"
+    description: "Monobank client info fetched",
   })
   @ApiOperation({ summary: "Get client info" })
   @Get("monobank/client-info")
@@ -25,7 +25,7 @@ export class MonobankController {
     @Param("from") from: string,
     @Param("to") to: string,
     @Param("accountId") accountId: string,
-    @Req() req,
+    @Req() req
   ) {
     return this.monobankService.getTransactions(from, to, accountId);
   }

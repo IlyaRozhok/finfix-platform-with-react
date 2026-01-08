@@ -13,15 +13,19 @@ export class InstallmentsService {
     private readonly installmentRepository: Repository<Installment>,
   ) {}
 
-  async findAll(uid: string): Promise<Installment[]> {
+  async findAll(uid: string): Promise<InstallmentResponseDto[]> {
     if (!uid) {
       throw new BadRequestException("User id not provided");
     }
 
-    return await this.installmentRepository.find({
+    const installments = await this.installmentRepository.find({
       where: {
         userId: uid,
       },
+    });
+
+    return plainToInstance(InstallmentResponseDto, installments, {
+      excludeExtraneousValues: true,
     });
   }
 

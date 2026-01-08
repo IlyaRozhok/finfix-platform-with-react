@@ -4,11 +4,7 @@ import { ENDPOINTS } from "@/shared/router";
 import { ROUTE_SEGMENTS } from "@/shared/router";
 import { ResOverviewDto } from "./dto";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
-import {
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @UseGuards(JwtAuthGuard)
 @ApiTags("Statistics")
@@ -34,5 +30,4 @@ export class StatsController {
     const userId = req.user.sub;
     return await this.statsService.findAllIncomes(userId);
   }
-
 }

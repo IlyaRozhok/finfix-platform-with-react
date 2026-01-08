@@ -2,7 +2,12 @@ import { RegularIncomes } from "@/entities/incomes/income-regular.entity";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateRegularIncomeDto, UpdateRegularIncomeDto, ResRegularIncomesDto, CreateRegularIncomeResDto } from "./dto";
+import {
+  CreateRegularIncomeDto,
+  UpdateRegularIncomeDto,
+  ResRegularIncomesDto,
+  CreateRegularIncomeResDto,
+} from "./dto";
 import { plainToInstance } from "class-transformer";
 
 @Injectable()
@@ -18,16 +23,13 @@ export class RegularIncomesService {
         userId,
       },
     });
-    
+
     return plainToInstance(ResRegularIncomesDto, incomes, {
       excludeExtraneousValues: true,
     });
   }
 
-  async create(
-    userId: string,
-    dto: CreateRegularIncomeDto
-  ) {
+  async create(userId: string, dto: CreateRegularIncomeDto) {
     const income = this.regularIncomesRepository.create({
       userId,
       amount: dto.amount,
@@ -35,7 +37,7 @@ export class RegularIncomesService {
     });
 
     const savedIncome = await this.regularIncomesRepository.save(income);
-    
+
     return plainToInstance(CreateRegularIncomeResDto, savedIncome, {
       excludeExtraneousValues: true,
     });
@@ -73,7 +75,7 @@ export class RegularIncomesService {
 
     Object.assign(income, dto);
     const updatedIncome = await this.regularIncomesRepository.save(income);
-    
+
     return plainToInstance(UpdateRegularIncomeDto, updatedIncome, {
       excludeExtraneousValues: true,
     });

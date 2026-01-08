@@ -9,7 +9,7 @@ import {
   IsOptional,
   Matches,
 } from "class-validator";
-import { Transform, Type } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateInstallmentDto {
@@ -70,30 +70,38 @@ export class UpdateInstallmentDto {
 }
 
 export class InstallmentResponseDto {
+  @Expose()
   @ApiProperty()
   id: string;
 
   @ApiProperty()
   userId: string;
 
+  @Expose()
   @ApiProperty()
   description: string;
 
+  @Expose()
   @ApiProperty()
   startDate: string;
 
+  @Expose()
   @ApiProperty()
   endDate: string;
 
+  @Expose()
   @ApiProperty()
   totalAmount: string;
 
+  @Expose()
   @ApiProperty()
   monthlyPayment: string;
 
+  @Expose()
   @ApiProperty()
   totalPayments: number;
 
+  @Expose()
   @ApiProperty()
   status: string;
 
