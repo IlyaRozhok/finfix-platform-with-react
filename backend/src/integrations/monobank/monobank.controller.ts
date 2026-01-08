@@ -2,7 +2,6 @@ import { Controller, Get, Param, Req } from "@nestjs/common";
 import { MonobankService } from './monobank.service';
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ClientInfoRespDto } from "@/integrations/monobank/dto";
-import { plainToInstance } from "class-transformer";
 
 @ApiTags("integrations")
 @Controller("integrations")
@@ -16,11 +15,8 @@ export class MonobankController {
   })
   @ApiOperation({ summary: "Get client info" })
   @Get("monobank/client-info")
-  syncMonobank() {
-    const info = this.monobankService.getClientInfo();
-    return plainToInstance(ClientInfoRespDto, info, {
-      excludeExtraneousValues: true
-    })
+  async syncMonobank() {
+    return await this.monobankService.getClientInfo();
   }
 
   @ApiOperation({ summary: "Get transactions" })

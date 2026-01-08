@@ -15,7 +15,6 @@ import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { plainToInstance } from "class-transformer";
 import {
   CreateRegularIncomeDto,
   CreateRegularIncomeResDto,
@@ -40,10 +39,7 @@ export class RegularIncomesController {
   @Get(ENDPOINTS.REGULAR_INCOMES.GET)
   async getRegularIncomes(@Req() req) {
     const uid = req.user.sub;
-    const incomes = await this.regularIncomesService.getAll(uid);
-    return plainToInstance(ResRegularIncomesDto, incomes, {
-      excludeExtraneousValues: true,
-    });
+    return await this.regularIncomesService.getAll(uid);
   }
 
   @ApiResponse({
@@ -58,15 +54,7 @@ export class RegularIncomesController {
     @Body() dto: CreateRegularIncomeDto
   ): Promise<CreateRegularIncomeResDto> {
     const userId = req.user.sub;
-
-    const createdRegularIncomes = await this.regularIncomesService.create(
-      userId,
-      dto
-    );
-
-    return plainToInstance(CreateRegularIncomeResDto, createdRegularIncomes, {
-      excludeExtraneousValues: true,
-    });
+    return await this.regularIncomesService.create(userId, dto);
   }
 
   @ApiResponse({
@@ -78,10 +66,7 @@ export class RegularIncomesController {
   @Get(ENDPOINTS.REGULAR_INCOMES.BY_ID)
   async getRegularIncome(@Req() req, @Param("id") id: string) {
     const uid = req.user.sub;
-    const income = await this.regularIncomesService.findOne(uid, id);
-    return plainToInstance(ResRegularIncomesDto, income, {
-      excludeExtraneousValues: true,
-    });
+    return await this.regularIncomesService.findOne(uid, id);
   }
 
   @ApiResponse({
@@ -96,16 +81,7 @@ export class RegularIncomesController {
     @Body() dto: UpdateRegularIncomeDto
   ): Promise<UpdateRegularIncomeDto> {
     const userId = req.user.sub;
-
-    const updatedRegularIncomes = await this.regularIncomesService.update(
-      userId,
-      id,
-      dto
-    );
-
-    return plainToInstance(UpdateRegularIncomeDto, updatedRegularIncomes, {
-      excludeExtraneousValues: true,
-    });
+    return await this.regularIncomesService.update(userId, id, dto);
   }
 
   @HttpCode(204)

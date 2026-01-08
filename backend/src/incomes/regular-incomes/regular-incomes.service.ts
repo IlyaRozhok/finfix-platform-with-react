@@ -2,7 +2,8 @@ import { RegularIncomes } from "@/entities/incomes/income-regular.entity";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateRegularIncomeDto, UpdateRegularIncomeDto } from "./dto";
+import { CreateRegularIncomeDto, UpdateRegularIncomeDto, ResRegularIncomesDto, CreateRegularIncomeResDto } from "./dto";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class RegularIncomesService {
@@ -12,24 +13,32 @@ export class RegularIncomesService {
   ) {}
 
   async getAll(userId: string) {
-    return await this.regularIncomesRepository.find({
+    const incomes = await this.regularIncomesRepository.find({
       where: {
         userId,
       },
+    });
+    
+    return plainToInstance(ResRegularIncomesDto, incomes, {
+      excludeExtraneousValues: true,
     });
   }
 
   async create(
     userId: string,
     dto: CreateRegularIncomeDto
-  ): Promise<RegularIncomes> {
+  ) {
     const income = this.regularIncomesRepository.create({
       userId,
       amount: dto.amount,
       description: dto.description,
     });
 
-    return await this.regularIncomesRepository.save(income);
+    const savedIncome = await this.regularIncomesRepository.save(income);
+    
+    return plainToInstance(CreateRegularIncomeResDto, savedIncome, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async findOne(userId: string, id: string) {
@@ -41,7 +50,9 @@ export class RegularIncomesService {
       throw new NotFoundException("Regular income not found");
     }
 
-    return income;
+    return plainToInstance(ResRegularIncomesDto, income, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async delete(userId: string, id: string) {
@@ -52,8 +63,19 @@ export class RegularIncomesService {
   }
 
   async update(userId: string, id: string, dto: UpdateRegularIncomeDto) {
-    const income = await this.findOne(userId, id);
+    const income = await this.regularIncomesRepository.findOne({
+      where: { id, userId },
+    });
+
+    if (!income) {
+      throw new NotFoundException("Regular income not found");
+    }
+
     Object.assign(income, dto);
-    return await this.regularIncomesRepository.save(income);
+    const updatedIncome = await this.regularIncomesRepository.save(income);
+    
+    return plainToInstance(UpdateRegularIncomeDto, updatedIncome, {
+      excludeExtraneousValues: true,
+    });
   }
 }

@@ -7,6 +7,9 @@ import { InstallmentsService } from "@/installments/installments.service";
 import { EventIncomesService } from "@/incomes/event-incomes/event-incomes.service";
 import { RegularIncomesService } from "@/incomes/regular-incomes/regular-incomes.service";
 import { TransactionsService } from "@/transactions/transactions.service";
+import { plainToInstance } from "class-transformer";
+import { ResRegularIncomesDto } from "@/incomes/regular-incomes/dto";
+import { EventIncomeResDto } from "@/incomes/event-incomes/dto";
 
 @Injectable()
 export class StatsService {
@@ -67,6 +70,14 @@ export class StatsService {
       this.eventIncomesService.getAll(userId),
     ]);
 
-    return { regular, events };
+    const regularDto = plainToInstance(ResRegularIncomesDto, regular, {
+      excludeExtraneousValues: true,
+    });
+
+    const eventsDto = plainToInstance(EventIncomeResDto, events, {
+      excludeExtraneousValues: true,
+    });
+
+    return { regular: regularDto, events: eventsDto };
   }
 }

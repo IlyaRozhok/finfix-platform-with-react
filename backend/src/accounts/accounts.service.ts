@@ -2,7 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Accounts } from "@/entities/accounts.entity";
 import { Repository } from "typeorm";
-import { CreateAccountDto } from "@/accounts/dto";
+import { CreateAccountDto, AccountsResDto } from "@/accounts/dto";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class AccountsService {
@@ -30,6 +31,8 @@ export class AccountsService {
       throw new NotFoundException("Accounts not found")
     }
 
-    return accounts;
+    return plainToInstance(AccountsResDto, accounts, {
+      excludeExtraneousValues: true
+    });
   }
 }

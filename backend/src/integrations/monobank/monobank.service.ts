@@ -3,6 +3,7 @@ import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
 import { firstValueFrom } from "rxjs";
 import { ClientInfoRespDto } from "@/integrations/monobank/dto";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class MonobankService {
@@ -30,7 +31,10 @@ export class MonobankService {
       clientInfo.accounts = clientInfo.accounts.filter(
         (acc) => acc.type === "black" || acc.type === "fop",
       );
-      return clientInfo;
+      
+      return plainToInstance(ClientInfoRespDto, clientInfo, {
+        excludeExtraneousValues: true
+      });
   }
 
   async getTransactions(from: string, to: string, accountId: string) {

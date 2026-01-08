@@ -4,7 +4,6 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ENDPOINTS, ROUTE_SEGMENTS } from "@/shared/router";
 import { AccountsResDto, CreateAccountDto } from "@/accounts/dto";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
-import { plainToInstance } from "class-transformer";
 @ApiTags("Accounts")
 @UseGuards(JwtAuthGuard)
 @Controller(ROUTE_SEGMENTS.ACCOUNTS)
@@ -32,8 +31,6 @@ export class AccountsController {
   @Get()
   async fetchAccounts(@Req() req) {
     const userId = req.user.sub;
-    return plainToInstance(AccountsResDto, this.accountsService.findAll(userId), {
-      excludeExtraneousValues: true
-    });
+    return await this.accountsService.findAll(userId);
   }
 }
